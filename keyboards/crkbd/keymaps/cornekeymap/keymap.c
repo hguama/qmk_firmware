@@ -23,12 +23,22 @@ enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
     M_ALT_TAB,
     M_CTRL_TAB,
-    M_EMAIL,
-    M_PHONE,
-    M_DOCUMENT,
     M_ENIE,
+    DBL_CLICK,
+    ALL_COPY,
+    CLEAR_WIN,
+    WIN_D
 
 };
+
+//combo enum
+enum combos{
+  CB_CTRL_Z,
+  CB_LAYER,
+  CB_ALL_COPY,
+  CB_CLEAR_WIN
+};
+
 //Tap Dance enum
 enum {
     TD_ESC_CAPS,
@@ -41,7 +51,8 @@ enum {
     TD_PASTE,
     TDQ_CTL,
     TDQ_SHIFT,
-    TDQ_LAYER
+    TDQ_LAYER,
+    TDQ_MOUSE_LY
 };
 
 //#####Quad enum
@@ -85,6 +96,8 @@ void tdq_shift_reset(tap_dance_state_t *state, void *user_data);
 void tdq_layer_finished(tap_dance_state_t *state, void *user_data);
 void tdq_layer_reset(tap_dance_state_t *state, void *user_data);
 
+void tdq_mouse_ly_finished(tap_dance_state_t *state, void *user_data);
+void tdq_mouse_ly_reset(tap_dance_state_t *state, void *user_data);
 
 //config revert to repeat key
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
@@ -102,12 +115,27 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     return KC_TRNS;  // Defer to default definitions.
 }
 
+//combos
+const uint16_t PROGMEM cb_ctrl_z[] = {LT(4, KC_J), LT(2,  KC_K), COMBO_END};
+const uint16_t PROGMEM cb_layer[] = {LT(1, KC_S), LT(1, KC_L), COMBO_END}; //anulares
+const uint16_t PROGMEM cb_all_copy[] = {KC_E, KC_I, COMBO_END}; //medios up
+const uint16_t PROGMEM cb_clear_win[] = {LT(2, KC_D), LT(2, KC_K), COMBO_END}; //medios
+
+//const uint16_t PROGMEM test_combo12[] = {TD(TDQ_SHIFT), KC_O, COMBO_END};
+combo_t key_combos[] = {
+   [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
+   [CB_LAYER]    = COMBO(cb_layer, TG(6)),
+   [CB_ALL_COPY] = COMBO(cb_all_copy, ALL_COPY),
+   [CB_CLEAR_WIN] = COMBO(cb_clear_win, CLEAR_WIN),
+};
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         switch (keycode) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("ac")); break;
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
-            case M_ENIE: if (record->event.pressed) {SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT)); } break;
+            case M_ENIE: if (record->event.pressed) { SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT)); } break;
+            case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
             case M_ALT_TAB:
               if (record->event.pressed) {
@@ -122,7 +150,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               }
               break;
 
+            case DBL_CLICK:
+                    if (record->event.pressed) {
+                        tap_code(KC_BTN1);
+                        wait_ms(50);
+                        tap_code(KC_BTN1);
+                    }
+                    break;
 
+           case ALL_COPY:
+              if (record->event.pressed) {
+                SEND_STRING(SS_LCTL("ac"));
+              }
+              break;
+
+          case CLEAR_WIN:
+                     if (record->event.pressed) {
+                      SEND_STRING(SS_LGUI("d"));
+                     }
+                     break;
         }
     return true;
 };
@@ -130,7 +176,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for alt_tab macro
 void matrix_scan_user(void) {
   if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 800) {
+    if (timer_elapsed(alt_tab_timer) > 600) {
       unregister_code(KC_LALT);
       is_alt_tab_active = false;
     }
@@ -150,6 +196,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_CTL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished, x_reset),
     [TDQ_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_shift_finished, tdq_shift_reset),
     [TDQ_LAYER] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_layer_finished, tdq_layer_reset),
+    [TDQ_MOUSE_LY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_ly_finished, x_reset),
 
 };
 
@@ -158,13 +205,13 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   XXXXXXX, TD(TDQ_SHIFT), KC_E,  KC_R, M_ALT_TAB, XXXXXXX,              DT_UP, DT_DOWN, KC_U,   KC_I,  KC_O,  TD(TD_ESC_CAPS),
+   XXXXXXX, TD(TDQ_SHIFT), KC_E,  KC_R, M_ALT_TAB, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_U,   KC_I,  KC_O,  TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LSFT_T(KC_A), LT(1, KC_S), LT(2, KC_D), LT(4, KC_F), QK_AREP, XXXXXXX,         XXXXXXX, QK_REP, LT(4, KC_J), LT(2,  KC_K), LT(1, KC_L), RSFT_T(KC_P),
+  LSFT_T(KC_A), LT(1, KC_S), LT(2, KC_D), TD(TDQ_MOUSE_LY), XXXXXXX, KC_CAPS,   XXXXXXX, XXXXXXX, LT(4, KC_J), LT(2, KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  KC_LWIN, KC_X, LCTL_T(KC_C), TD(TD_PASTE),  M_CTRL_TAB, DT_PRNT,                        XXXXXXX, XXXXXXX, LT(4, KC_M), KC_DEL, TD(TD_BSPC), M_ENIE,
+  KC_LWIN, KC_X, LCTL_T(KC_C), TD(TD_PASTE),  M_CTRL_TAB, WIN_D,               XXXXXXX, XXXXXXX, LT(4, KC_M), KC_TAB, TD(TD_BSPC), M_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        TD(TDQ_LAYER), XXXXXXX,  TD(TDQ_CTL),     XXXXXXX,   XXXXXXX, KC_ENT
+                                      TD(TDQ_LAYER), TG(5),  KC_ENT,     XXXXXXX,   TO(0), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
   ), //symbols_1 layer
@@ -177,7 +224,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      XXXXXXX, XXXXXXX, KC_HASH, KC_B, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_N, KC_COMM,  KC_QUESTION,  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_SPC, _______,  XXXXXXX,     XXXXXXX,   QK_LAYER_LOCK, KC_ENT
+                                          KC_SPC, _______,  XXXXXXX,     XXXXXXX,   KC_TRNS, KC_ENT
                                       //`--------------------------'  `--------------------------'
   ), //symbols_2 layer
 
@@ -189,19 +236,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,                      QK_BOOT, XXXXXXX, TD(TD_LABK_EQ), TD(TD_RABK_EQ), TD(TD_LAMBDA), KC_GRAVE,
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 XXXXXXX, _______,  XXXXXXX,     XXXXXXX,   MO(3), XXXXXXX
+                                                 XXXXXXX, _______,  XXXXXXX,     XXXXXXX,   KC_TRNS, XXXXXXX
                                           //`--------------------------'  `--------------------------'
   ), //move layer
 
     [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     XXXXXXX, M_SEL_COPY, LCTL(KC_V), LCTL(KC_X), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_TAB,  KC_UP, RALT(KC_TAB), KC_ESC,
+     XXXXXXX, M_SEL_COPY, LCTL(KC_V), LCTL(KC_X), XXXXXXX, XXXXXXX,            XXXXXXX, XXXXXXX, M_CTRL_TAB,  KC_UP, M_ALT_TAB, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_LSFT, KC_LCTL, LCTL(KC_C), LCTL(KC_Z), QK_AREP, XXXXXXX,                XXXXXXX, QK_REP, KC_LEFT, KC_DOWN, KC_RIGHT, XXXXXXX,
+     TG(3), KC_LSFT, KC_LCTL, LCTL(KC_Z), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, KC_LEFT, KC_DOWN, KC_RIGHT, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, M_CTRL_TAB, KC_LALT, LCTL(KC_Y), XXXXXXX, XXXXXXX,                XXXXXXX, XXXXXXX, TD(TD_HOME_PGUP), TD(TD_END_PGDOWN), XXXXXXX, XXXXXXX,
+     XXXXXXX,  XXXXXXX, KC_LALT, LCTL(KC_Y), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX
+     , KC_TAB, XXXXXXX, XXXXXXX,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         TD(TDQ_LAYER), _______,  TO(0),     XXXXXXX, QK_LAYER_LOCK, KC_ENT
+                                         TD(TDQ_LAYER), _______,  TO(0),     XXXXXXX, KC_TRNS, KC_ENT
                                       //`--------------------------'  `--------------------------'
   ), //numbers layer
 
@@ -209,25 +257,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
          XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+         TG(4), KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
      //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                             KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                             KC_SPC, _______,  _______,     _______,   KC_TRNS, KC_ENT
                                          //`--------------------------'  `--------------------------'
-     ), //numbers layer
+     ), //mouse layer
 
      [5] = LAYOUT_split_3x6_3(
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+       XXXXXXX, KC_LCTL, MS_WHLD, MS_WHLU, XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+       TG(5), DBL_CLICK, MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+       XXXXXXX, XXXXXXX, KC_LSFT, MS_BTN3, XXXXXXX, XXXXXXX,                      XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                           KC_SPC, TG(5),  _______,     _______,   XXXXXXX, KC_ENT
                                        //`--------------------------'  `--------------------------'
-  ), //numbers layer
+  ), //  layer
 
     [6] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -237,9 +285,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                          KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                       //`--------------------------'  `--------------------------'
- ), //numbers layer
+ ), //  layer
 
       [7] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -249,9 +297,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                            KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                         //`--------------------------'  `--------------------------'
-   ), //numbers layer
+   ), //  layer
 
         [8] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -261,9 +309,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                              KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                           //`--------------------------'  `--------------------------'
-     ), //numbers layer
+     ), //  layer
 
           [9] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -273,9 +321,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                                KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                             //`--------------------------'  `--------------------------'
-       ), //numbers layer
+       ), //  layer
 
             [10] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -285,9 +333,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
               KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                                  KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                               //`--------------------------'  `--------------------------'
-         ), //numbers layer
+         ), //  layer
 
              [11] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -297,7 +345,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
                KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                   KC_SPC, _______,  _______,     _______,   QK_LAYER_LOCK, KC_ENT
+                                                   KC_SPC, _______,  _______,     _______,   XXXXXXX, KC_ENT
                                                //`--------------------------'  `--------------------------'
           )
 
@@ -399,11 +447,11 @@ void tdq_shift_finished(tap_dance_state_t *state, void *user_data) {
     switch (xtap_state.state) {
         case TD_SINGLE_TAP: SEND_STRING(SS_TAP(X_W)); break;
         case TD_SINGLE_HOLD: register_code(KC_LSFT); break;
-        case TD_DOUBLE_TAP:  tap_code16_delay(KC_LPRN, 10);  // Escribe '('
-                             tap_code16_delay(KC_RPRN, 10);  // Escribe ')'
-                             tap_code16_delay(KC_SCLN, 10);
-                             tap_code_delay(KC_LEFT, 10);  // Mueve el cursor dentro de los paréntesis break;
-                             tap_code_delay(KC_LEFT, 10);  // Mueve el cursor dentro de los paréntesis
+        case TD_DOUBLE_TAP:  tap_code16_delay(KC_LPRN, 30);  // Escribe '('
+                             tap_code16_delay(KC_RPRN, 30);  // Escribe ')'
+                             tap_code16_delay(KC_SCLN, 30);
+                             tap_code_delay(KC_LEFT, 30);  // Mueve el cursor dentro de los paréntesis break;
+                             tap_code_delay(KC_LEFT, 30);  // Mueve el cursor dentro de los paréntesis
                              break;
 
         case TD_DOUBLE_HOLD: SEND_STRING("{}" SS_TAP(X_LEFT)); break;
@@ -449,15 +497,42 @@ void tdq_layer_finished(tap_dance_state_t *state, void *user_data) {
 }
 void tdq_layer_reset(tap_dance_state_t *state, void *user_data) {
     // If the key was held down and now is released then switch off the layer
-    if (xtap_state.state == TD_SINGLE_HOLD) {
-        layer_off(3);
-    }
+    //behavior as Momentary layer
+//    if (xtap_state.state == TD_SINGLE_HOLD) {
+//        layer_off(3);
+//    }
 
 //      if (ql_tap_state.state == TD_DOUBLE_HOLD) {
 //            layer_off(4);
 //        }
 //
        xtap_state.state = TD_NONE;
+}
+
+void tdq_mouse_ly_finished(tap_dance_state_t *state, void *user_data) {
+    xtap_state.state = cur_dance(state);
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP: tap_code(KC_F); break;
+        case TD_SINGLE_HOLD: layer_on(5); break;
+        case TD_DOUBLE_TAP:SEND_STRING("Double hold!!"); break;
+
+//        case TD_DOUBLE_HOLD: layer_on(4); break;
+        case TD_DOUBLE_HOLD:
+          // Check to see if the layer is already set
+                       if (layer_state_is(4)) {
+                           // If already set, then switch it off
+                           layer_off(4);
+                       } else {
+                           // If not already set, then switch the layer on
+                           layer_on(4);
+                       } break;
+
+
+        case TD_TRIPLE_TAP: SEND_STRING("TRIPLE TAP!!"); break;
+        case TD_TRIPLE_HOLD: SEND_STRING("TRIPLE TAP HOLD!!"); break;
+        case TD_DOUBLE_SINGLE_TAP: tap_code(KC_W); register_code(KC_W); break;
+        default: break;
+    }
 }
 
 void x_reset(tap_dance_state_t *state, void *user_data) {
@@ -468,17 +543,27 @@ void x_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 
- //Set a long-ish tapping term for tap-dance keys
+
+
+//tapping term
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case LT(1, KC_S):
-              return TAPPING_TERM;
-        case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
-            return 450;
-        default:
-            return TAPPING_TERM;
+
+//#cuando se quiere poner exception a un Tap dance
+     //if (keycode == TD(TDQ_SHIFT)) || keycode == TD(TDQ_LAYER )   {
+     if (keycode == TD(TDQ_LAYER))   {
+        return TAPPING_TERM;
     }
-}
+
+    if (QK_TAP_DANCE <= keycode && keycode <= QK_TAP_DANCE_MAX) {
+        return 450;
+    }
+
+     return TAPPING_TERM;
+
+
+  }
+
+
 
 //layer_state_t layer_state_set_user(layer_state_t state) {
 //    switch (get_highest_layer(state)) {
