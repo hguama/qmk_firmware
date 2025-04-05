@@ -21,13 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 //#define USE_MATRIX_I2C
-
- #define TAPPING_TERM 175
- #define TAPPING_TERM_PER_KEY
-
-
+//for reduce size firmware
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
 
 
+#define TAPPING_TERM 175
+#define TAPPING_TERM_PER_KEY
 
 #define MK_KINETIC_SPEED 50  // Aumenta la velocidad máxima
 #define MK_KINETIC_ACCEL 15  // Aceleración más progresiva

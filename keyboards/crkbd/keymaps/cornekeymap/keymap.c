@@ -165,7 +165,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
 
           case CLEAR_WIN:
-                     if (record->event.pressed) {
+                 if (record->event.pressed) {
                       SEND_STRING(SS_LGUI("d"));
                      }
                      break;
@@ -176,7 +176,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for alt_tab macro
 void matrix_scan_user(void) {
   if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 600) {
+    if (timer_elapsed(alt_tab_timer) > 1000) {
       unregister_code(KC_LALT);
       is_alt_tab_active = false;
     }
@@ -249,7 +249,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      XXXXXXX,  XXXXXXX, KC_LALT, LCTL(KC_Y), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX
      , KC_TAB, XXXXXXX, XXXXXXX,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         TD(TDQ_LAYER), _______,  TO(0),     XXXXXXX, KC_TRNS, KC_ENT
+                                         KC_SPC, _______,  TO(0),     XXXXXXX, KC_TRNS, KC_ENT
                                       //`--------------------------'  `--------------------------'
   ), //numbers layer
 
@@ -271,7 +271,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        TG(5), DBL_CLICK, MS_BTN1, MS_BTN2, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, KC_LSFT, MS_BTN3, XXXXXXX, XXXXXXX,                      XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX, XXXXXXX,
+       XXXXXXX, XXXXXXX, KC_LSFT, MS_BTN3, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            KC_SPC, TG(5),  _______,     _______,   XXXXXXX, KC_ENT
                                        //`--------------------------'  `--------------------------'
