@@ -27,13 +27,20 @@ enum custom_keycodes {
     DBL_CLICK,
     ALL_COPY,
     CLEAR_WIN,
-    WIN_D
+    WIN_D,
+    CTRL_SHIFT_ENTER,
+    LLAMBDA,
+    RLAMBDA,
+    DOUBLE_COLON,
+    ENV_VAR,
+    LBRC2
 
 };
 
 //combo enum
 enum combos{
   CB_CTRL_Z,
+  CB_TAB,
   CB_LAYER,
   CB_ALL_COPY,
   CB_CLEAR_WIN
@@ -51,7 +58,7 @@ enum {
     TD_PASTE,
     TDQ_CTL,
     TDQ_SHIFT,
-    TDQ_LAYER,
+    TDQ_MOVE_LY,
     TDQ_MOUSE_LY
 };
 
@@ -93,8 +100,8 @@ void x_reset(tap_dance_state_t *state, void *user_data);
 void tdq_shift_finished(tap_dance_state_t *state, void *user_data);
 void tdq_shift_reset(tap_dance_state_t *state, void *user_data);
 
-void tdq_layer_finished(tap_dance_state_t *state, void *user_data);
-void tdq_layer_reset(tap_dance_state_t *state, void *user_data);
+void tdq_move_ly_finished(tap_dance_state_t *state, void *user_data);
+void tdq_move_ly_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_mouse_ly_finished(tap_dance_state_t *state, void *user_data);
 void tdq_mouse_ly_reset(tap_dance_state_t *state, void *user_data);
@@ -117,6 +124,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
 //combos
 const uint16_t PROGMEM cb_ctrl_z[] = {LT(4, KC_J), LT(2,  KC_K), COMBO_END};
+const uint16_t PROGMEM cb_tab[] = {KC_F, LT(4, KC_J), COMBO_END};
+
 const uint16_t PROGMEM cb_layer[] = {LT(1, KC_S), LT(1, KC_L), COMBO_END}; //anulares
 const uint16_t PROGMEM cb_all_copy[] = {KC_E, KC_I, COMBO_END}; //medios up
 const uint16_t PROGMEM cb_clear_win[] = {LT(2, KC_D), LT(2, KC_K), COMBO_END}; //medios
@@ -124,6 +133,7 @@ const uint16_t PROGMEM cb_clear_win[] = {LT(2, KC_D), LT(2, KC_K), COMBO_END}; /
 //const uint16_t PROGMEM test_combo12[] = {TD(TDQ_SHIFT), KC_O, COMBO_END};
 combo_t key_combos[] = {
    [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
+   [CB_TAB]      = COMBO(cb_tab, KC_TAB),
    [CB_LAYER]    = COMBO(cb_layer, TG(6)),
    [CB_ALL_COPY] = COMBO(cb_all_copy, ALL_COPY),
    [CB_CLEAR_WIN] = COMBO(cb_clear_win, CLEAR_WIN),
@@ -136,6 +146,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case M_ENIE: if (record->event.pressed) { SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+            case DOUBLE_COLON:
+                if (record->event.pressed){
+                   SEND_STRING(":"); //SEND_STRING(SS_TAP(X_COLON) SS_DELAY(10) SS_TAP(X_COLON));
+                   }else{
+                   SEND_STRING(":");
+                   }
+                break;
 
             case M_ALT_TAB:
               if (record->event.pressed) {
@@ -165,11 +183,227 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               break;
 
           case CLEAR_WIN:
-                 if (record->event.pressed) {
-                      SEND_STRING(SS_LGUI("d"));
+                if (record->event.pressed) {
+                  SEND_STRING(SS_LGUI("d"));
+                 }
+                 break;
+
+          case CTRL_SHIFT_ENTER :
+               if (record->event.pressed) {
+                   SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ENTER))));
+                   }
+                   break;
+
+          case LT(0,KC_DOWN):
+              if (!record->tap.count && record->event.pressed) {
+                  tap_code16(KC_RIGHT); // Intercept hold function to send Ctrl-X
+                  return false;
+              }
+              return true;
+
+          case LT(1,KC_SCLN):
+                if (!record->tap.count && record->event.pressed) {
+                   SEND_STRING(SS_LSFT(SS_TAP(X_SCLN))); // Intercept hold function to send Ctrl-X
+                    return false;
+                }
+                return true;
+
+          case LT(1,KC_SLSH):
+                if (!record->tap.count && record->event.pressed) {
+                   SEND_STRING("\\"); // Intercept hold function to send Ctrl-X
+                    return false;
+                }
+                return true;
+
+          case  LT(1,KC_DQT):
+               if (record->event.pressed) {
+                  if (!record->tap.count) {
+                     SEND_STRING(SS_TAP(X_QUOT)); // Intercept hold function to send Ctrl-X
+                      return false;
+                  }else{
+                     SEND_STRING("\""); // Intercept hold function to send Ctrl-X
+                     return false;
+                      }
+                  }
+                  return true;
+
+          case  LT(1,KC_EXLM):
+            if (record->event.pressed) {
+                 if (!record->tap.count) {
+                   SEND_STRING("!="); // Intercept hold function to send Ctrl-X
+                    return false;
+                 }else {
+                 SEND_STRING("!");
+                   return false;
+                   }
+                 }
+                 return true;
+
+          case  LT(1,KC_LABK):
+            if (record->event.pressed) {
+                 if (!record->tap.count) {
+                   SEND_STRING("<="); // Intercept hold function to send Ctrl-X
+                    return false;
+                 }else {
+                   SEND_STRING("<");
+                    return false;
+                       }
+                    }
+                 return true;
+
+          case  LT(1,KC_RABK):
+           if (record->event.pressed) {
+                if (!record->tap.count) {
+                  SEND_STRING(">="); // Intercept hold function to send Ctrl-X
+                   return false;
+                }else {
+                    SEND_STRING(">");
+                     return false;
+                        }
+                    }
+                return true;
+
+          case  LT(1,KC_MINS):
+                if (!record->tap.count && record->event.pressed) {
+                  SEND_STRING("_"); // Intercept hold function to send Ctrl-X
+                   return false;
+                }
+                return true;
+
+          case  LT(1,KC_EQL):
+                if (!record->tap.count && record->event.pressed) {
+                   SEND_STRING("#"); // Intercept hold function to send Ctrl-X
+                   return false;
+                }
+                return true;
+
+          case  LT(1,KC_AT):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                  SEND_STRING("?"); // Intercept hold function to send Ctrl-X
+                   return false;
+                }else {
+                   SEND_STRING("@");
+                     return false;
+                    }
+                }
+                return true;
+
+          case  LT(1,KC_TILD):
+           if (record->event.pressed) {
+                if (!record->tap.count  ) {
+                  SEND_STRING("`"); // Intercept hold function to send Ctrl-X
+                   return false;
+                }else {
+                  SEND_STRING("~");
+                    return false;
+                  }
+                 }else {}
+                return true;
+
+          case  LT(1, KC_PERC):
+           if (record->event.pressed) {
+                if (!record->tap.count && record->event.pressed) {
+                  SEND_STRING("%");// Intercept hold function to send Ctrl-X
+                   return false;
+
+                } else{
+                  SEND_STRING("+");
+                      return false;
+                  }
+                } else{}
+                return true;
+
+          case  LT(1,KC_Z):
+                if (!record->tap.count && record->event.pressed) {
+                  tap_code16(KC_LWIN);
+                   return false;
+                }
+                return true;
+
+          case  LT(1,KC_AMPR):
+           if (record->event.pressed) {
+                if (!record->tap.count) {
+                   SEND_STRING("$");// Intercept hold function to send Ctrl-X
+                   return false;
+                }else {
+                    SEND_STRING("&");
+                     return false; // Evita que se ejecute la acción por defecto
+                         }
+                 }else {}
+                return true;
+
+          case  LT(1,ENV_VAR):
+           if (record->event.pressed) {
+                if (!record->tap.count) {
+                   SEND_STRING("#{}#");
+                   wait_ms(100);
+                   tap_code(KC_LEFT);  // Coloca cursor entre { y }
+                   tap_code(KC_LEFT);
+                   return false;
+                }else {
+                    SEND_STRING("${}");
+                    wait_ms(100);
+                    tap_code(KC_LEFT);
+
+                     return false; // Evita que se ejecute la acción por defecto
+                         }
+                 }else {}
+                return true;
+
+          case  LLAMBDA:
+               if (record->event.pressed) {
+                 SEND_STRING("<-"); // Intercept hold function to send Ctrl-X
+               }
+               break;
+
+          case  RLAMBDA:
+               if (record->event.pressed) {
+                 SEND_STRING("->"); // Intercept hold function to send Ctrl-X
+               }
+              break;
+
+          case  LT(1,KC_LPRN):
+           if (record->event.pressed) {
+                if (!record->tap.count) {
+                  SEND_STRING(")");
+                   return false;
+                  }else {
+                     SEND_STRING("(");
+                     return false;
+                  }
+                }
+               break;
+
+          case  LT(1,KC_LCBR):
+           if (record->event.pressed) {
+                if (!record->tap.count && record->event.pressed) {
+                 SEND_STRING("}");
+                   return false;
+                }else {
+                      SEND_STRING("{");
+                      return false;
+                      }
+                   }
+                break;
+
+          case  LT(1,LBRC2):
+           if (record->event.pressed) {
+                if (!record->tap.count && record->event.pressed) {
+                  SEND_STRING("]");
+                   return false;
+                }else {
+                   SEND_STRING("[");
+                   return false;
                      }
-                     break;
+                 }
+                break;
         }
+
+
+
+
+
     return true;
 };
 
@@ -195,7 +429,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_PASTE] =  ACTION_TAP_DANCE_FN(dance_paste),
     [TDQ_CTL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished, x_reset),
     [TDQ_SHIFT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_shift_finished, tdq_shift_reset),
-    [TDQ_LAYER] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_layer_finished, tdq_layer_reset),
+    [TDQ_MOVE_LY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_move_ly_finished, tdq_move_ly_reset),
     [TDQ_MOUSE_LY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_ly_finished, x_reset),
 
 };
@@ -205,24 +439,24 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   XXXXXXX, TD(TDQ_SHIFT), KC_E,  KC_R, M_ALT_TAB, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_U,   KC_I,  KC_O,  TD(TD_ESC_CAPS),
+   KC_Q, KC_W, KC_E,  KC_R, KC_T, XXXXXXX,                                     XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LSFT_T(KC_A), LT(1, KC_S), LT(2, KC_D), TD(TDQ_MOUSE_LY), XXXXXXX, KC_CAPS,   XXXXXXX, XXXXXXX, LT(4, KC_J), LT(2, KC_K), LT(1, KC_L), RSFT_T(KC_P),
+  LSFT_T(KC_A), LT(1, KC_S), LT(2, KC_D), KC_F, KC_G, KC_CAPS,                 XXXXXXX, KC_H, LT(4, KC_J), LT(2, KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  KC_LWIN, KC_X, LCTL_T(KC_C), TD(TD_PASTE),  M_CTRL_TAB, WIN_D,               XXXXXXX, XXXXXXX, LT(4, KC_M), KC_TAB, TD(TD_BSPC), M_ENIE,
+  LT(1,KC_Z), KC_X, KC_C, KC_V,  KC_B, WIN_D,                                     XXXXXXX, KC_N,  KC_M, LT(0,KC_DOWN), TD(TD_BSPC), M_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      TD(TDQ_LAYER), TG(5),  KC_ENT,     XXXXXXX,   TO(0), KC_ENT
+                                      TD(TDQ_MOVE_LY), TG(5),  KC_ENT,     XXXXXXX,   TO(0), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
   ), //symbols_1 layer
 
     [1] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     XXXXXXX, KC_Q, KC_AMPR,  KC_T, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, KC_Y, KC_EQL,  KC_EXLM,    XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_LSFT, KC_Z, KC_AT,   KC_G, XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, KC_H, KC_DOT,  KC_SCLN,    KC_LSFT,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, XXXXXXX, KC_HASH, KC_B, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_N, KC_COMM,  KC_QUESTION,  XXXXXXX,
+  //,-----------------------------------------------------.                           ,-----------------------------------------------------.
+  KC_ASTR,  LT(1,KC_PERC), LT(1,KC_MINS),  LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,     XXXXXXX, XXXXXXX, LT(1,KC_EQL), LT(1,KC_AT),  LT(1,KC_DQT), LT(1,KC_TILD),
+  //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
+  LT(1, KC_AMPR), DOUBLE_COLON, LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,       XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
+  //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
+  XXXXXXX, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_SPC, _______,  XXXXXXX,     XXXXXXX,   KC_TRNS, KC_ENT
                                       //`--------------------------'  `--------------------------'
@@ -470,7 +704,7 @@ void tdq_shift_reset(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = TD_NONE;
 }
 
-void tdq_layer_finished(tap_dance_state_t *state, void *user_data) {
+void tdq_move_ly_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP: tap_code(KC_SPACE); break;
@@ -495,7 +729,7 @@ void tdq_layer_finished(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
-void tdq_layer_reset(tap_dance_state_t *state, void *user_data) {
+void tdq_move_ly_reset(tap_dance_state_t *state, void *user_data) {
     // If the key was held down and now is released then switch off the layer
     //behavior as Momentary layer
 //    if (xtap_state.state == TD_SINGLE_HOLD) {
@@ -549,8 +783,8 @@ void x_reset(tap_dance_state_t *state, void *user_data) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 //#cuando se quiere poner exception a un Tap dance
-     //if (keycode == TD(TDQ_SHIFT)) || keycode == TD(TDQ_LAYER )   {
-     if (keycode == TD(TDQ_LAYER))   {
+     //if (keycode == TD(TDQ_SHIFT)) || keycode == TD(TDQ_MOVE_LY )   {
+     if (keycode == TD(TDQ_MOVE_LY))   {
         return TAPPING_TERM;
     }
 
