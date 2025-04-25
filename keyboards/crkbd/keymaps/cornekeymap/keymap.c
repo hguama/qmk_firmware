@@ -990,15 +990,6 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
                 //wait_ms(50);
                 tap_code16_delay(C(KC_C), 30);
 
-//                SEND_STRING(SS_TAP(X_HOME)         // Ir al inicio de la línea
-//                                SS_DOWN(X_LSFT)        // Mantener Shift presionado
-//                                SS_TAP(X_END)          // Ir al final de la línea (selecciona)
-//                                SS_UP(X_LSFT)          // Soltar Shift
-//                                SS_DELAY(50)           // Espera que se registre la selección
-//                                SS_DOWN(X_LCTL)        // Presiona Ctrl
-//                                SS_TAP(X_C)            // Copiar
-//                                SS_UP(X_LCTL));        // Soltar Ctrl
-
          break;
 
         case TD_DOUBLE_TAP: //copy 1 word
