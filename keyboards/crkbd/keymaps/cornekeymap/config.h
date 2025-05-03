@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //for reduce size firmware
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
+#define NO_ACTION_ONESHOT //desactiva funcion one shot
 
 
 #define TAPPING_TERM 175
@@ -34,6 +35,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MK_KINETIC_DELAY 15  // Inicia la aceleración más rápido
 #define MK_KINETIC_INTERVAL 16  // Intervalo entre actualizaciones del cursor (baja el lag)
 
+
+
+#define RGB_MATRIX_DISABLE_SHARED_KEYCODES
+#define RGBLIGHT_LAYERS
+//#define RGBLIGHT_SPLIT
+//#define RGBLED_NUM 42
+
+
+#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
+#undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
+#undef RGBLIGHT_ANIMATIONS
+#undef RGBLIGHT_EFFECT_BREATHING
+#undef RGBLIGHT_EFFECT_RAINBOW_MOOD
+#undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
+#undef RGBLIGHT_EFFECT_SNAKE
+#undef RGBLIGHT_EFFECT_KNIGHT
+#undef RGBLIGHT_EFFECT_CHRISTMAS
+#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
+#undef RGBLIGHT_EFFECT_RGB_TEST
+#undef RGBLIGHT_EFFECT_ALTERNATING
+#undef RGBLIGHT_EFFECT_TWINKLE
+
+//#define RGBLIGHT_ENABLE
+//#define RGBLIGHT_LAYERS
+
+// Opcional, pero muy recomendado:
+//#define RGBLIGHT_ANIMATIONS        // (si quieres efectos bonitos, opcional)
+//#define RGBLIGHT_LIMIT_VAL 120     // brillo máximo (evita que queme LEDs o consuma mucho)
+//#define RGBLIGHT_SLEEP
 
 //#ifdef RGBLIGHT_ENABLE
 //    #define RGBLIGHT_EFFECT_BREATHING
