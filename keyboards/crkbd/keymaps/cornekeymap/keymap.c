@@ -147,7 +147,7 @@ typedef struct {//for quad
 bool is_alt_tab_active = false; // ADD this near the beginning of keymap.c
 uint16_t alt_tab_timer = 0;
 static uint16_t timer_key;
-uint16_t RGBLED_NUM = 54;
+uint16_t RGBLED_NUM2 = 54;
 
 //rgb def
 //const rgblight_segment_t PROGMEM layer6_light[] = RGBLIGHT_LAYER_SEGMENTS(
@@ -1146,11 +1146,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, M_SEL_COPY, XXXXXXX,                   XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
+  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, M_SEL_COPY, XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  TG(6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), QK_AREP, XXXXXXX,              XXXXXXX, QK_REP, KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  TG(6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), QK_AREP, XXXXXXX,           XXXXXXX, QK_REP, KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  A(KC_F), LCTL(KC_W), CODE_COMPLET, MS_BTN1, KC_F6, XXXXXXX,              XXXXXXX, ALT_ARROW, LT(6, KC_ENT), PGUP_DOWN, TD(TDQ_DEL), LCTL(LSFT(KC_M)),
+  A(KC_F), LCTL(KC_W), CODE_COMPLET, MS_BTN1, KC_F6, XXXXXXX,                  XXXXXXX, ALT_ARROW, LT(6, KC_ENT), PGUP_DOWN, TD(TDQ_DEL), LCTL(LSFT(KC_M)),
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                        LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), KC_TRNS, LT(3,TG_6)
                                       //`--------------------------'  `--------------------------'
@@ -1164,18 +1164,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, C(A(KC_T)), REFACTOR, TD(TDQ_GENERATE), C(S(KC_U)), XXXXXXX,        XXXXXXX, FULL_SCREEN, NEW_FILE, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 XXXXXXX, _______,  XXXXXXX,     TO(0),   KC_TRNS, EVERYW_ACT
+                                                 MO(4),  XXXXXXX, XXXXXXX,     TO(0),   KC_TRNS, EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
    ),
-   //dev2 ly 4 //not used
+   //dev2 ly 4 //super bookmark
 
     [4] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_0), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                       XXXXXXX, _______,  XXXXXXX,     TO(0),   KC_TRNS, XXXXXXX
                        //`--------------------------'  `--------------------------'
@@ -1197,15 +1197,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
       [6] = LAYOUT_split_3x6_3(
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   KC_ESC, TD(TDQ_DEL), TD(TDQ_CLICK), MS_WHLD, CTRL_TOGGLE, XXXXXXX,        XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
+   XXXXXXX, MS_ACL2, TD(TDQ_CLICK), MS_ACL0, CTRL_TOGGLE, XXXXXXX,        XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
    TG(6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_Z_ENG), XXXXXXX,    XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLR,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   MS_WHLL, MS_WHLR, MS_WHLU, MOUSE_PRESSED_CLICK, A(KC_ENT), XXXXXXX,           XXXXXXX, LCTL(KC_Z), MS_WHLL, XXXXXXX, XXXXXXX, XXXXXXX,
+   XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, KC_ESC, XXXXXXX,           XXXXXXX, LCTL(KC_Z), MS_WHLL, XXXXXXX, XXXXXXX, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(7,KC_ENT),  SPC_CTRL_TAB,     XXXXXXX,     TO(0), KC_TRNS, TG(6)
+                                        KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), KC_TRNS, TG(6)
                                        //`--------------------------'  `--------------------------'
-  ), // mouse2 ly7
+  ), // mouse2 ly7 - not used
 
     [7] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -1253,7 +1253,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                             //`--------------------------'  `--------------------------'
-       ), //  layer
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -1856,7 +1855,7 @@ void apagar_todos_los_leds(void) {
         return;
     }
 
-    for (uint8_t i = 0; i < RGBLED_NUM; i++) {   // <<< --- usamos RGBLED_NUM
+    for (uint8_t i = 0; i < RGBLED_NUM2; i++) {   // <<< --- usamos RGBLED_NUM2
         rgblight_setrgb_at(0x00, 0x00, 0x00, i);
     }
 }
@@ -1868,19 +1867,88 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case 2: //move ly
               apagar_todos_los_leds();  // Primero apaga todos
-              rgblight_setrgb_at(0x00, 0xFF, 0x64, 11);  // Verde claro en LED 24
-              break;
+              rgblight_setrgb_at(0x00, 0xFF, 0x64, 11);  // Verde claro en LED 24 //OK
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 0);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 1);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 2);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 3);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 4);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 5);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 6);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 7);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 8);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 9);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 10);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 12);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 13);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 14);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 15);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 16);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 17);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 18);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 19);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 20);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 21);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 23);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 25);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 25);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 27);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 28);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 30);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 31);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 33);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 35);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 37);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 39);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 40);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 41);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 42);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 43);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 45);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 48);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 49);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 50);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 51);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 52);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 53);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 54);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 60);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 65);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 70);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 75);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 80);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 85);  // TEST
+//
+
+
+
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 270);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 300);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 400);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 500);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 600);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 700);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 800);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 900);  // TEST
+//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 1000);  // TEST
+//
+break;
         case 3:  // dev ly
               apagar_todos_los_leds();  // Primero apaga todos
+               rgblight_setrgb(219, 219, 219);  // plateado suave en LED 24
+
 //              rgblight_setrgb_at(0x00, 0x80, 0xFF, 40);    // azul claro
               break;
         case 5:  // number ly
-               apagar_todos_los_leds();  // Primero apaga todos
-               rgblight_setrgb_at(219, 219, 219, 1);;  // plateado suave en LED 24
+//               apagar_todos_los_leds();  // Primero apaga todos
+//               rgblight_setrgb_at(219, 219, 219, 100);;  // plateado suave en LED 24
+                 rgblight_setrgb(1, 1, 1);
+
                break;
         case 6:  // mouse ly
               apagar_todos_los_leds();  // Primero apaga todos
-              rgblight_setrgb_at(0xFF, 0x64, 0x00, 11);  // Rojo suave en LED 24
+              rgblight_setrgb_at(0xFF, 0x64, 0x00, 11);  // Rojo suave en LED 24 //OK
+//              rgblight_setrgb_at(0xFF, 0x64, 0x00, 13);  // tecla media de pulgar. Con la que se maneja espacio
               break;
 
 

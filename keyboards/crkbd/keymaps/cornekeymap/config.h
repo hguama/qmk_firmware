@@ -30,19 +30,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
 
-#define MK_KINETIC_SPEED 50  // Aumenta la velocidad máxima
-#define MK_KINETIC_ACCEL 15  // Aceleración más progresiva
-#define MK_KINETIC_DELAY 15  // Inicia la aceleración más rápido
-#define MK_KINETIC_INTERVAL 16  // Intervalo entre actualizaciones del cursor (baja el lag)
+//MOUSE MOVE
+#define MK_COMBINED
+#define MOUSEKEY_BASE_SPEED 150 //150 300 500 ok
+#define MOUSEKEY_MAX_SPEED 5 //5 0k bajar //max speed en la que se detiene la aceleracion
+#define MOUSEKEY_TIME_TO_MAX 150 //150 100 0k
+#define MOUSEKEY_MOVE_DELTA 5 //5 2 0k mas lento
+#define MOUSEKEY_INTERVAL 5 //5 ok
+#define MOUSEKEY_WHEEL_DELTA 2 //Wheel movement step size
+#define MOUSEKEY_WHEEL_MAX_SPEED 10 //Maximum number of scroll steps per scroll action
+
+
+//#define RGB_MATRIX_DISABLE_SHARED_KEYCODES
+//#define RGBLIGHT_LAYERS
+
+//nuevos test
+//#undef RGBLED_NUM
+//#define RGBLED_NUM 12
+//#undef RGBLED_SPLIT
+//#undef RGBLIGHT_LED_COUNT
+//#define RGBLIGHT_ANIMATIONS
+//#define RGBLED_SPLIT {6, 6}
+//#undef RGBLIGHT_LED_COUNT
+//#define RGBLIGHT_LED_COUNT 12
+#define RGBLIGHT_SPLIT
+#define SPLIT_LED_STATE_ENABLE
+#define SPLIT_LAYER_STATE_ENABLE
+
+#undef RGBLED_SPLIT
+#define RGBLED_SPLIT {27,27}
 
 
 
-#define RGB_MATRIX_DISABLE_SHARED_KEYCODES
-#define RGBLIGHT_LAYERS
 //#define RGBLIGHT_SPLIT
 //#define RGBLED_NUM 42
 
 
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
 #undef RGBLIGHT_EFFECT_STATIC_GRADIENT
 #undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
 #undef RGBLIGHT_ANIMATIONS
@@ -65,7 +90,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define RGBLIGHT_LIMIT_VAL 120     // brillo máximo (evita que queme LEDs o consuma mucho)
 //#define RGBLIGHT_SLEEP
 
-//#ifdef RGBLIGHT_ENABLE
+#ifdef RGBLIGHT_ENABLE
 //    #define RGBLIGHT_EFFECT_BREATHING
 //    #define RGBLIGHT_EFFECT_RAINBOW_MOOD
 //    #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
@@ -76,8 +101,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //    #define RGBLIGHT_EFFECT_RGB_TEST
 //    #define RGBLIGHT_EFFECT_ALTERNATING
 //    #define RGBLIGHT_EFFECT_TWINKLE
-//    #define RGBLIGHT_LIMIT_VAL 120
-//    #define RGBLIGHT_HUE_STEP 10
-//    #define RGBLIGHT_SAT_STEP 17
-//    #define RGBLIGHT_VAL_STEP 17
-//#endif
+    #define RGBLIGHT_LIMIT_VAL 120
+    #define RGBLIGHT_HUE_STEP 10
+    #define RGBLIGHT_SAT_STEP 17
+    #define RGBLIGHT_VAL_STEP 17
+#endif
