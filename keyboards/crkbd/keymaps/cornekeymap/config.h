@@ -17,16 +17,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
-//#define USE_MATRIX_I2C
+
 //for reduce size firmware
 #define NO_ACTION_MACRO
 #define NO_ACTION_FUNCTION
 #define NO_ACTION_ONESHOT //desactiva funcion one shot
 
-
+//Tapping term for tap dance
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
 
@@ -41,68 +40,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_WHEEL_MAX_SPEED 10 //Maximum number of scroll steps per scroll action
 
 
-//#define RGB_MATRIX_DISABLE_SHARED_KEYCODES
-//#define RGBLIGHT_LAYERS
 
-//nuevos test
-//#undef RGBLED_NUM
-//#define RGBLED_NUM 12
-//#undef RGBLED_SPLIT
-//#undef RGBLIGHT_LED_COUNT
-//#define RGBLIGHT_ANIMATIONS
-//#define RGBLED_SPLIT {6, 6}
-//#undef RGBLIGHT_LED_COUNT
-//#define RGBLIGHT_LED_COUNT 12
-#define RGBLIGHT_SPLIT
-#define SPLIT_LED_STATE_ENABLE
-#define SPLIT_LAYER_STATE_ENABLE
+//RGB LIGHT
+//leds total 54. 27 leds one half
+#define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT y RGB MATRIX
+#define RGBLIGHT_LAYERS //for RGBLIGHT
+#define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
+#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
+//#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
+//#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
 
-#undef RGBLED_SPLIT
-#define RGBLED_SPLIT {27,27}
-
-
-
-//#define RGBLIGHT_SPLIT
-//#define RGBLED_NUM 42
-
-
-#undef LOCKING_SUPPORT_ENABLE
-#undef LOCKING_RESYNC_ENABLE
-#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
-#undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
-#undef RGBLIGHT_ANIMATIONS
-#undef RGBLIGHT_EFFECT_BREATHING
-#undef RGBLIGHT_EFFECT_RAINBOW_MOOD
-#undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
-#undef RGBLIGHT_EFFECT_SNAKE
-#undef RGBLIGHT_EFFECT_KNIGHT
-#undef RGBLIGHT_EFFECT_CHRISTMAS
-#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
-#undef RGBLIGHT_EFFECT_RGB_TEST
-#undef RGBLIGHT_EFFECT_ALTERNATING
-#undef RGBLIGHT_EFFECT_TWINKLE
-
-//#define RGBLIGHT_ENABLE
-//#define RGBLIGHT_LAYERS
-
-// Opcional, pero muy recomendado:
-//#define RGBLIGHT_ANIMATIONS        // (si quieres efectos bonitos, opcional)
-//#define RGBLIGHT_LIMIT_VAL 120     // brillo máximo (evita que queme LEDs o consuma mucho)
-//#define RGBLIGHT_SLEEP
 
 #ifdef RGBLIGHT_ENABLE
-//    #define RGBLIGHT_EFFECT_BREATHING
-//    #define RGBLIGHT_EFFECT_RAINBOW_MOOD
-//    #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-//    #define RGBLIGHT_EFFECT_SNAKE
-//    #define RGBLIGHT_EFFECT_KNIGHT
-//    #define RGBLIGHT_EFFECT_CHRISTMAS
-//    #define RGBLIGHT_EFFECT_STATIC_GRADIENT
-//    #define RGBLIGHT_EFFECT_RGB_TEST
-//    #define RGBLIGHT_EFFECT_ALTERNATING
-//    #define RGBLIGHT_EFFECT_TWINKLE
-    #define RGBLIGHT_LIMIT_VAL 120
-    #define RGBLIGHT_HUE_STEP 10
-    #define RGBLIGHT_SAT_STEP 17
-    #define RGBLIGHT_VAL_STEP 17
+    #undef RGBLIGHT_LIMIT_VAL
+    #define RGBLIGHT_LIMIT_VAL 80 //ok 255 default
 #endif

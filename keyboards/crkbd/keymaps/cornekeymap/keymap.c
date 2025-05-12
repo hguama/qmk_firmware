@@ -159,12 +159,13 @@ uint16_t RGBLED_NUM2 = 54;
 //    layer6_light
 //);
 
-void keyboard_post_init_user(void) {
-//    rgblight_layers = my_rgb_layers;
-    rgblight_enable_noeeprom();
-    rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro
-
-}
+//estaba sin comentarios y lo comente para probar RGBLIGHT, pero cuando funciono RGB Matriz estaba descomentado
+//void keyboard_post_init_user(void) {
+////    rgblight_layers = my_rgb_layers;
+//    rgblight_enable_noeeprom();
+//    rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro
+//
+//}
 
 
 // prototypes tap dance
@@ -1115,17 +1116,17 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
-//LY 0
+ //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   //LY 0
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   Q_ESC, LETTER_ENTER, TD(TDQ_MOUSE_PRESSED),  LETTER_LAST_EDIT, KC_T, KC_CAPS,   XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  KC_ESC,
+   Q_ESC, LETTER_ENTER, TD(TDQ_MOUSE_PRESSED),  LETTER_LAST_EDIT, KC_T, XXXXXXX,   XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, LCTL(KC_S),                  UG_TOGG,  KC_H, KC_J, KC_K, LT(1, KC_L), RSFT_T(KC_P),
+   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, KC_CAPS,                     XXXXXXX,  KC_H, KC_J, KC_K, LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LGUI_T(KC_X), LCTL_T(KC_C), KC_V,  KC_B, WIN_D,                           XXXXXXX, KC_N,  KC_M, CODE_COMPLET, TD(TDQ_DEL), M_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB,  XXXXXXX ,     XXXXXXX,   SHOW_QUICK_ENT, TG(5)
+                                      TG(2), SPC_CTRL_TAB,  TG(4) ,     XXXXXXX,   SHOW_QUICK_ENT, TG(5)
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1209,13 +1210,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [7] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(7),              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+      RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG , XXXXXXX,                        XXXXXXX, UG_TOGG , RM_TOGG, RM_HUEU, RM_SATU, RM_VALU,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+      RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX,  RM_NEXT, RM_HUED, RM_SATD, RM_VALD,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
+                                          KC_SPC, _______,  _______,     TO(0),   KC_TRNS, TG(7)
                                       //`--------------------------'  `--------------------------'
  ), //  numbers 2 layer 8
 
@@ -1253,6 +1254,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                             //`--------------------------'  `--------------------------'
+        ),
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -1850,123 +1852,169 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 //rgb IMP
 
-void apagar_todos_los_leds(void) {
-    if (!rgblight_is_enabled()) {
-        return;
-    }
+//void apagar_todos_los_leds(void) {
+//    if (!rgblight_is_enabled()) {
+//        return;
+//    }
+//
+//    for (uint8_t i = 0; i < 255; i++) {   // <<< --- usamos RGBLED_NUM2
+////        rgblight_setrgb_at(0x00, 0x00, 0x00, i);
+//          rgblight_setrgb_at(1, 1, 1, i);
+////           rgblight_setrgb(1, 1, 1);
+//    }
+//}
 
-    for (uint8_t i = 0; i < RGBLED_NUM2; i++) {   // <<< --- usamos RGBLED_NUM2
-        rgblight_setrgb_at(0x00, 0x00, 0x00, i);
-    }
+//void rgb_matrix_set_color_range(uint8_t start, uint8_t end, uint8_t r, uint8_t g, uint8_t b) {
+//rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);  // Desactiva efectos
+//
+//// for (uint8_t i = start; i < end; i++) {
+////        rgb_matrix_set_color(i, 0, 0, 0);
+////    }
+//
+//    for (uint8_t i = start; i < end; i++) {
+//        rgb_matrix_set_color(i, r, g, b);
+//    }
+//}
+
+
+//bool rgb_matrix_indicators_user(void) {
+//    uint8_t layer = get_highest_layer(layer_state);
+//
+//    switch (layer) {
+//        case 0:  // Capa base - azul
+//            rgb_matrix_set_color_range(0, 12, 0, 50, 120);
+//            break;
+//        case 1:  // Función - violeta
+//            rgb_matrix_set_color_range(0, 12, 80, 0, 130);
+//            break;
+//        case 2:  // Navegación - naranja
+//            rgb_matrix_set_color_range(0, 12, 120, 60, 0);
+//            break;
+//        case 3:  // Símbolos - verde
+//            rgb_matrix_set_color_range(0, 12, 0, 120, 20);
+//            break;
+//        default:  // Otra capa - apagar
+//            rgb_matrix_set_color_range(0, 12, 0, 0, 0);
+//            break;
+//    }
+//
+//    return false; // false para permitir que QMK siga ejecutando lógica base si es necesario
+//}
+
+
+
+////
+/////RGB MATRIX OK
+//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+//
+//
+// switch (get_highest_layer(layer_state | default_layer_state)) {
+//         case 2:
+//             rgb_matrix_set_color(6, 10, 10, 40);    // Azul muy suave
+//             break;
+//         case 3:
+//              rgb_matrix_set_color(22, 40, 0, 0);     // Rojo suave
+//             break;
+//         case 5:
+//            rgb_matrix_set_color(7, 0, 30, 0);      // Verde tenue
+//             break;
+//         case 6:
+//             rgb_matrix_set_color(24, 30, 30, 0);    // Amarillo suave
+//             break;
+//         case 7:
+//             rgb_matrix_set_color_all(30, 30, 30);
+////                for (int i = 0; i < 54; i++) {
+////                         rgb_matrix_set_color(i, 30, 30, 30);  // gris suave para todos los LEDs
+////                     }
+//              break;
+//
+//
+//         default:
+//             // Opción: apagar todos esos LEDs si no estás en esas capas
+//             rgb_matrix_set_color_all(0, 0, 0);
+////             rgb_matrix_set_color(10, 0, 0, 0);
+////             rgb_matrix_set_color(14, 0, 0, 0);
+////             rgb_matrix_set_color(18, 0, 0, 0);
+////             rgb_matrix_set_color(22, 0, 0, 0);
+//             break;
+//     }
+//     return false;
+//}
+
+
+//RGB LIGHT
+
+//capslock
+//{0, 0, HSV_OFF} {starting, numbers_leds, HSV_OFF}
+const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 0, HSV_OFF}
+);
+
+// move ly2
+const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {8,2, HSV_GREEN}
+//    {4,2, HSV_RED} //PLAN B
+);
+
+// numbers ly5
+const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {8,2, HSV_WHITE}
+    //    {4,2, HSV_RED} //PLAN B
+);
+
+// mouse ly6
+const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {8,2, HSV_ORANGE}
+//        {4,2, HSV_RED} //PLAN B
+);
+
+// not used
+const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {8,2, HSV_GREEN}
+    //    {4,2, HSV_RED} //PLAN B
+);
+
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    NULL,               // 0
+    NULL,               // 1
+    my_layer2_layer,    // 2
+    NULL,               // 3
+    NULL,               // 4
+    my_layer5_layer,    // 5
+    my_layer6_layer,    // 6
+    NULL                // 7
+);
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
+        rgblight_layers = my_rgb_layers;
 }
 
-
-
-// Función que cambia el color según la capa, usando switch
 layer_state_t layer_state_set_user(layer_state_t state) {
-    switch (get_highest_layer(state)) {
-        case 2: //move ly
-              apagar_todos_los_leds();  // Primero apaga todos
-              rgblight_setrgb_at(0x00, 0xFF, 0x64, 11);  // Verde claro en LED 24 //OK
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 0);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 1);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 2);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 3);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 4);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 5);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 6);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 7);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 8);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 9);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 10);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 12);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 13);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 14);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 15);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 16);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 17);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 18);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 19);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 20);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 21);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 23);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 25);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 25);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 27);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 28);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 30);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 31);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 33);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 35);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 37);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 39);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 40);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 41);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 42);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 43);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 45);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 48);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 49);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 50);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 51);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 52);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 53);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 54);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 60);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 65);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 70);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 75);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 80);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 85);  // TEST
-//
+//    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
+//    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
+
+    rgblight_set_layer_state(2, false); // MOVE LY OFF
+    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
+    rgblight_set_layer_state(6, false); // MOUSE LY OFF
 
 
+uint8_t layer = get_highest_layer(state);
 
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 270);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 300);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 400);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 500);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 600);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 700);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 800);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 900);  // TEST
-//              rgblight_setrgb_at(0x00, 0xFF, 0x64, 1000);  // TEST
-//
-break;
-        case 3:  // dev ly
-              apagar_todos_los_leds();  // Primero apaga todos
-               rgblight_setrgb(219, 219, 219);  // plateado suave en LED 24
-
-//              rgblight_setrgb_at(0x00, 0x80, 0xFF, 40);    // azul claro
-              break;
-        case 5:  // number ly
-//               apagar_todos_los_leds();  // Primero apaga todos
-//               rgblight_setrgb_at(219, 219, 219, 100);;  // plateado suave en LED 24
-                 rgblight_setrgb(1, 1, 1);
-
-               break;
-        case 6:  // mouse ly
-              apagar_todos_los_leds();  // Primero apaga todos
-              rgblight_setrgb_at(0xFF, 0x64, 0x00, 11);  // Rojo suave en LED 24 //OK
-//              rgblight_setrgb_at(0xFF, 0x64, 0x00, 13);  // tecla media de pulgar. Con la que se maneja espacio
-              break;
-
-
-
-        default:  // Si no estamos en capa 2 ni 6
-//            rgblight_setrgb(0x00, 0x00, 0x00);  // Apagar todos los LEDs
-              apagar_todos_los_leds();  // Primero apaga todos
-
-//            rgblight_setrgb_at(0x00, 0x00, 0x00, 24);  // Apaga LED 24
-//              rgblight_setrgb_at(0x00, 0x00, 0x00, 11);  // Apaga LED 11
-            break;
-    }
-
+        switch (layer) {
+            case 2:
+                rgblight_set_layer_state(2, true); // MOVE LY
+                break;
+            case 5:
+                rgblight_set_layer_state(5, true); // NUMBERS LY
+                break;
+            case 6:
+                rgblight_set_layer_state(6, true); // MOUSE LY
+                break;
+        }
     return state;
 }
-
-//led 11 F
-
 
 
 
