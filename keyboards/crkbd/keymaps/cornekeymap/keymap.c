@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JKL
 */
 #include QMK_KEYBOARD_H
-//#include "rgblight.h"
+#include "rgblight.h"
 
 
 //macro enum
@@ -1833,101 +1833,101 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 /////RGB MATRIX
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-
- switch (get_highest_layer(layer_state | default_layer_state)) {
-         case 2:
-             rgb_matrix_set_color(8, RGB_GREEN);  // R, G, B
-             break;
-         case 5:
-            rgb_matrix_set_color(8, RGB_WHITE); //gris suave
-             break;
-         case 6:
-             rgb_matrix_set_color(8, RGB_ORANGE);
-             break;
-
-         default:
-             //apagar todos los LEDs
-             rgb_matrix_set_color_all(0, 0, 0);
-             break;
-     }
-     return false;
-}
+//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+//
+// switch (get_highest_layer(layer_state | default_layer_state)) {
+//         case 2:
+//             rgb_matrix_set_color(8, RGB_GREEN);  // R, G, B
+//             break;
+//         case 5:
+//            rgb_matrix_set_color(8, RGB_WHITE); //gris suave
+//             break;
+//         case 6:
+//             rgb_matrix_set_color(8, RGB_ORANGE);
+//             break;
+//
+//         default:
+//             //apagar todos los LEDs
+//             rgb_matrix_set_color_all(0, 0, 0);
+//             break;
+//     }
+//     return false;
+//}
 
 
 //RGB LIGHT
 
 //capslock
 //{0, 0, HSV_OFF} {starting, numbers_leds, HSV_OFF}
-//const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-//    {0, 0, HSV_OFF}
-//);
-//
-//// move ly2
-//const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-//    {8,2, HSV_GREEN}
-////    {4,2, HSV_RED} //PLAN B
-//);
-//
-//// numbers ly5
-//const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-//        {8,2, HSV_WHITE}
-//    //    {4,2, HSV_RED} //PLAN B
-//);
-//
-//// mouse ly6
-//const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-//        {8,2, HSV_ORANGE}
-////        {4,2, HSV_RED} //PLAN B
-//);
-//
-//// not used
-//const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-//        {8,2, HSV_GREEN}
-//    //    {4,2, HSV_RED} //PLAN B
-//);
-//
-//const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-//    NULL,               // 0
-//    NULL,               // 1
-//    my_layer2_layer,    // 2
-//    NULL,               // 3
-//    NULL,               // 4
-//    my_layer5_layer,    // 5
-//    my_layer6_layer,    // 6
-//    NULL                // 7
-//);
-//
-//void keyboard_post_init_user(void) {
-//    // Enable the LED layers
-//        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
-//        rgblight_layers = my_rgb_layers;
-//}
-//
-//layer_state_t layer_state_set_user(layer_state_t state) {
-////    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
-////    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
-//
-//    rgblight_set_layer_state(2, false); // MOVE LY OFF
-//    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
-//    rgblight_set_layer_state(6, false); // MOUSE LY OFF
-//
-//
-//uint8_t layer = get_highest_layer(state);
-//
-//        switch (layer) {
-//            case 2:
-//                rgblight_set_layer_state(2, true); // MOVE LY
-//                break;
-//            case 5:
-//                rgblight_set_layer_state(5, true); // NUMBERS LY
-//                break;
-//            case 6:
-//                rgblight_set_layer_state(6, true); // MOUSE LY
-//                break;
-//        }
-//    return state;
-//}
+const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 0, HSV_OFF}
+);
+
+// move ly2
+const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {9,1, HSV_GREEN}
+//    {8,1, HSV_RED} //PLAN B
+);
+
+// numbers ly5
+const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {9,1, HSV_WHITE}
+    //    {4,2, HSV_RED} //PLAN B
+);
+
+// mouse ly6
+const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {9,1, HSV_YELLOW}
+//        {4,2, HSV_RED} //PLAN B
+);
+
+// not used
+const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {8,2, HSV_GREEN}
+    //    {4,2, HSV_RED} //PLAN B
+);
+
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    NULL,               // 0
+    NULL,               // 1
+    my_layer2_layer,    // 2
+    NULL,               // 3
+    NULL,               // 4
+    my_layer5_layer,    // 5
+    my_layer6_layer,    // 6
+    NULL                // 7
+);
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
+        rgblight_layers = my_rgb_layers;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+//    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
+//    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
+
+    rgblight_set_layer_state(2, false); // MOVE LY OFF
+    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
+    rgblight_set_layer_state(6, false); // MOUSE LY OFF
+
+
+uint8_t layer = get_highest_layer(state);
+
+        switch (layer) {
+            case 2:
+                rgblight_set_layer_state(2, true); // MOVE LY
+                break;
+            case 5:
+                rgblight_set_layer_state(5, true); // NUMBERS LY
+                break;
+            case 6:
+                rgblight_set_layer_state(6, true); // MOUSE LY
+                break;
+        }
+    return state;
+}
 
 
 

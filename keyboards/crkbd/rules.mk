@@ -13,8 +13,8 @@ COMMAND_ENABLE = no #depuracion
 EXTRAKEY_ENABLE = no #para teclas multimedia
 NKRO_ENABLE = no      # varias teclas presionadas simultaneo. Desactivado acepta hasta 6 teclas en simultaneo
 BACKLIGHT_ENABLE = no
-RGBLIGHT_ENABLE = no #yes activa la iluminación RGB
-RGB_MATRIX_ENABLE = yes  # activa efectos de matriz RGB
+RGBLIGHT_ENABLE = yes #yes activa la iluminación RGB
+RGB_MATRIX_ENABLE = no  # activa efectos de matriz RGB
 AUDIO_ENABLE = no     # Desactiva sonidos
 SPACE_CADET_ENABLE = no
 GRAVE_ESC_ENABLE = no
@@ -23,7 +23,7 @@ OLED_ENABLE = no
 AVR_USE_MINIMAL_PRINTF = yes
 SWAP_HANDS_ENABLE = no
 UNICODE_ENABLE = no
-# SPLIT_KEYBOARD = yes //la quite y funciona bien.Pero la dejo si hay un problema con la comunicacion entre teclas mitades en algun momento
+# SPLIT_KEYBOARD = yes //la mitad der deja de funcionar. Redujo el firmware como en 10%, talvez falte otra config adicional con esto.
 
 
 
