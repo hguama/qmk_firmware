@@ -40,15 +40,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_WHEEL_MAX_SPEED 10 //Maximum number of scroll steps per scroll action
 
 
+//leds total 54. 27 leds one half
 
 //RGB LIGHT
-//leds total 54. 27 leds one half
-#define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT y RGB MATRIX
-#define RGBLIGHT_LAYERS //for RGBLIGHT
-#define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
+//#define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT
+//#define RGBLIGHT_LAYERS //for RGBLIGHT
+//#define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
+//#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
+
+//RGB MATRIX
+//#define SPLIT_LAYER_STATE_ENABLE //for RGB MATRIX(desactivar para que no haga mirror)
+#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
+#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX. desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
 #define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
-//#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
-//#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
+#undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 80  // Valor entre 0 y 255
+
 
 
 #ifdef RGBLIGHT_ENABLE

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JKL
 */
 #include QMK_KEYBOARD_H
-#include "rgblight.h"
+//#include "rgblight.h"
 
 
 //macro enum
@@ -148,24 +148,6 @@ bool is_alt_tab_active = false; // ADD this near the beginning of keymap.c
 uint16_t alt_tab_timer = 0;
 static uint16_t timer_key;
 uint16_t RGBLED_NUM2 = 54;
-
-//rgb def
-//const rgblight_segment_t PROGMEM layer6_light[] = RGBLIGHT_LAYER_SEGMENTS(
-//    {7, 2, HSV_RED},
-//    {0, 1, HSV_RED} // LED número 5, encender 1 LED, color rojo
-//);
-//
-//const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-//    layer6_light
-//);
-
-//estaba sin comentarios y lo comente para probar RGBLIGHT, pero cuando funciono RGB Matriz estaba descomentado
-//void keyboard_post_init_user(void) {
-////    rgblight_layers = my_rgb_layers;
-//    rgblight_enable_noeeprom();
-//    rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro
-//
-//}
 
 
 // prototypes tap dance
@@ -1850,171 +1832,102 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   }
 
 
-//rgb IMP
+/////RGB MATRIX
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
-//void apagar_todos_los_leds(void) {
-//    if (!rgblight_is_enabled()) {
-//        return;
-//    }
-//
-//    for (uint8_t i = 0; i < 255; i++) {   // <<< --- usamos RGBLED_NUM2
-////        rgblight_setrgb_at(0x00, 0x00, 0x00, i);
-//          rgblight_setrgb_at(1, 1, 1, i);
-////           rgblight_setrgb(1, 1, 1);
-//    }
-//}
+ switch (get_highest_layer(layer_state | default_layer_state)) {
+         case 2:
+             rgb_matrix_set_color(8, RGB_GREEN);  // R, G, B
+             break;
+         case 5:
+            rgb_matrix_set_color(8, RGB_WHITE); //gris suave
+             break;
+         case 6:
+             rgb_matrix_set_color(8, RGB_ORANGE);
+             break;
 
-//void rgb_matrix_set_color_range(uint8_t start, uint8_t end, uint8_t r, uint8_t g, uint8_t b) {
-//rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);  // Desactiva efectos
-//
-//// for (uint8_t i = start; i < end; i++) {
-////        rgb_matrix_set_color(i, 0, 0, 0);
-////    }
-//
-//    for (uint8_t i = start; i < end; i++) {
-//        rgb_matrix_set_color(i, r, g, b);
-//    }
-//}
-
-
-//bool rgb_matrix_indicators_user(void) {
-//    uint8_t layer = get_highest_layer(layer_state);
-//
-//    switch (layer) {
-//        case 0:  // Capa base - azul
-//            rgb_matrix_set_color_range(0, 12, 0, 50, 120);
-//            break;
-//        case 1:  // Función - violeta
-//            rgb_matrix_set_color_range(0, 12, 80, 0, 130);
-//            break;
-//        case 2:  // Navegación - naranja
-//            rgb_matrix_set_color_range(0, 12, 120, 60, 0);
-//            break;
-//        case 3:  // Símbolos - verde
-//            rgb_matrix_set_color_range(0, 12, 0, 120, 20);
-//            break;
-//        default:  // Otra capa - apagar
-//            rgb_matrix_set_color_range(0, 12, 0, 0, 0);
-//            break;
-//    }
-//
-//    return false; // false para permitir que QMK siga ejecutando lógica base si es necesario
-//}
-
-
-
-////
-/////RGB MATRIX OK
-//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-//
-//
-// switch (get_highest_layer(layer_state | default_layer_state)) {
-//         case 2:
-//             rgb_matrix_set_color(6, 10, 10, 40);    // Azul muy suave
-//             break;
-//         case 3:
-//              rgb_matrix_set_color(22, 40, 0, 0);     // Rojo suave
-//             break;
-//         case 5:
-//            rgb_matrix_set_color(7, 0, 30, 0);      // Verde tenue
-//             break;
-//         case 6:
-//             rgb_matrix_set_color(24, 30, 30, 0);    // Amarillo suave
-//             break;
-//         case 7:
-//             rgb_matrix_set_color_all(30, 30, 30);
-////                for (int i = 0; i < 54; i++) {
-////                         rgb_matrix_set_color(i, 30, 30, 30);  // gris suave para todos los LEDs
-////                     }
-//              break;
-//
-//
-//         default:
-//             // Opción: apagar todos esos LEDs si no estás en esas capas
-//             rgb_matrix_set_color_all(0, 0, 0);
-////             rgb_matrix_set_color(10, 0, 0, 0);
-////             rgb_matrix_set_color(14, 0, 0, 0);
-////             rgb_matrix_set_color(18, 0, 0, 0);
-////             rgb_matrix_set_color(22, 0, 0, 0);
-//             break;
-//     }
-//     return false;
-//}
+         default:
+             //apagar todos los LEDs
+             rgb_matrix_set_color_all(0, 0, 0);
+             break;
+     }
+     return false;
+}
 
 
 //RGB LIGHT
 
 //capslock
 //{0, 0, HSV_OFF} {starting, numbers_leds, HSV_OFF}
-const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 0, HSV_OFF}
-);
-
-// move ly2
-const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {8,2, HSV_GREEN}
-//    {4,2, HSV_RED} //PLAN B
-);
-
-// numbers ly5
-const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {8,2, HSV_WHITE}
-    //    {4,2, HSV_RED} //PLAN B
-);
-
-// mouse ly6
-const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {8,2, HSV_ORANGE}
-//        {4,2, HSV_RED} //PLAN B
-);
-
-// not used
-const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {8,2, HSV_GREEN}
-    //    {4,2, HSV_RED} //PLAN B
-);
-
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-    NULL,               // 0
-    NULL,               // 1
-    my_layer2_layer,    // 2
-    NULL,               // 3
-    NULL,               // 4
-    my_layer5_layer,    // 5
-    my_layer6_layer,    // 6
-    NULL                // 7
-);
-
-void keyboard_post_init_user(void) {
-    // Enable the LED layers
-        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
-        rgblight_layers = my_rgb_layers;
-}
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-//    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
-//    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
-
-    rgblight_set_layer_state(2, false); // MOVE LY OFF
-    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
-    rgblight_set_layer_state(6, false); // MOUSE LY OFF
-
-
-uint8_t layer = get_highest_layer(state);
-
-        switch (layer) {
-            case 2:
-                rgblight_set_layer_state(2, true); // MOVE LY
-                break;
-            case 5:
-                rgblight_set_layer_state(5, true); // NUMBERS LY
-                break;
-            case 6:
-                rgblight_set_layer_state(6, true); // MOUSE LY
-                break;
-        }
-    return state;
-}
+//const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+//    {0, 0, HSV_OFF}
+//);
+//
+//// move ly2
+//const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+//    {8,2, HSV_GREEN}
+////    {4,2, HSV_RED} //PLAN B
+//);
+//
+//// numbers ly5
+//const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+//        {8,2, HSV_WHITE}
+//    //    {4,2, HSV_RED} //PLAN B
+//);
+//
+//// mouse ly6
+//const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+//        {8,2, HSV_ORANGE}
+////        {4,2, HSV_RED} //PLAN B
+//);
+//
+//// not used
+//const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+//        {8,2, HSV_GREEN}
+//    //    {4,2, HSV_RED} //PLAN B
+//);
+//
+//const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+//    NULL,               // 0
+//    NULL,               // 1
+//    my_layer2_layer,    // 2
+//    NULL,               // 3
+//    NULL,               // 4
+//    my_layer5_layer,    // 5
+//    my_layer6_layer,    // 6
+//    NULL                // 7
+//);
+//
+//void keyboard_post_init_user(void) {
+//    // Enable the LED layers
+//        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
+//        rgblight_layers = my_rgb_layers;
+//}
+//
+//layer_state_t layer_state_set_user(layer_state_t state) {
+////    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
+////    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
+//
+//    rgblight_set_layer_state(2, false); // MOVE LY OFF
+//    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
+//    rgblight_set_layer_state(6, false); // MOUSE LY OFF
+//
+//
+//uint8_t layer = get_highest_layer(state);
+//
+//        switch (layer) {
+//            case 2:
+//                rgblight_set_layer_state(2, true); // MOVE LY
+//                break;
+//            case 5:
+//                rgblight_set_layer_state(5, true); // NUMBERS LY
+//                break;
+//            case 6:
+//                rgblight_set_layer_state(6, true); // MOUSE LY
+//                break;
+//        }
+//    return state;
+//}
 
 
 
