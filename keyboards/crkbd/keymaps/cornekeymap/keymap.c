@@ -76,7 +76,7 @@ enum custom_keycodes {
     CUT,
     OSL_DEV_LY,
     TG_0,
-    TG_6,
+    TG_7,
 
 
 };
@@ -1042,13 +1042,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                            }
                        return true;
 
-        case LT(3,TG_6):
+        case LT(3,TG_7):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
                           return true; //hold
                        }else {
                            clear_all();
-                           layer_invert(6); //tap
+                           layer_invert(7); //tap
                             return false;
                                }
                            }
@@ -1102,7 +1102,7 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   Q_ESC, LETTER_ENTER, TD(TDQ_MOUSE_PRESSED),  LETTER_LAST_EDIT, KC_T, XXXXXXX,   XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  KC_ESC,
+   Q_ESC, LETTER_ENTER, KC_E,  LETTER_LAST_EDIT, KC_T, XXXXXXX,   XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, KC_CAPS,                     XXXXXXX,  KC_H, KC_J, KC_K, LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
@@ -1135,7 +1135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   A(KC_F), LCTL(KC_W), CODE_COMPLET, MS_BTN1, KC_F6, XXXXXXX,                  XXXXXXX, ALT_ARROW, LT(6, KC_ENT), PGUP_DOWN, TD(TDQ_DEL), LCTL(LSFT(KC_M)),
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), KC_TRNS, LT(3,TG_6)
+                                       LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), KC_TRNS, LT(3,TG_7)
                                       //`--------------------------'  `--------------------------'
   ),
   //dev ly 3
@@ -1188,27 +1188,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                         KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), KC_TRNS, TG(6)
                                        //`--------------------------'  `--------------------------'
-  ), // mouse2 ly7 - not used
+  ), // mouse2 ly7 - single mouse hand left
 
     [7] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(7),              XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_BSPC,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(7),                      XXXXXXX, CTRL_TOGGLE, MS_WHLU, TD(TDQ_CLICK), MS_WHLD, MS_ACL2,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG , XXXXXXX,                        XXXXXXX, UG_TOGG , RM_TOGG, RM_HUEU, RM_SATU, RM_VALU,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   XXXXXXX, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX,  RM_NEXT, RM_HUED, RM_SATD, RM_VALD,
+      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, KC_ESC,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_SPC, _______,  _______,     TO(0),   KC_TRNS, TG(7)
+                                          KC_ENT, SPC_CTRL_TAB,  _______,     TO(0),   KC_TRNS, TG(7)
                                       //`--------------------------'  `--------------------------'
- ), //  numbers 2 layer 8
+ ), // layer 8 not used
 
       [8] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                    XXXXXXX,UG_TOGG , RM_TOGG, RM_HUEU, RM_SATU, RM_VALU,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, RM_NEXT, RM_HUED, RM_SATD, RM_VALD,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                             XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                         //`--------------------------'  `--------------------------'
@@ -1608,6 +1608,7 @@ void tdq_del_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+//NOT USED
 void tdq_mouse_pressed_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
@@ -1881,9 +1882,9 @@ const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 //        {4,2, HSV_RED} //PLAN B
 );
 
-// not used
+// mouse ly7
 const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {8,2, HSV_GREEN}
+        {9,1, HSV_RED}
     //    {4,2, HSV_RED} //PLAN B
 );
 
@@ -1895,7 +1896,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 4
     my_layer5_layer,    // 5
     my_layer6_layer,    // 6
-    NULL                // 7
+    my_layer7_layer     // 7
 );
 
 void keyboard_post_init_user(void) {
@@ -1911,6 +1912,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(2, false); // MOVE LY OFF
     rgblight_set_layer_state(5, false); // NUMBERS LY OFF
     rgblight_set_layer_state(6, false); // MOUSE LY OFF
+    rgblight_set_layer_state(7, false); // MOUSE2 LY OFF
 
 
 uint8_t layer = get_highest_layer(state);
@@ -1924,6 +1926,10 @@ uint8_t layer = get_highest_layer(state);
                 break;
             case 6:
                 rgblight_set_layer_state(6, true); // MOUSE LY
+                break;
+
+            case 7:
+                rgblight_set_layer_state(7, true); // MOUSE LY
                 break;
         }
     return state;
