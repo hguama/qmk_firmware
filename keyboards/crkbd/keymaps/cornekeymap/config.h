@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
 
 //RGB MATRIX
-////#define SPLIT_LAYER_STATE_ENABLE //for RGB MATRIX(desactivar para que no haga mirror)
+////#define SPLIT_LAYER_STATE_ENABLE //for RGB MATRIX(desactivar para que no haga mirror. Dejar comentado)
 //#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
 //#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX. desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
 //#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
