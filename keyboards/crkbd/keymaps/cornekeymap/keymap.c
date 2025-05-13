@@ -76,6 +76,7 @@ enum custom_keycodes {
     CUT,
     OSL_DEV_LY,
     TG_0,
+    TG_6,
     TG_7,
 
 
@@ -1053,7 +1054,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                                }
                            }
                        return true;
-        }
+
+        case LT(4,TG_6):
+                  if (record->event.pressed) {
+                       if (!record->tap.count) {
+                          return true; //hold
+                       }else {
+                           clear_all();
+                           layer_invert(6); //tap
+                            return false;
+                               }
+                           }
+                       return true;
+
+
+        }//END SWITCH
     return true;
 };
 //Pr record END
@@ -1131,7 +1146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
   KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, M_SEL_COPY, XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  TG(6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), QK_AREP, XXXXXXX,           XXXXXXX, QK_REP, KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), QK_AREP, XXXXXXX,           QK_REP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   A(KC_F), LCTL(KC_W), CODE_COMPLET, MS_BTN1, KC_F6, XXXXXXX,                  XXXXXXX, ALT_ARROW, LT(6, KC_ENT), PGUP_DOWN, TD(TDQ_DEL), LCTL(LSFT(KC_M)),
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1150,17 +1165,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                  MO(4),  XXXXXXX, XXXXXXX,     TO(0),   KC_TRNS, EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
    ),
-   //dev2 ly 4 //super bookmark
+   //bookmark ly 4
 
     [4] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
+    XXXXXXX, C(KC_F19), C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_0), C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_0), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
+    XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      XXXXXXX, _______,  XXXXXXX,     TO(0),   KC_TRNS, XXXXXXX
+                                      XXXXXXX, _______,  XXXXXXX,     TO(0),   KC_TRNS, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1192,7 +1207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [7] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TG(7),                      XXXXXXX, CTRL_TOGGLE, MS_WHLU, TD(TDQ_CLICK), MS_WHLD, MS_ACL2,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, CTRL_TOGGLE, MS_WHLU, TD(TDQ_CLICK), MS_WHLD, MS_ACL2,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   XXXXXXX, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1200,17 +1215,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, SPC_CTRL_TAB,  _______,     TO(0),   KC_TRNS, TG(7)
                                       //`--------------------------'  `--------------------------'
- ), // layer 8 not used
+ ), // layer 8 bookmark2
 
       [8] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX, A(KC_G), A(KC_H), A(KC_I), A(KC_K), XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_7)), C(S(KC_8)), C(S(KC_9)), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                    XXXXXXX,UG_TOGG , RM_TOGG, RM_HUEU, RM_SATU, RM_VALU,
+        XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX , C(S(KC_0)), C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, RM_NEXT, RM_HUED, RM_SATD, RM_VALD,
+        XXXXXXX, A(KC_A), A(KC_B), A(KC_C), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                            XXXXXXX, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                         //`--------------------------'  `--------------------------'
    ), //  layer
 
@@ -1254,9 +1269,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
                XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-               KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+               RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                    XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-               KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+               RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                    KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                                //`--------------------------'  `--------------------------'
@@ -1878,13 +1893,13 @@ const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 
 // mouse ly6
 const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_YELLOW}
+        {9,1, HSV_RED}
 //        {4,2, HSV_RED} //PLAN B
 );
 
 // mouse ly7
 const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_RED}
+        {9,1, HSV_ORANGE}
     //    {4,2, HSV_RED} //PLAN B
 );
 
