@@ -1146,7 +1146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
   KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, M_SEL_COPY, XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), QK_AREP, XXXXXXX,           QK_REP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), QK_AREP,           QK_REP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   A(KC_F), LCTL(KC_W), CODE_COMPLET, MS_BTN1, KC_F6, XXXXXXX,                  XXXXXXX, ALT_ARROW, LT(6, KC_ENT), PGUP_DOWN, TD(TDQ_DEL), LCTL(LSFT(KC_M)),
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1195,11 +1195,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
       [6] = LAYOUT_split_3x6_3(
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   XXXXXXX, MS_ACL2, TD(TDQ_CLICK), MS_ACL0, CTRL_TOGGLE, XXXXXXX,        XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
+   XXXXXXX, MS_ACL2, TD(TDQ_CLICK), MS_ACL0, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6), TD(TDQ_CUT), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_Z_ENG), XXXXXXX,    XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLR,
+   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,     XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLR,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, KC_ESC, XXXXXXX,           XXXXXXX, LCTL(KC_Z), MS_WHLL, XXXXXXX, XXXXXXX, XXXXXXX,
+   XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, KC_ESC, XXXXXXX,             XXXXXXX, LCTL(KC_Z), MS_WHLL, XXXXXXX, XXXXXXX, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                         KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), KC_TRNS, TG(6)
                                        //`--------------------------'  `--------------------------'
@@ -1227,19 +1227,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                             XXXXXXX, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                         //`--------------------------'  `--------------------------'
-   ), //  layer
+   ), // super move ly9
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(KC_HOME), A(KC_UP), C(KC_END), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(KC_LEFT), A(KC_DOWN), C(KC_RIGHT), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(KC_PGUP), XXXXXXX, C(KC_PGDN), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
+                                              XXXXXXX, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                           //`--------------------------'  `--------------------------'
-     ), //  layer
+     ), //LY 10 not used
 
           [10] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -1251,7 +1251,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                             //`--------------------------'  `--------------------------'
-        ),
+        ), //LY 11 not used
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -1263,7 +1263,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                   KC_SPC, _______,  _______,     TO(0),   KC_TRNS, XXXXXXX
                                               //`--------------------------'  `--------------------------'
-         ), //  layer
+         ), // LY12 not used
 
              [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
