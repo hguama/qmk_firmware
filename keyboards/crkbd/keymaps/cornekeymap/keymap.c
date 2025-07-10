@@ -18,7 +18,8 @@ JKL
 */
 #include QMK_KEYBOARD_H
 #include "rgblight.h"
-
+#include "raw_hid.h"
+#include "print.h"
 
 //Macro enum
 enum custom_keycodes {
@@ -28,6 +29,10 @@ enum custom_keycodes {
     SPC_CTRL_TAB,
     ALT_RIGHT,
     ENE_ENIE,
+    Q_W,
+    B_V,
+//    R_T,
+//    U_Y,
     DBL_CLICK,
     ALL_COPY,
     DEL_WORD,
@@ -55,9 +60,8 @@ enum custom_keycodes {
     NEW_FILE,
     SPLIT_WIN,
     FULL_SCREEN,
+    MAX_MIN_WIN,
     NAV_ERROR,
-    Q_ESC,
-    B_ESC,
     MOUSE_PRESSED_CLICK,
     SHOW_QUICK_ENT,
     CODE_COMPLET,
@@ -66,7 +70,6 @@ enum custom_keycodes {
     FOLDING,
     MULTICURSOR,
     EDIT_OCCURR,
-    R_LAST_EDIT,
     LAST_EDIT,
     RECENT_LOC,
     USAGES,
@@ -83,6 +86,7 @@ enum custom_keycodes {
     TG_7,
     SLEEP,
     HIBERNATE,
+    MY_HID_KEY
 
 };
 
@@ -117,7 +121,6 @@ enum combos{
     CB_CLOSE_TAB,
     CB_CLOSE_OTHERS,
     CB_CAPS,
-    CB_SPACE,
     CB_MAX_WIN,
     CB_MIN_WIN,
 };
@@ -234,8 +237,8 @@ const uint16_t PROGMEM cb_all_copy[] = {LGUI_T(KC_E), KC_I, COMBO_END}; //base l
 const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
 //const uint16_t PROGMEM cb_hide_win[] = {KC_DOWN, KC_RIGHT, COMBO_END}; //move right// medio anular
 
-const uint16_t PROGMEM cb_caps[] = {KC_C, LCTL_T(KC_V), COMBO_END}; //
-const uint16_t PROGMEM cb_space[] = {TG(2), SHOW_QUICK_ENT, COMBO_END}; //
+
+const uint16_t PROGMEM cb_caps[] = {TG(2), SHOW_QUICK_ENT, COMBO_END}; //
 
 const uint16_t PROGMEM cb_del_word[] = {LT(1, KC_S), KC_J, COMBO_END}; //
 const uint16_t PROGMEM cb_del_word_move[] = {KC_LEFT, MO(9), COMBO_END};       //
@@ -244,9 +247,9 @@ const uint16_t PROGMEM cb_del_line[] = {LSFT_T(KC_A), KC_J, COMBO_END}; //
 const uint16_t PROGMEM cb_del_line_move[] = {KC_LEFT, LT(4,TG_6), COMBO_END};      //
 const uint16_t PROGMEM cb_del_line_mouse[] = {MS_LEFT,  TG(6), COMBO_END};      //
 
+//const char message[] = "HELLO_FROM_QMK";
 
-const uint16_t PROGMEM cb_max_win[] = {LGUI_T(KC_E),  R_LAST_EDIT, COMBO_END}; //
-const uint16_t PROGMEM cb_min_win[] = {W_ENTER, LGUI_T(KC_E), COMBO_END}; //
+
 
 
 
@@ -276,10 +279,10 @@ combo_t key_combos[] = {
    [CB_LAYER]    = COMBO(cb_layer, TG(5)), //base anulares
    [CB_ALL_COPY] = COMBO(cb_all_copy, ALL_COPY), //base medios arriba
    [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
-   [CB_SPACE] = COMBO(cb_space, KC_SPACE), //
-   [CB_CAPS] =  COMBO(cb_caps, KC_CAPS), //
-   [CB_MAX_WIN] = COMBO(cb_max_win, RGUI(KC_UP) ), //
-   [CB_MIN_WIN] = COMBO(cb_min_win, RGUI(KC_DOWN)), //
+   [CB_CAPS] = COMBO(cb_caps , KC_CAPS), //
+
+
+
 //   [CB_HIDE_WIN] = COMBO(cb_hide_win, HIDE_WIN), //move right medio anular
 //   [CB_TAB]      = COMBO(cb_tab, KC_TAB), //base indices
 //   [CB_CLOSE_TAB]         = COMBO(cb_close_tab, C(KC_F4)), //move right
@@ -299,8 +302,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static bool alt_active   = false;
 
 
+
         switch (keycode) {
-            case M_SEL_COPY: SEND_STRING(SS_LCTL("ac")); break;
+            case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
@@ -308,6 +312,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case DOUBLE_COLON:
                 if (record->event.pressed){
                    SEND_STRING(":"); //when pressed
+                      uint8_t message[] = "HELLO_FROM_QMK";  // ← sin const
+                     raw_hid_send(message, sizeof(message));
                    }else{
                    SEND_STRING(":"); //when release
                    }
@@ -334,6 +340,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                break;
 
+            case MY_HID_KEY:
+                    if (record->event.pressed) {
+                                  uint8_t buffer[32] = {0};
+                                  const char* message = "HELLO_HID";
+                                  strncpy((char*)buffer, message, sizeof(buffer) - 1);
+                                  raw_hid_send(buffer, sizeof(buffer));
+
+                                  // Agrega debug:
+                                  uprintf("Enviando HID: %s\n", message);
+                                  dprint("Mensaje enviado por HID\n");
+                                  SEND_STRING("HELLO FROM hid ");
+                                  print("debug ok");
+                                  dprint("string");
+                                  uprintf("Estoy presionando una tecla\n");
+
+                    }
+                return false;
+
             case ALL_COPY:
                   if (record->event.pressed) {
                     SEND_STRING(SS_LCTL("ac"));
@@ -354,17 +378,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case SLEEP:
                   if (record->event.pressed) {
-                    tap_code16_delay(RGUI(KC_X), 10);
-                    tap_code_delay(KC_U, 10);
-                    tap_code(KC_S);
+                     tap_code16(LGUI(KC_X));
+                     wait_ms(400);
+                     tap_code(KC_U);
+                     wait_ms(300);
+                     tap_code(KC_S);
                    }
               break;
 
             case HIBERNATE:
                   if (record->event.pressed) {
-                    tap_code16_delay(RGUI(KC_X), 10);
-                    tap_code_delay(KC_U, 10);
-                    tap_code(KC_H);
+                     tap_code16 (LGUI(KC_X));
+                     wait_ms(400);
+                     tap_code(KC_U);
+                     wait_ms(300);
+                     tap_code(KC_H);
                   }
               break;
 
@@ -673,45 +701,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                             tap_code16(C(KC_F21));
                         }
                     }
-                    return false; // Bloquea el comportamiento por defecto
-
-            case Q_ESC:
-                   if (record->event.pressed) {
-                       timer_key = timer_read(); // Inicia el temporizador
-                   }else {
-                       if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                           // TAP → PAGE DOWN
-                           tap_code(KC_Q);
-                       }else {
-                           // HOLD → PAGE UP
-                           tap_code(KC_ESC);
-                       }
-                   }
-                   return false; // Bloquea el comportamiento por defecto
-
-            case B_ESC:
-                   if (record->event.pressed) {
-                       timer_key = timer_read(); // Inicia el temporizador
-                   }else {
-                       if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                           // TAP → PAGE DOWN
-                           tap_code(KC_B);
-                       }else {
-                           // HOLD → PAGE UP
-                           tap_code(KC_ESC);
-                       }
-                   }
-                   return false; // Bloquea el comportamiento por defecto
+                    return false; // Bloquea el comportamiento por defect
 
             case SPC_CTRL_TAB:
                     if (record->event.pressed) {
                         timer_key = timer_read(); // Inicia el temporizador
                     }else {
                         if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → PAGE DOWN
+                            // TAP
                             tap_code(KC_SPACE);
+
+
+
                         }else {
-                            // HOLD → PAGE UP
+                            //
                             tap_code16(A(KC_TAB));
                         }
                     }
@@ -769,6 +772,66 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }else {
                             // HOLD → ENIE
                            SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT));
+                        }
+                    }
+                    return false; // Bloquea el comportamiento por defecto
+
+            case B_V:
+                    if (record->event.pressed) {
+                        timer_key = timer_read(); // Inicia el temporizador
+                    }else {
+                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
+                            // HOLD → B
+                            tap_code(KC_B);
+                        }else {
+                            // TAP → V
+                            tap_code(KC_V);
+
+                        }
+                    }
+                    return false; // Bloquea el comportamiento por defecto
+/*
+            case R_T:
+                    if (record->event.pressed) {
+                        timer_key = timer_read(); // Inicia el temporizador
+                    }else {
+                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
+                            // HOLD → R
+                            tap_code(KC_R);
+                        }else {
+                            // TAP → T
+                            tap_code(KC_T);
+
+                        }
+                    }
+                    return false; // Bloquea el comportamiento por defecto
+
+           case U_Y:
+                    if (record->event.pressed) {
+                        timer_key = timer_read(); // Inicia el temporizador
+                    }else {
+                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
+                            // HOLD → U
+                            tap_code(KC_U);
+                        }else {
+                            // TAP → Y
+                            tap_code(KC_Y);
+
+                        }
+                    }
+                    return false; // Bloquea el comportamiento por defecto*/
+
+            case Q_W:
+                    if (record->event.pressed) {
+                        timer_key = timer_read(); // Inicia el temporizador
+                    }else {
+                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
+                            // TAP → Q
+                            tap_code(KC_Q);
+                        }else {
+                            // HOLD → W
+                            tap_code(KC_W);
+
                         }
                     }
                     return false; // Bloquea el comportamiento por defecto
@@ -844,20 +907,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false; // Bloquea el comportamiento por defecto
 
-            case R_LAST_EDIT:
+            case MAX_MIN_WIN:
                     if (record->event.pressed) {
                         timer_key = timer_read(); // Inicia el temporizador
                     }else {
                         if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → KC R
-                            tap_code(KC_R);
+                            // TAP →  MAX WIN
+                            tap_code16(RGUI(KC_UP));
                         }else {
-                            // HOLD → ctrl shift backspace / go to last edit location
-                            register_code(KC_LCTL);
-                            register_code(KC_LSFT);
-                            tap_code_delay(KC_BSPC, 30);
-                            unregister_code(KC_LCTL);
-                            unregister_code(KC_LSFT);
+                            // HOLD →  MIN WIN
+                            tap_code16(RGUI(KC_DOWN));
                         }
                     }
                     return false; // Bloquea el comportamiento por defecto
@@ -1188,7 +1247,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for alt_tab macro
 void matrix_scan_user(void) {
   if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 1000) {
+    if (timer_elapsed(alt_tab_timer) > 7000) {
       unregister_code(KC_LALT);
       is_alt_tab_active = false;
     }
@@ -1222,13 +1281,13 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   Q_ESC, W_ENTER, LGUI_T(KC_E),  R_LAST_EDIT, KC_T, XXXXXXX,                      XXXXXXX, KC_Y, KC_U,   KC_I,  KC_O,  B_ESC,
+   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                                  XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), LT(5,KC_F), KC_G, C(KC_S),               SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
+   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), LT(5,KC_F), KC_G, C(KC_S),                SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, KC_X, KC_C, LCTL_T(KC_V),  XXXXXXX, WIN_D,                                   HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, TD(TDQ_DEL), ENE_ENIE,
+   KC_Z, KC_X, LCTL_T(KC_C), B_V,  XXXXXXX, WIN_D,                                   HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, KC_BSPC, ENE_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB,  XXXXXXX,     XXXXXXX,   TG(5), SHOW_QUICK_ENT
+                                      TG(2), SPC_CTRL_TAB,  MY_HID_KEY,     DB_TOGG ,   TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1236,13 +1295,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //symbols ly 1
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
-  KC_ASTR,  LT(1,KC_PERC), LT(1,KC_MINS),  LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,     XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), LT(1,KC_TILD),
+  XXXXXXX,  LT(1,KC_PERC), LT(1,KC_MINS),  LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,     XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), LT(1,KC_TILD),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-  DOUBLE_COLON, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,       XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
+  KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,       XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-  XXXXXXX, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                               QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
+  DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                               QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_SPC, _______,  XXXXXXX,     TO(0),   XXXXXXX, KC_ENT
+                                          KC_CAPS, KC_SPC,  XXXXXXX,     TO(0),   A(KC_ENT), KC_DEL
                                       //`--------------------------'  `--------------------------'
  ),
 
@@ -1252,9 +1311,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
   KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, XXXXXXX, XXXXXXX,             XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,        XXXXXXX, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  A(KC_F4), CLOSE_TAB_OTHER , LCTL(KC_W), MS_BTN1, M_SEL_COPY, XXXXXXX,                  XXXXXXX, XXXXXXX, ALT_RIGHT, CODE_COMPLET, TD(TDQ_DEL), XXXXXXX,
+  M_SEL_COPY, CLOSE_TAB_OTHER , LCTL(KC_W), MS_BTN1, XXXXXXX, WIN_D,         HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, KC_BSPC, XXXXXXX,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                        LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), A(KC_ENT), LT(3,KC_ENT)
                                       //`--------------------------'  `--------------------------'
@@ -1269,7 +1328,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 FULL_SCREEN,  C(S(KC_U)), XXXXXXX,     TO(0),   XXXXXXX, EVERYW_ACT
+                                                 MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,     TO(0),   C(S(KC_U)), EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
    ),
    //bookmark ly 4
@@ -1289,11 +1348,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [5] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    KC_ASTR, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_ESC,
+    XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_ESC,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    C(KC_Z), KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+    KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+    C(KC_Z), KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                 KC_ENT, SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), KC_ENT
                                  //`--------------------------'  `--------------------------'
@@ -1304,11 +1363,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,     XXXXXXX, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, MS_WHLR,
+   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , XXXXXXX,             XXXXXXX, XXXXXXX, MS_WHLL, LCTL(KC_Z), TD(TDQ_DEL), XXXXXXX,
+   XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,             HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), XXXXXXX, KC_ENT
+                                        KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
                                        //`--------------------------'  `--------------------------'
   ), // mouse2 ly7 - single mouse hand left
 
@@ -1316,9 +1375,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, CTRL_TOGGLE, MS_WHLU, TD(TDQ_CLICK), MS_WHLD, MS_ACL2,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   XXXXXXX, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
+      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                    HIBERNATE, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, SPC_CTRL_TAB,  _______,     TO(0),   KC_ESC, TG(7)
                                       //`--------------------------'  `--------------------------'
@@ -1895,9 +1954,17 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
 
 void keyboard_post_init_user(void) {
     // Enable the LED layers
+     debug_enable=true;
+     debug_keyboard=true;
         rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
         rgblight_layers = my_rgb_layers;
 }
+
+ void send_layer_status(const char* msg) {
+    uint8_t buffer[32] = {0};
+    strncpy((char*)buffer, msg, 31);
+    raw_hid_send(buffer, 32);
+  }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
@@ -1914,16 +1981,22 @@ uint8_t layer = get_highest_layer(state);
         switch (layer) {
             case 2:
                 rgblight_set_layer_state(2, true); // MOVE LY
+        uint8_t message2[] = "HELLO_FROM_QMK";  // ← sin const
+        raw_hid_send(message2, sizeof(message2));
+                 send_layer_status("LAYER_MOVE");
                 break;
             case 5:
-                rgblight_set_layer_state(5, true); // NUMBERS LY
+                rgblight_set_layer_state(5, true); // aNUMBERS LY
+                 send_layer_status("LAYER_NUM");
                 break;
             case 6:
                 rgblight_set_layer_state(6, true); // MOUSE LY
+                send_layer_status("LAYER_MOUSE");
                 break;
 
             case 7:
                 rgblight_set_layer_state(7, true); // MOUSE LY
+                send_layer_status("LAYER_MOUSE2");
                 break;
         }
     return state;

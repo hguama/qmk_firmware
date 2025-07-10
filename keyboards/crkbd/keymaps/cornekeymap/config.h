@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NO_ACTION_FUNCTION
 #define NO_ACTION_ONESHOT //desactiva funcion one shot
 
+
+
 //Tapping term for tap dance
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
