@@ -19,7 +19,7 @@ JKL
 #include QMK_KEYBOARD_H
 #include "rgblight.h"
 #include "raw_hid.h"
-#include "print.h"
+
 
 //Macro enum
 enum custom_keycodes {
@@ -312,8 +312,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case DOUBLE_COLON:
                 if (record->event.pressed){
                    SEND_STRING(":"); //when pressed
-                      uint8_t message[] = "HELLO_FROM_QMK";  // ← sin const
-                     raw_hid_send(message, sizeof(message));
+
                    }else{
                    SEND_STRING(":"); //when release
                    }
@@ -346,15 +345,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                                   const char* message = "HELLO_HID";
                                   strncpy((char*)buffer, message, sizeof(buffer) - 1);
                                   raw_hid_send(buffer, sizeof(buffer));
-
-                                  // Agrega debug:
-                                  uprintf("Enviando HID: %s\n", message);
-                                  dprint("Mensaje enviado por HID\n");
-                                  SEND_STRING("HELLO FROM hid ");
-                                  print("debug ok");
-                                  dprint("string");
-                                  uprintf("Estoy presionando una tecla\n");
-
                     }
                 return false;
 
@@ -1311,7 +1301,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
   KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, XXXXXXX, XXXXXXX,             XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   M_SEL_COPY, CLOSE_TAB_OTHER , LCTL(KC_W), MS_BTN1, XXXXXXX, WIN_D,         HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, KC_BSPC, XXXXXXX,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1348,7 +1338,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [5] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_ESC,
+    XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1363,7 +1353,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), XXXXXXX,     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
    XXXXXXX, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,             HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1403,7 +1393,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, PAGE_PARAGRAPH , PGDW_CTRLPG, XXXXXXX,
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              XXXXXXX, _______,  _______,     TO(0),   A(KC_ENT), XXXXXXX
+                                              XXXXXXX, KC_SPACE,  _______,     TO(0),   A(KC_ENT), KC_DEL
                                           //`--------------------------'  `--------------------------'
      ), //LY 10 not used
 
@@ -1961,9 +1951,12 @@ void keyboard_post_init_user(void) {
 }
 
  void send_layer_status(const char* msg) {
-    uint8_t buffer[32] = {0};
-    strncpy((char*)buffer, msg, 31);
-    raw_hid_send(buffer, 32);
+
+       uint8_t buffer[32] = {0};
+       const char* message = msg;
+       strncpy((char*)buffer, message, sizeof(buffer) - 1);
+       raw_hid_send(buffer, sizeof(buffer));
+
   }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
@@ -1980,13 +1973,11 @@ uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
             case 2:
-                rgblight_set_layer_state(2, true); // MOVE LY
-        uint8_t message2[] = "HELLO_FROM_QMK";  // ← sin const
-        raw_hid_send(message2, sizeof(message2));
+                 rgblight_set_layer_state(2, true); // MOVE LY
                  send_layer_status("LAYER_MOVE");
                 break;
             case 5:
-                rgblight_set_layer_state(5, true); // aNUMBERS LY
+                 rgblight_set_layer_state(5, true); // aNUMBERS LY
                  send_layer_status("LAYER_NUM");
                 break;
             case 6:
@@ -1998,6 +1989,10 @@ uint8_t layer = get_highest_layer(state);
                 rgblight_set_layer_state(7, true); // MOUSE LY
                 send_layer_status("LAYER_MOUSE2");
                 break;
+
+            default:
+               send_layer_status("LAYER_BASE");
+               break;
         }
     return state;
 }
