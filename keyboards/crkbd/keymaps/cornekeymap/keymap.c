@@ -1466,7 +1466,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantilla
     [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
     [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
-    [TDQ_DEMO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, x_finished, x_reset), //plantilla
+
     [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
 
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
