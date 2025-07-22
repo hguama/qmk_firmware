@@ -81,10 +81,8 @@ enum custom_keycodes {
     ALT_TOGGLE,
     MOD_CLEAR,
     CUT,
-
     TG_0,
     TG_6,
-
     SLEEP,
     HIBERNATE,
 
@@ -132,7 +130,6 @@ enum {
     TD_ESC_CAPS,
     TD_RABK_EQ,
     TD_LABK_EQ,
-
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
@@ -235,7 +232,7 @@ void tdq_find_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 //Config revert to repeat key
-uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+/*uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
     //form1
     if ((mods & MOD_MASK_CTRL)) {  // Was Ctrl held?
@@ -251,19 +248,21 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         }
 
     return KC_TRNS;  // Defer to default definitions.
-}
+}*/
 
 
 //Combos
 const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
-const uint16_t PROGMEM cb_undo[] = {LT(2,KC_K), LT(1, KC_L), COMBO_END}; //
-const uint16_t PROGMEM cb_ctrl_z_left[] = {LT(2,KC_D), KC_F, COMBO_END}; //base LEFT ly //indice medio
-const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
 const uint16_t PROGMEM cb_ctrl_z_move[] = {KC_LEFT, KC_DOWN, COMBO_END}; //move right ly
-const uint16_t PROGMEM cb_undo_move[]     = {KC_DOWN, KC_RIGHT, COMBO_END}; //
 const uint16_t PROGMEM cb_ctrl_z_mouse[] = {MS_LEFT, MS_DOWN, COMBO_END}; //mouse right ly
-const uint16_t PROGMEM cb_undo_mouse[]     = {MS_DOWN, MS_RGHT, COMBO_END}; //
 const uint16_t PROGMEM cb_ctrl_z_numbers[] = {KC_0, KC_4, COMBO_END}; //mouse right ly
+const uint16_t PROGMEM cb_ctrl_z_left[] = {LT(2,KC_D), KC_F, COMBO_END}; //base LEFT ly //indice medio
+const uint16_t PROGMEM cb_undo[] = {LT(2,KC_K), LT(1, KC_L), COMBO_END}; //
+const uint16_t PROGMEM cb_undo_move[]     = {KC_DOWN, KC_RIGHT, COMBO_END}; //
+const uint16_t PROGMEM cb_undo_mouse[]     = {MS_DOWN, MS_RGHT, COMBO_END}; //
+const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
+const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
+const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //move left right //medios//
 
 //const uint16_t PROGMEM cb_supr[] = {LT(5,KC_F), KC_J, COMBO_END}; //base central   //indices
 //const uint16_t PROGMEM cb_supr_move_ly[] = {TD(TDQ_PASTE), KC_LEFT, COMBO_END}; //move  ly
@@ -278,10 +277,7 @@ const uint16_t PROGMEM cb_ctrl_z_numbers[] = {KC_0, KC_4, COMBO_END}; //mouse ri
 //const uint16_t PROGMEM cb_close_tab[]    = {KC_UP, TAB_SPLIT, COMBO_END}; //move right ly //medio anular arriba //YA USADA
 //const uint16_t PROGMEM cb_close_others[] = {M_ALT_TAB,  KC_UP, TAB_SPLIT, COMBO_END}; //move right ly //indice medio anular arriba
 
-const uint16_t PROGMEM cb_layer[] = {LT(1, KC_S), LT(1, KC_L), COMBO_END}; //base left right// anulares //toggle ly5 numbers
 //const uint16_t PROGMEM cb_all_copy[] = {LGUI_T(KC_E), KC_I, COMBO_END}; //base left right //medios arriba
-const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
-const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //move left right //medios//
 //const uint16_t PROGMEM cb_hide_win[] = {KC_DOWN, KC_RIGHT, COMBO_END}; //move right// medio anular
 
 
@@ -303,14 +299,16 @@ const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //
 //combo actions
 combo_t key_combos[] = {
    [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
-   [CB_CTRL_Z_LEFT]   = COMBO(cb_ctrl_z_left, LCTL(KC_Z)), //base LEFT
    [CB_CTRL_Z_MOVE]   = COMBO(cb_ctrl_z_move, LCTL(KC_Z)), //move right
    [CB_CTRL_Z_MOUSE]   = COMBO(cb_ctrl_z_mouse, LCTL(KC_Z)), //mouse right
    [CB_CTRL_Z_NUMBERS]   = COMBO(cb_ctrl_z_numbers, LCTL(KC_Z)), //mouse right
+   [CB_CTRL_Z_LEFT]   = COMBO(cb_ctrl_z_left, LCTL(KC_Z)), //base LEFT
    [CB_UNDO] =  COMBO(cb_undo, C(KC_Y)), //
-   [CB_UNDO_LEFT] =  COMBO(cb_undo_left, C(KC_Y)), //
    [CB_UNDO_MOVE] =  COMBO(cb_undo_move, C(KC_Y)), //
    [CB_UNDO_MOUSE] =  COMBO(cb_undo_mouse, C(KC_Y)), //
+   [CB_UNDO_LEFT] =  COMBO(cb_undo_left, C(KC_Y)), //
+   [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
+   [CB_INSERT_MOVE] = COMBO(cb_insert_move, KC_INS), //base medios
 //   [CB_SUPR]   =  COMBO(cb_supr, KC_DEL), //base right
 //   [CB_SUPR_MOVE_LY]    =  COMBO(cb_supr_move_ly, KC_DEL), //move left
 //   [CB_SUPR_MOUSE_LY]   =  COMBO(cb_supr_mouse_ly, KC_DEL), //mouse left
@@ -325,8 +323,6 @@ combo_t key_combos[] = {
 //   [CB_DEL_LINE_MOUSE] = COMBO(cb_del_line_mouse, DEL_LINE), //
 //   [CB_LAYER]    = COMBO(cb_layer, TG(5)), //base anulares
 //   [CB_ALL_COPY] = COMBO(cb_all_copy, ALL_COPY), //base medios arriba
-   [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
-   [CB_INSERT_MOVE] = COMBO(cb_insert_move, KC_INS), //base medios
 //   [CB_CAPS] = COMBO(cb_caps , KC_CAPS), //
 
 
@@ -342,10 +338,6 @@ void clear_all(void) {
     clear_keyboard();         // Libera cualquier tecla registrada
 }
 
-
-
-
-
 //PR record
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
@@ -356,22 +348,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
             case TAB3_ENT:
-             if (record->event.pressed){
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_ENT, 30);
-                }
-                break;
+                 if (record->event.pressed){
+                    tap_code_delay(KC_TAB, 30);
+                    tap_code_delay(KC_TAB, 30);
+                    tap_code_delay(KC_TAB, 30);
+                    tap_code_delay(KC_ENT, 30);
+                    }
+                    break;
 
 
             case TAB2_ENT:
-             if (record->event.pressed){
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_ENT, 30);
-                 }
-                 break;
+                 if (record->event.pressed){
+                    tap_code_delay(KC_TAB, 30);
+                    tap_code_delay(KC_TAB, 30);
+                    tap_code_delay(KC_ENT, 30);
+                     }
+                     break;
 
 
             case DOUBLE_COLON:
@@ -387,14 +379,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   if (record->event.pressed) {
                     if (!is_alt_tab_active) {
                       is_alt_tab_active = true;
-                      register_code(KC_LALT);
-                                                        }
-//                      alt_tab_timer = timer_read();
+                      register_code(KC_LALT);                                                        }
+//                    alt_tab_timer = timer_read();
                       register_code(KC_TAB);
-//                        tap_code16(KC_TAB);
-                  } else {
-//                           tap_code16(KC_TAB);
 
+                  } else {
                     unregister_code(KC_TAB);
                   }
               break;
@@ -558,8 +547,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }
                     }
                     return true;
-
-
 
             case  LT(1,KC_TILD):
                  if (record->event.pressed) {
@@ -826,8 +813,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false; // bloquear comportamiento por defecto
 
-
-
             case NAV_ERROR:
                    if (record->event.pressed) {
                        timer_key = timer_read(); // Inicia el temporizador
@@ -841,8 +826,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                        }
                    }
                    return false; // Bloquea el comportamiento por defecto
-
-
 
             case N_ENIE:
                 if (record->event.pressed) {
@@ -867,55 +850,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
 
             case Q_W:
-                        if (record->event.pressed) {
-                            q_pressed = true;
-                            q_sent = false;
-                            q_timer = timer_read();
-                        } else {
-                            q_pressed = false;
-
-                            if (!q_sent) {
-                                // Tap: enviar Q si no se envió W por hold
-                                tap_code(KC_Q);
-                            }
-                        }
-                        return false;  // bloquea el comportamiento estándar
-
-
-/*
-            case R_T:
                     if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // HOLD → R
-                            tap_code(KC_R);
-                        }else {
-                            // TAP → T
-                            tap_code(KC_T);
+                        q_pressed = true;
+                        q_sent = false;
+                        q_timer = timer_read();
+                    } else {
+                        q_pressed = false;
 
+                        if (!q_sent) {
+                            // Tap: enviar Q si no se envió W por hold
+                            tap_code(KC_Q);
                         }
                     }
-                    return false; // Bloquea el comportamiento por defecto
+                    return false;  // bloquea el comportamiento estándar
 
-           case U_Y:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // HOLD → U
-                            tap_code(KC_U);
-                        }else {
-                            // TAP → Y
-                            tap_code(KC_Y);
-
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto*/
-
-
-
-            case  LT(1,KC_PSCR):
+             case  LT(1,KC_PSCR):
                   if (record->event.pressed) {
 
                     if (!record->tap.count) {
@@ -1097,21 +1046,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;  // Bloquear comportamiento por defecto
 
-
-/*            case MOUSE_PRESSED_CLICK:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - mouse pressed
-                            tap_code(MS_BTN1);
-                            register_code(MS_BTN1);
-                        }else {
-                            // HOLD - mouse click
-                            tap_code(MS_BTN1);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto*/
 
         case MOUSE_PRESSED_CLICK:
             if (record->event.pressed) {
@@ -1344,7 +1278,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 //Pr record END
 
-//timer for alt_tab macro
+//timer for  macro
 void matrix_scan_user(void) {
 
 //double key
@@ -1379,23 +1313,12 @@ void matrix_scan_user(void) {
         if (defer_copy && timer_elapsed(defer_timer_copy) > 30) {
             defer_copy = false;
             tap_code16(C(KC_C));
-/*
-            register_code(KC_LCTL);
-            tap_code(KC_C);
-            unregister_code(KC_LCTL);*/
-        }
+         }
 
         if (defer_cut && timer_elapsed(defer_timer_cut) > 30) {
             defer_cut = false;
             tap_code16(C(KC_X));
-
-/*
-            register_code(KC_LCTL);
-            tap_code(KC_X);
-            unregister_code(KC_LCTL);
-*/
-        }
-
+         }
 
         if (spc_tab_presionado && !spc_tab_enviado && timer_elapsed(spc_tab_timer) >= TAPPING_TERM) {
             tap_code16(A(KC_TAB));  // Ejecutar Alt + Tab una sola vez
@@ -1423,14 +1346,14 @@ void matrix_scan_user(void) {
 
 
 
-/*
-  if (is_alt_tab_active) {
-    if (timer_elapsed(alt_tab_timer) > 7000) {
-      unregister_code(KC_LALT);
-      is_alt_tab_active = false;
-      }
-   }
-*/
+        /*
+          if (is_alt_tab_active) {
+            if (timer_elapsed(alt_tab_timer) > 7000) {
+              unregister_code(KC_LALT);
+              is_alt_tab_active = false;
+              }
+           }
+        */
 
 /*      if (shift_active) {
         if (timer_elapsed(shift_toggle_timer) > 20000) {
@@ -1463,10 +1386,9 @@ void matrix_scan_user(void) {
 
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantilla
+    [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
     [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
     [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
-
     [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
 
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
@@ -1488,13 +1410,13 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                                  XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
+   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
+   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  XXXXXXX, WIN_D,                                   HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
+   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  XXXXXXX, WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB,  A(KC_L),     XXXXXXX,   TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB,  A(KC_L),     XXXXXXX,  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1502,11 +1424,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //symbols ly 1
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
-  XXXXXXX,  LT(1,KC_PERC), LT(1,KC_MINS),  LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,     XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), LT(1,KC_TILD),
+ XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), LT(1,KC_TILD),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-  KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,       XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
+ KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,             XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-  DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                               QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
+ DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_CAPS, KC_SPC,  XXXXXXX,     TO(0),   A(KC_ENT), MS_WHLD
                                       //`--------------------------'  `--------------------------'
@@ -1516,11 +1438,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, LCTL(KC_W), XXXXXXX,             XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
+  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, LCTL(KC_W), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  M_SEL_COPY, CLOSE_TAB_OTHER, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,         HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+  M_SEL_COPY, CLOSE_TAB_OTHER, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                        LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), A(KC_ENT), LT(3,KC_ENT)
                                       //`--------------------------'  `--------------------------'
@@ -1533,7 +1455,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       C(A(KC_T)), COMM, TD(TDQ_FIND), C(KC_R), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
+      A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                  MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,     TO(0),   C(S(KC_U)), EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
@@ -1570,9 +1492,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6),  MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+   TG(6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     TD(TDQ_Z_ENG), MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,             HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+     TD(TDQ_Z_ENG), MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                         KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
                                        //`--------------------------'  `--------------------------'
@@ -1584,7 +1506,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                    HIBERNATE, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
+      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, SPC_CTRL_TAB,  _______,     TO(0),   KC_ESC, TG(7)
                                       //`--------------------------'  `--------------------------'
@@ -1604,7 +1526,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                    XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_TAB, DEL_LINE, DEL_WORD, KC_DEL, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), C(KC_LEFT), A(KC_DOWN), C(KC_RIGHT), HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1616,11 +1538,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+         XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+         KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,        XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+         KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                             //`--------------------------'  `--------------------------'
@@ -1628,11 +1550,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-              XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+           XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-              KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+           KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,        XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-              KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+           KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                   KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
@@ -1640,11 +1562,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
              [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-               XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+            XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-               RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                    XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+            RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-               RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+            RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                    KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                                //`--------------------------'  `--------------------------'
@@ -1773,12 +1695,6 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
                 unregister_code(KC_LSFT);
                 tap_code16(LCTL(KC_C));
 
-
-                /*SEND_STRING(
-                  SS_LCTL(SS_LSFT(SS_TAP(X_DOWN))) SS_DELAY(10) SS_LCTL("c")
-                );
-                */
-
         break;
         default: break;
     }
@@ -1899,11 +1815,7 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
                  unregister_code(KC_LSFT);
                  tap_code16(LCTL(KC_X));
 
-                /*SEND_STRING(
-                  SS_LCTL(SS_LSFT(SS_TAP(X_DOWN))) SS_DELAY(10) SS_LCTL("x")
-                );
-*/
-        break;
+         break;
 
         default: break;
     }
@@ -2257,27 +2169,3 @@ uint8_t layer = get_highest_layer(state);
         }
     return state;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
