@@ -26,6 +26,8 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    TAB3_ENT,
+    TAB2_ENT,
     SEL_WORD_PARAGRAPH,
     M_ALT_TAB,
     M_CTRL_TAB,
@@ -79,13 +81,13 @@ enum custom_keycodes {
     ALT_TOGGLE,
     MOD_CLEAR,
     CUT,
-    OSL_DEV_LY,
+
     TG_0,
     TG_6,
-    TG_7,
+
     SLEEP,
     HIBERNATE,
-    MY_HID_KEY
+
 
 };
 
@@ -100,6 +102,8 @@ enum combos{
     CB_UNDO_LEFT,
     CB_UNDO_MOVE,
     CB_UNDO_MOUSE,
+    CB_INSERT,
+    CB_INSERT_MOVE,
 //    CB_SUPR,
 //    CB_SUPR_MOVE_LY,
 //    CB_SUPR_MOUSE_LY,
@@ -113,13 +117,12 @@ enum combos{
 //    CB_DEL_LINE_MOVE,
 //    CB_DEL_LINE_MOUSE,
 //    CB_TAB,
-    CB_LAYER,
+//    CB_LAYER,
 //    CB_ALL_COPY,
-    CB_INSERT,
-    CB_HIDE_WIN,
-    CB_CLOSE_TAB,
-    CB_CLOSE_OTHERS,
-    CB_CAPS,
+//    CB_HIDE_WIN,
+//    CB_CLOSE_TAB,
+//    CB_CLOSE_OTHERS,
+//    CB_CAPS,
 //    CB_MAX_WIN,
 //    CB_MIN_WIN,
 };
@@ -129,7 +132,7 @@ enum {
     TD_ESC_CAPS,
     TD_RABK_EQ,
     TD_LABK_EQ,
-    TDQ_DEMO,
+
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
@@ -195,6 +198,20 @@ bool mouse_hold_handled = false;
 uint16_t mouse_hold_timer = 0;
 bool mouse_key_pressed = false;
 
+static bool comm_presionado = false;
+static bool comm_hold_enviado = false;
+static uint16_t comm_timer = 0;
+
+static bool defer_copy = false;
+static bool defer_cut = false;
+static uint16_t defer_timer_copy = 0;
+static uint16_t defer_timer_cut = 0;
+
+
+static bool spc_tab_presionado = false;
+static bool spc_tab_enviado = false;
+static uint16_t spc_tab_timer = 0;
+
 
 
 // Prototypes quad
@@ -240,8 +257,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 //Combos
 const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
 const uint16_t PROGMEM cb_undo[] = {LT(2,KC_K), LT(1, KC_L), COMBO_END}; //
+const uint16_t PROGMEM cb_ctrl_z_left[] = {LT(2,KC_D), KC_F, COMBO_END}; //base LEFT ly //indice medio
 const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
-const uint16_t PROGMEM cb_ctrl_z_left[] = {LT(2,KC_D), LT(5,KC_F), COMBO_END}; //base LEFT ly //indice medio
 const uint16_t PROGMEM cb_ctrl_z_move[] = {KC_LEFT, KC_DOWN, COMBO_END}; //move right ly
 const uint16_t PROGMEM cb_undo_move[]     = {KC_DOWN, KC_RIGHT, COMBO_END}; //
 const uint16_t PROGMEM cb_ctrl_z_mouse[] = {MS_LEFT, MS_DOWN, COMBO_END}; //mouse right ly
@@ -264,10 +281,11 @@ const uint16_t PROGMEM cb_ctrl_z_numbers[] = {KC_0, KC_4, COMBO_END}; //mouse ri
 const uint16_t PROGMEM cb_layer[] = {LT(1, KC_S), LT(1, KC_L), COMBO_END}; //base left right// anulares //toggle ly5 numbers
 //const uint16_t PROGMEM cb_all_copy[] = {LGUI_T(KC_E), KC_I, COMBO_END}; //base left right //medios arriba
 const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
+const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //move left right //medios//
 //const uint16_t PROGMEM cb_hide_win[] = {KC_DOWN, KC_RIGHT, COMBO_END}; //move right// medio anular
 
 
-const uint16_t PROGMEM cb_caps[] = {TG(2), SHOW_QUICK_ENT, COMBO_END}; //
+//const uint16_t PROGMEM cb_caps[] = {TG(2), SHOW_QUICK_ENT, COMBO_END}; //
 
 //const uint16_t PROGMEM cb_del_word[] = {LT(1, KC_S), KC_J, COMBO_END}; //
 //const uint16_t PROGMEM cb_del_word_move[] = {KC_LEFT, MO(9), COMBO_END};       //
@@ -305,9 +323,10 @@ combo_t key_combos[] = {
 //   [CB_DEL_LINE] = COMBO(cb_del_line, DEL_LINE), //
 //   [CB_DEL_LINE_MOVE] = COMBO(cb_del_line_move, DEL_LINE), //
 //   [CB_DEL_LINE_MOUSE] = COMBO(cb_del_line_mouse, DEL_LINE), //
-   [CB_LAYER]    = COMBO(cb_layer, TG(5)), //base anulares
+//   [CB_LAYER]    = COMBO(cb_layer, TG(5)), //base anulares
 //   [CB_ALL_COPY] = COMBO(cb_all_copy, ALL_COPY), //base medios arriba
    [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
+   [CB_INSERT_MOVE] = COMBO(cb_insert_move, KC_INS), //base medios
 //   [CB_CAPS] = COMBO(cb_caps , KC_CAPS), //
 
 
@@ -323,24 +342,36 @@ void clear_all(void) {
     clear_keyboard();         // Libera cualquier tecla registrada
 }
 
-bool q_hold_pressed = false;
-uint16_t q_hold_timer = 0;
-bool w_sent = false;
+
+
 
 
 //PR record
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
-
-
-
-        switch (keycode) {
+       switch (keycode) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+            case TAB3_ENT:
+             if (record->event.pressed){
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_ENT, 30);
+                }
+                break;
 
+
+            case TAB2_ENT:
+             if (record->event.pressed){
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_ENT, 30);
+                 }
+                 break;
 
 
             case DOUBLE_COLON:
@@ -376,17 +407,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                break;
 
-            case MY_HID_KEY:
-                    if (record->event.pressed) {
-                                  uint8_t buffer[32] = {0};
-                                  const char* message = "HELLO_HID";
-                                  strncpy((char*)buffer, message, sizeof(buffer) - 1);
-                                  raw_hid_send(buffer, sizeof(buffer));
-                    }
-                return false;
-
-
-            case CLEAR_WIN:
+             case CLEAR_WIN:
                     if (record->event.pressed) {
                       SEND_STRING(SS_LGUI("d"));
                      }
@@ -789,21 +810,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false; // Bloquea el comportamiento por defect
 
             case SPC_CTRL_TAB:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP
-                            tap_code(KC_SPACE);
+                if (record->event.pressed) {
+                    spc_tab_presionado = true;
+                    spc_tab_enviado = false;
+                    spc_tab_timer = timer_read();  // iniciar temporizador
+                } else {
+                    spc_tab_presionado = false;
 
-
-
-                        }else {
-                            //
-                            tap_code16(A(KC_TAB));
-                        }
+                    if (!spc_tab_enviado && timer_elapsed(spc_tab_timer) < TAPPING_TERM) {
+                        // TAP
+                        tap_code(KC_SPACE);
                     }
-                    return false; // Bloquea el comportamiento por defecto
+
+                    // Si fue HOLD, ya se ejecutó en matrix_scan_user()
+                }
+                return false; // bloquear comportamiento por defecto
+
 
 
             case NAV_ERROR:
@@ -846,13 +868,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case Q_W:
                         if (record->event.pressed) {
-                            q_hold_pressed = true;
-                            w_sent = false;
-                            q_hold_timer = timer_read();
+                            q_pressed = true;
+                            q_sent = false;
+                            q_timer = timer_read();
                         } else {
-                            q_hold_pressed = false;
+                            q_pressed = false;
 
-                            if (!w_sent) {
+                            if (!q_sent) {
                                 // Tap: enviar Q si no se envió W por hold
                                 tap_code(KC_Q);
                             }
@@ -1059,23 +1081,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false; // Bloquea el comportamiento por defecto
 
             case COMM:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - comment line
-                            tap_code16(LCTL(KC_SLSH));
-                        }else {
-                            // HOLD - comment block
-                            if(shift_active){
-                             unregister_code(KC_LSFT);
-                             shift_active = false;
-                            }
+                if (record->event.pressed) {
+                    comm_presionado = true;
+                    comm_hold_enviado = false;
+                    comm_timer = timer_read();  // Iniciar temporizador
+                } else {
+                    comm_presionado = false;
 
-                            tap_code16(LCTL(LSFT(KC_SLSH)));
-                        }
+                    if (!comm_hold_enviado && timer_elapsed(comm_timer) < TAPPING_TERM) {
+                        // TAP - comentar línea
+                        tap_code16(LCTL(KC_SLSH));
                     }
-                    return false; // Bloquea el comportamiento por defecto
+
+                    // Si ya se ejecutó el HOLD, no hacemos nada más aquí
+                }
+                return false;  // Bloquear comportamiento por defecto
+
 
 /*            case MOUSE_PRESSED_CLICK:
                     if (record->event.pressed) {
@@ -1301,17 +1322,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                            }
                        return true;
 
-            case LT(3,TG_7):
-                  if (record->event.pressed) {
-                       if (!record->tap.count) {
-                          return true; //hold
-                       }else {
-                           clear_all();
-                           layer_invert(7); //tap
-                            return false;
-                               }
-                           }
-                       return true;
+
 
             case LT(4,TG_6):
                   if (record->event.pressed) {
@@ -1353,6 +1364,44 @@ void matrix_scan_user(void) {
         n_sent = true;
     }
 
+    if (comm_presionado && !comm_hold_enviado && timer_elapsed(comm_timer) >= TAPPING_TERM) {
+        // Ejecutar HOLD - comentar bloque
+        if (shift_active) {
+            unregister_code(KC_LSFT);
+            shift_active = false;
+        }
+
+        tap_code16(LCTL(LSFT(KC_SLSH)));
+
+        comm_hold_enviado = true;  // Asegura que no se repita
+    }
+
+        if (defer_copy && timer_elapsed(defer_timer_copy) > 30) {
+            defer_copy = false;
+            tap_code16(C(KC_C));
+/*
+            register_code(KC_LCTL);
+            tap_code(KC_C);
+            unregister_code(KC_LCTL);*/
+        }
+
+        if (defer_cut && timer_elapsed(defer_timer_cut) > 30) {
+            defer_cut = false;
+            tap_code16(C(KC_X));
+
+/*
+            register_code(KC_LCTL);
+            tap_code(KC_X);
+            unregister_code(KC_LCTL);
+*/
+        }
+
+
+        if (spc_tab_presionado && !spc_tab_enviado && timer_elapsed(spc_tab_timer) >= TAPPING_TERM) {
+            tap_code16(A(KC_TAB));  // Ejecutar Alt + Tab una sola vez
+            spc_tab_enviado = true;
+        }
+
 
    if (mouse_key_pressed && !mouse_hold_handled && timer_elapsed(mouse_hold_timer) > TAPPING_TERM) {
        // HOLD detectado antes de soltar la tecla
@@ -1383,7 +1432,7 @@ void matrix_scan_user(void) {
    }
 */
 
-      if (shift_active) {
+/*      if (shift_active) {
         if (timer_elapsed(shift_toggle_timer) > 20000) {
             unregister_code(KC_LSFT);
             shift_active = false;
@@ -1395,7 +1444,7 @@ void matrix_scan_user(void) {
         if (timer_elapsed(ctrl_toggle_timer) > 20000) {
          unregister_code(KC_LCTL);
          ctrl_active = false;
-      }
+      }*/
 
      }
 
@@ -1407,10 +1456,10 @@ void matrix_scan_user(void) {
       }
 
     }
+  }
 */
 
 
-  }
 
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
@@ -1435,17 +1484,17 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
- //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   //LY 0
+  //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   //LY 0
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, KC_ENT,                                  XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
+   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                                  XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  XXXXXXX, WIN_D,                                   HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB,  MY_HID_KEY,     XXXXXXX,   TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB,  A(KC_L),     XXXXXXX,   TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1482,7 +1531,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,               XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      C(A(KC_T)), COMM, TD(TDQ_FIND), C(KC_R), EDIT_OCCURR, XXXXXXX,               XXXXXXX, TD(TDQ_BOOKMARK), LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+      C(A(KC_T)), COMM, TD(TDQ_FIND), C(KC_R), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1495,11 +1544,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     XXXXXXX, C(KC_F19), C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, XXXXXXX, C(KC_0), C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, TD(TDQ_BOOKMARK), C(KC_0), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      XXXXXXX, _______,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      TAB3_ENT, TAB2_ENT,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1510,9 +1559,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    C(KC_Z), KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+    XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                KC_ENT, SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), MS_WHLD
+                                LT(9,KC_ENT), SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), MS_WHLD
                                  //`--------------------------'  `--------------------------'
 ),
 //mouse ly 6
@@ -1521,9 +1570,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6), TD(TDQ_Z_ENG), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+   TG(6),  MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),     SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   M_ALT_TAB, MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,             HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+     TD(TDQ_Z_ENG), MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,             HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                         KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
                                        //`--------------------------'  `--------------------------'
@@ -1545,28 +1594,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
         XXXXXXX, A(KC_G), A(KC_H), A(KC_I), A(KC_K), XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_7)), C(S(KC_8)), C(S(KC_9)), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX , C(S(KC_0)), C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
+        XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX ,XXXXXXX , C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         XXXXXXX, A(KC_A), A(KC_B), A(KC_C), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                            XXXXXXX, XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                         //`--------------------------'  `--------------------------'
    ), // super move ly9
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, C(KC_Y), C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                    XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                    XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, DEL_LINE, DEL_WORD, KC_DEL, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), C(KC_LEFT), A(KC_DOWN), C(KC_RIGHT), HOME_END,
+          KC_TAB, DEL_LINE, DEL_WORD, KC_DEL, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), C(KC_LEFT), A(KC_DOWN), C(KC_RIGHT), HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
+          XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Y), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                               KC_ENT, KC_SPACE,  _______,     TO(0),   A(KC_ENT), XXXXXXX
                                           //`--------------------------'  `--------------------------'
      ), //LY 10 not used
 
           [10] = LAYOUT_split_3x6_3(
-        //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
             XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,     XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
@@ -1671,9 +1720,23 @@ void x_finished(tap_dance_state_t *state, void *user_data) {
 void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
-        case TD_SINGLE_TAP:
-                unregister_code(KC_LALT);
-                SEND_STRING(SS_LCTL("c")); break;//copy normal
+        case TD_SINGLE_TAP://copy normal
+
+              if (shift_active) {
+                unregister_code(KC_LSFT);
+                shift_active = false;
+                 }
+
+              if (ctrl_active) {
+                unregister_code(KC_LCTL);
+                ctrl_active = false;
+                 }
+
+            // Aplazar el copiado real
+            defer_copy = true;
+            defer_timer_copy = timer_read();
+
+                break;
 
         case TD_SINGLE_HOLD: //copy 1 line
                 tap_code_delay(KC_HOME, 10);
@@ -1703,9 +1766,18 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
         break;
 
         case TD_DOUBLE_HOLD: //copy 1 paragraph
-                SEND_STRING(
+
+                tap_code(KC_HOME);
+                register_code(KC_LSFT);
+                tap_code16(LALT(KC_PGDN));
+                unregister_code(KC_LSFT);
+                tap_code16(LCTL(KC_C));
+
+
+                /*SEND_STRING(
                   SS_LCTL(SS_LSFT(SS_TAP(X_DOWN))) SS_DELAY(10) SS_LCTL("c")
                 );
+                */
 
         break;
         default: break;
@@ -1716,10 +1788,10 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:  //paste normaL
-                unregister_code(KC_LSFT);
                 SEND_STRING(SS_LCTL("v"));
 
         break;
+
         case TD_SINGLE_HOLD: SEND_STRING(SS_LCTL(SS_LSFT("v"))); break; //portapapeles
 
         case TD_DOUBLE_TAP: //paste 1 word
@@ -1779,8 +1851,18 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:
-            unregister_code(KC_LSFT);
-            tap_code16(C(KC_X));  //cut normal
+            if (shift_active) {
+                unregister_code(KC_LSFT);
+                shift_active = false;
+            }
+
+            if (ctrl_active) {
+                unregister_code(KC_LCTL);
+                ctrl_active = false;
+            }
+
+            defer_cut = true;
+            defer_timer_cut = timer_read();
             break;
 
         case TD_SINGLE_HOLD: // Cut 1 line
@@ -1809,11 +1891,18 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
             tap_code16(C(KC_X));
             break;
 
-        case TD_DOUBLE_HOLD: //cut 1 paragrahp
-                SEND_STRING(
+        case TD_DOUBLE_HOLD: //cut 1 paragraph
+
+                 tap_code(KC_HOME);
+                 register_code(KC_LSFT);
+                 tap_code16(LALT(KC_PGDN));
+                 unregister_code(KC_LSFT);
+                 tap_code16(LCTL(KC_X));
+
+                /*SEND_STRING(
                   SS_LCTL(SS_LSFT(SS_TAP(X_DOWN))) SS_DELAY(10) SS_LCTL("x")
                 );
-
+*/
         break;
 
         default: break;
@@ -2046,6 +2135,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
      return TAPPING_TERM;
   }
+
 
 
 /////RGB MATRIX

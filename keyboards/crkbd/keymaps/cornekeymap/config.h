@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT
 #define RGBLIGHT_LAYERS //for RGBLIGHT
 #define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
-#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
+//#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
 
 //RGB MATRIX
 ////#define SPLIT_LAYER_STATE_ENABLE //for RGB MATRIX(desactivar para que no haga mirror. Dejar comentado)
