@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //Tapping term for tap dance
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
+//#define TD_QUICK_TAP_TERM 10
 
 //MOUSE MOVE
 #define MK_COMBINED
@@ -39,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_MOVE_DELTA 5 //5 2 0k mas lento
 #define MOUSEKEY_INTERVAL 5 //5 ok
 #define MOUSEKEY_WHEEL_DELTA 2 //Wheel movement step size
-#define MOUSEKEY_WHEEL_MAX_SPEED 10 //Maximum number of scroll steps per scroll action
+#define MOUSEKEY_WHEEL_MAX_SPEED 3 //Maximum number of scroll steps per scroll action
 
 
 //leds total 54. 27 leds one half

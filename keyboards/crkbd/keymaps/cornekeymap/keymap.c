@@ -26,8 +26,8 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
-    TAB3_ENT,
-    TAB2_ENT,
+    VOICE_GOOGLE,
+    CHATGPT,
     SEL_WORD_PARAGRAPH,
     M_ALT_TAB,
     M_CTRL_TAB,
@@ -56,7 +56,7 @@ enum custom_keycodes {
     PAGE_PARAGRAPH_DOWN,
     SPACE_ENTER,
     EVERYW_ACT,
-    CLOSE_TAB_OTHER,
+    CLOSE_TAB,
     TAB_SPLIT,
     PROJECT_VIEW,
     NEW_FILE,
@@ -209,6 +209,17 @@ static bool spc_tab_presionado = false;
 static bool spc_tab_enviado = false;
 static uint16_t spc_tab_timer = 0;
 
+static bool refactor_pressed = false;
+static bool refactor_hold_executed = false;
+static uint16_t refactor_timer = 0;
+
+static bool showquick_pressed = false;
+static bool showquick_hold_executed = false;
+static uint16_t showquick_timer = 0;
+
+bool chatgpt_pressed = false;
+bool chatgpt_hold_executed = false;
+uint16_t chatgpt_timer = 0;
 
 
 // Prototypes quad
@@ -347,23 +358,41 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
-            case TAB3_ENT:
-                 if (record->event.pressed){
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_ENT, 30);
+            case VOICE_GOOGLE:
+                if (record->event.pressed) {
+                    // Enviar 9 veces TAB
+                    for (int i = 0; i < 9; i++) {
+                        tap_code(KC_TAB);
+                        wait_ms(30);  // Pequeña pausa entre cada TAB
                     }
-                    break;
+
+                    wait_ms(100);  // Esperar un poco antes de presionar Enter
+                    tap_code(KC_ENT);  // Activar el micrófono
+                }
+                return false;
 
 
-            case TAB2_ENT:
-                 if (record->event.pressed){
+
+
+        case CHATGPT:
+            if (record->event.pressed) {
+                chatgpt_pressed = true;
+                chatgpt_hold_executed = false;
+                chatgpt_timer = timer_read();  // Inicia temporizador
+            } else {
+                chatgpt_pressed = false;
+
+                if (!chatgpt_hold_executed) {
+                    // TAP → 3 TABs + ENTER
+                    tap_code_delay(KC_ENT, 30);
+                    tap_code_delay(KC_TAB, 30);
                     tap_code_delay(KC_TAB, 30);
                     tap_code_delay(KC_TAB, 30);
                     tap_code_delay(KC_ENT, 30);
-                     }
-                     break;
+                }
+            }
+            return false;
+
 
 
             case DOUBLE_COLON:
@@ -542,7 +571,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       SEND_STRING("?"); // hold
                        return false;
                     }else {
-                       SEND_STRING("@");
+                       SEND_STRING("@");b
                          return false;
                         }
                     }
@@ -782,8 +811,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false; // Bloquea el comportamiento por defecto
 
-            case CLOSE_TAB_OTHER:
+            case LT(10, CLOSE_TAB):
                     if (record->event.pressed) {
+                        if (!record->tap.count) {
+                              return true; //hold
+                           }else {
+                                // TAP →  close tab
+                                tap_code16(C(KC_F4));
+                                return false;
+                                   }
+                               }
+                           return true;
+                    /*
                         timer_key = timer_read(); // Inicia el temporizador
                     }else {
                         if (timer_elapsed(timer_key) < TAPPING_TERM) {
@@ -793,8 +832,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                             // HOLD →  close others tab
                             tap_code16(C(KC_F21));
                         }
-                    }
-                    return false; // Bloquea el comportamiento por defect
+                    }*/
+
 
             case SPC_CTRL_TAB:
                 if (record->event.pressed) {
@@ -1065,19 +1104,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-            case SHOW_QUICK_ENT:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - enter
-                            tap_code(KC_ENT);
-                        }else {
-                            // HOLD - show quick fixes
-                            tap_code16(LALT(KC_ENT));
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+        case SHOW_QUICK_ENT:
+            if (record->event.pressed) {
+                showquick_pressed = true;
+                showquick_hold_executed = false;
+                showquick_timer = timer_read();
+            } else {
+                showquick_pressed = false;
+
+                // TAP: ALT + ENTER (si no fue HOLD)
+                if (!showquick_hold_executed && timer_elapsed(showquick_timer) < TAPPING_TERM) {
+                    tap_code16(LALT(KC_ENT));
+                }
+            }
+            return false;
+
 
             case CODE_COMPLET:
                     if (record->event.pressed) {
@@ -1152,18 +1193,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false; // Bloquea el comportamiento por defecto
 
             case REFACTOR:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - REFACTOR THIS
-                            tap_code16(LCTL(LALT(LSFT(KC_T))));
-                        }else {
-                            // HOLD - rename
-                             tap_code16(LSFT(KC_F6));
-                        }
+                if (record->event.pressed) {
+                    refactor_pressed = true;
+                    refactor_hold_executed = false;
+                    refactor_timer = timer_read();
+                } else {
+                    refactor_pressed = false;
+
+                    // Si se soltó antes del tiempo y el hold no se ejecutó, es TAP
+                    if (!refactor_hold_executed && timer_elapsed(refactor_timer) < TAPPING_TERM) {
+                        tap_code16(LCTL(LALT(LSFT(KC_T))));  // Refactor This
                     }
-                    return false; // Bloquea el comportamiento por defecto
+
+                    // Si fue HOLD, no hacemos nada aquí porque ya se ejecutó en matrix_scan_user
+                }
+                return false;
+
 
 
             case SHIFT_TOGGLE:
@@ -1325,6 +1370,26 @@ void matrix_scan_user(void) {
             spc_tab_enviado = true;
         }
 
+        if (refactor_pressed && !refactor_hold_executed && timer_elapsed(refactor_timer) >= TAPPING_TERM) {
+            tap_code16(LSFT(KC_F6));  // Rename
+            refactor_hold_executed = true;
+        }
+
+        if (showquick_pressed && !showquick_hold_executed && timer_elapsed(showquick_timer) >= TAPPING_TERM) {
+            tap_code16(LCTL(KC_F1));  // HOLD: CTRL + F1
+            showquick_hold_executed = true;
+        }
+
+        if (chatgpt_pressed && !chatgpt_hold_executed) {
+            if (timer_elapsed(chatgpt_timer) > TAPPING_TERM) {
+                // HOLD → 2 TABs + ENTER
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_TAB, 30);
+                tap_code_delay(KC_ENT, 30);
+
+                chatgpt_hold_executed = true;
+            }
+        }
 
    if (mouse_key_pressed && !mouse_hold_handled && timer_elapsed(mouse_hold_timer) > TAPPING_TERM) {
        // HOLD detectado antes de soltar la tecla
@@ -1410,7 +1475,7 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, KC_ESC  ,
+   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
@@ -1442,9 +1507,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  M_SEL_COPY, CLOSE_TAB_OTHER, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+  M_SEL_COPY, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), A(KC_ENT), LT(3,KC_ENT)
+                                       LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -1470,7 +1535,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      TAB3_ENT, TAB2_ENT,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      CHATGPT, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1534,17 +1599,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                               KC_ENT, KC_SPACE,  _______,     TO(0),   A(KC_ENT), XXXXXXX
                                           //`--------------------------'  `--------------------------'
-     ), //LY 10 not used
+     ), //LY 10 super close window
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_L), C(KC_T), VOICE_GOOGLE, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,        XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_T)), XXXXXXX, XXXXXXX, A(KC_F4),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                             //`--------------------------'  `--------------------------'
         ), //LY 11 not used
 
@@ -1696,6 +1761,7 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
                 tap_code16(LCTL(KC_C));
 
         break;
+
         default: break;
     }
 }
@@ -2044,6 +2110,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     if (QK_TAP_DANCE <= keycode && keycode <= QK_TAP_DANCE_MAX) {
         return 450;
     }
+
+    /*if (keycode == LT(1, KC_TILD)) {
+        return 30;  // Menor tiempo para detectar HOLD
+    }
+*/
 
      return TAPPING_TERM;
   }
