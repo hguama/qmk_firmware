@@ -26,7 +26,13 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
-    VOICE_GOOGLE,
+    VOICE_A,
+    VOICE,
+    SUPER_UP,
+    SUPER_DOWN,
+    SUPER_RIGHT,
+    SUPER_LEFT,
+//    VOICE_GOOGLE,
     CHATGPT,
     SEL_WORD_PARAGRAPH,
     M_ALT_TAB,
@@ -90,18 +96,18 @@ enum custom_keycodes {
 };
 
 //Combo enum
-enum combos{
-    CB_CTRL_Z,
-    CB_CTRL_Z_LEFT,
-    CB_CTRL_Z_MOVE,
-    CB_CTRL_Z_MOUSE,
-    CB_CTRL_Z_NUMBERS,
-    CB_UNDO,
-    CB_UNDO_LEFT,
-    CB_UNDO_MOVE,
-    CB_UNDO_MOUSE,
-    CB_INSERT,
-    CB_INSERT_MOVE,
+//enum combos{
+//    CB_CTRL_Z,
+//    CB_CTRL_Z_LEFT,
+//    CB_CTRL_Z_MOVE,
+//    CB_CTRL_Z_MOUSE,
+//    CB_CTRL_Z_NUMBERS,
+//    CB_UNDO,
+//    CB_UNDO_LEFT,
+//    CB_UNDO_MOVE,
+//    CB_UNDO_MOUSE,
+//    CB_INSERT,
+//    CB_INSERT_MOVE,
 //    CB_SUPR,
 //    CB_SUPR_MOVE_LY,
 //    CB_SUPR_MOUSE_LY,
@@ -123,7 +129,7 @@ enum combos{
 //    CB_CAPS,
 //    CB_MAX_WIN,
 //    CB_MIN_WIN,
-};
+//};
 
 //Tap Dance enum
 enum {
@@ -191,6 +197,18 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+bool voice_a_is_pressing = false;
+uint16_t voice_a_timer = 0;
+bool voice_a_hold_executed = false;
+
+
+bool voice_mode = false;
+bool voice_pressed = false;
+uint16_t voice_timer = 0;
+bool voice_hold_sent = false;
+
+
 bool mouse_hold_handled = false;
 uint16_t mouse_hold_timer = 0;
 bool mouse_key_pressed = false;
@@ -223,8 +241,8 @@ uint16_t chatgpt_timer = 0;
 
 
 // Prototypes quad
-void dance_rabk(tap_dance_state_t *state, void *user_data); //plantilla
-void dance_labk(tap_dance_state_t *state, void *user_data); //plantilla
+//void dance_rabk(tap_dance_state_t *state, void *user_data); //plantilla
+//void dance_labk(tap_dance_state_t *state, void *user_data); //plantilla
 void tdq_toggle_hold_finished(tap_dance_state_t *state, void *user_data);//plantilla
 void tdq_toggle_hold_reset(tap_dance_state_t *state, void *user_data); //plantilla
 
@@ -263,6 +281,7 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
+/*
 const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
 const uint16_t PROGMEM cb_ctrl_z_move[] = {KC_LEFT, KC_DOWN, COMBO_END}; //move right ly
 const uint16_t PROGMEM cb_ctrl_z_mouse[] = {MS_LEFT, MS_DOWN, COMBO_END}; //mouse right ly
@@ -272,8 +291,10 @@ const uint16_t PROGMEM cb_undo[] = {LT(2,KC_K), LT(1, KC_L), COMBO_END}; //
 const uint16_t PROGMEM cb_undo_move[]     = {KC_DOWN, KC_RIGHT, COMBO_END}; //
 const uint16_t PROGMEM cb_undo_mouse[]     = {MS_DOWN, MS_RGHT, COMBO_END}; //
 const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
-const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
-const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //move left right //medios//
+*/
+
+//const uint16_t PROGMEM cb_insert[] = {LT(2, KC_D), LT(2,KC_K), COMBO_END}; //base left right //medios//
+//const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //move left right //medios//
 
 //const uint16_t PROGMEM cb_supr[] = {LT(5,KC_F), KC_J, COMBO_END}; //base central   //indices
 //const uint16_t PROGMEM cb_supr_move_ly[] = {TD(TDQ_PASTE), KC_LEFT, COMBO_END}; //move  ly
@@ -308,8 +329,8 @@ const uint16_t PROGMEM cb_insert_move[] = {TD(TDQ_COPY), KC_DOWN, COMBO_END}; //
 
 
 //combo actions
-combo_t key_combos[] = {
-   [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
+//combo_t key_combos[] = {
+   /*[CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
    [CB_CTRL_Z_MOVE]   = COMBO(cb_ctrl_z_move, LCTL(KC_Z)), //move right
    [CB_CTRL_Z_MOUSE]   = COMBO(cb_ctrl_z_mouse, LCTL(KC_Z)), //mouse right
    [CB_CTRL_Z_NUMBERS]   = COMBO(cb_ctrl_z_numbers, LCTL(KC_Z)), //mouse right
@@ -318,8 +339,9 @@ combo_t key_combos[] = {
    [CB_UNDO_MOVE] =  COMBO(cb_undo_move, C(KC_Y)), //
    [CB_UNDO_MOUSE] =  COMBO(cb_undo_mouse, C(KC_Y)), //
    [CB_UNDO_LEFT] =  COMBO(cb_undo_left, C(KC_Y)), //
-   [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
-   [CB_INSERT_MOVE] = COMBO(cb_insert_move, KC_INS), //base medios
+*/
+//   [CB_INSERT] = COMBO(cb_insert, KC_INS), //base medios
+//   [CB_INSERT_MOVE] = COMBO(cb_insert_move, KC_INS), //base medios
 //   [CB_SUPR]   =  COMBO(cb_supr, KC_DEL), //base right
 //   [CB_SUPR_MOVE_LY]    =  COMBO(cb_supr_move_ly, KC_DEL), //move left
 //   [CB_SUPR_MOUSE_LY]   =  COMBO(cb_supr_mouse_ly, KC_DEL), //mouse left
@@ -342,7 +364,7 @@ combo_t key_combos[] = {
 //   [CB_TAB]      = COMBO(cb_tab, KC_TAB), //base indices
 //   [CB_CLOSE_TAB]         = COMBO(cb_close_tab, C(KC_F4)), //move right
 //   [CB_CLOSE_OTHERS]      = COMBO(cb_close_others, C(KC_F21)), //move right
-};
+//};
 
 void clear_all(void) {
     clear_mods();             // Libera Ctrl, Shift, Alt, etc.
@@ -358,20 +380,97 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+
+           case VOICE_A:
+               if (record->event.pressed) {
+                   voice_a_is_pressing = true;
+                   voice_a_timer = timer_read();
+                   voice_a_hold_executed = false;
+               } else {
+                   voice_a_is_pressing = false;
+                   if (!voice_a_hold_executed) {
+                       // TAP: Alt + Shift + B
+                       register_code(KC_LALT);
+                       register_code(KC_LSFT);
+                       tap_code(KC_B);
+                       unregister_code(KC_LSFT);
+                       unregister_code(KC_LALT);
+                   }
+               }
+               return false;
+
+            case VOICE:
+                if (record->event.pressed) {
+                    voice_pressed = true;
+                    voice_hold_sent = false;
+                    voice_timer = timer_read();
+                } else {
+                    voice_pressed = false;
+                    if (!voice_hold_sent) {
+                        // TAP: Activar/Desactivar dictado y cambiar idioma
+                        if (!voice_mode) {
+                            tap_code16(G(KC_SPC)); // Cambiar a español
+                            wait_ms(100);
+                            tap_code16(G(KC_H));   // Activar dictado
+                            voice_mode = true;
+                        } else {
+                            tap_code(KC_ESC);      // Detener dictado
+                            wait_ms(100);
+                            tap_code16(G(KC_SPC)); // Volver a inglés
+                            voice_mode = false;
+                        }
+                    }
+                }
+                return false; // Ya lo manejamos
+
+
+/*
             case VOICE_GOOGLE:
                 if (record->event.pressed) {
                     // Enviar 9 veces TAB
+                    tap_code16_delay(C(KC_T), 240);
                     for (int i = 0; i < 9; i++) {
                         tap_code(KC_TAB);
                         wait_ms(30);  // Pequeña pausa entre cada TAB
                     }
 
-                    wait_ms(100);  // Esperar un poco antes de presionar Enter
+                    wait_ms(140);  // Esperar un poco antes de presionar Enter
                     tap_code(KC_ENT);  // Activar el micrófono
                 }
-                return false;
+                return false;*/
 
 
+        case SUPER_UP:
+            if (record->event.pressed) {
+                for (int i = 0; i < 5; i++) {
+                    tap_code(KC_UP);
+                }
+            }
+            return false;
+
+        case SUPER_DOWN:
+            if (record->event.pressed) {
+                for (int i = 0; i < 5; i++) {
+                    tap_code(KC_DOWN);
+                }
+            }
+            return false;
+
+        case SUPER_RIGHT:
+            if (record->event.pressed) {
+                  for (int i = 0; i < 30; i++) {
+                    tap_code(KC_RIGHT);
+                }
+            }
+            return false;
+
+        case SUPER_LEFT:
+            if (record->event.pressed) {
+                for (int i = 0; i < 30; i++) {
+                    tap_code(KC_LEFT);
+                }
+            }
+            return false;
 
 
         case CHATGPT:
@@ -571,36 +670,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       SEND_STRING("?"); // hold
                        return false;
                     }else {
-                       SEND_STRING("@");b
+                       SEND_STRING("@");
                          return false;
                         }
                     }
                     return true;
 
-            case  LT(1,KC_TILD):
+             case LT(1, KC_TILD):
                  if (record->event.pressed) {
-                    if (!record->tap.count  ) {
-                      SEND_STRING("`"); // hold
-                       return false;
-                    }else {
-                      SEND_STRING("~");
-                        return false;
-                      }
-                     }else {}
-                    return true;
-
-            case  LT(1, KC_PERC):
-                 if (record->event.pressed) {
-                    if (!record->tap.count && record->event.pressed) {
-                      SEND_STRING("%");// hold
-                       return false;
-
-                    } else{
-                      SEND_STRING("+");
-                          return false;
-                      }
-                    } else{}
-                    return true;
+                     if (!record->tap.count) {
+                         // HOLD: `
+                         tap_code(KC_GRAVE);  // tecla física ` (grave accent, misma que KC_TILD)
+                         return false;
+                     } else {
+                         // TAP: ~
+                         tap_code16(S(KC_GRAVE));  // Shift + ` = ~
+                         return false;
+                     }
+                 }
+                 return true;
 
             case  LT(1,KC_AMPR):
                  if (record->event.pressed) {
@@ -1355,13 +1443,15 @@ void matrix_scan_user(void) {
         comm_hold_enviado = true;  // Asegura que no se repita
     }
 
-        if (defer_copy && timer_elapsed(defer_timer_copy) > 30) {
+        if (defer_copy && timer_elapsed(defer_timer_copy) > 2) {
             defer_copy = false;
+            clear_mods();  // elimina cualquier modificador que haya sobrevivido
             tap_code16(C(KC_C));
          }
 
-        if (defer_cut && timer_elapsed(defer_timer_cut) > 30) {
+        if (defer_cut && timer_elapsed(defer_timer_cut) > 50) {
             defer_cut = false;
+            clear_mods();  // elimina cualquier modificador que haya sobrevivido
             tap_code16(C(KC_X));
          }
 
@@ -1390,6 +1480,26 @@ void matrix_scan_user(void) {
                 chatgpt_hold_executed = true;
             }
         }
+
+        if (voice_pressed && !voice_hold_sent) {
+            if (timer_elapsed(voice_timer) > 500) { // HOLD (>500 ms)
+                voice_hold_sent = true;
+                tap_code16(G(KC_SPC)); // Solo cambia idioma a español
+            }
+        }
+
+        if (voice_a_is_pressing && !voice_a_hold_executed) {
+            if (timer_elapsed(voice_a_timer) > 120) {
+                voice_a_hold_executed = true;
+                // HOLD: Ctrl + Win + S
+                register_code(KC_LCTL);
+                register_code(KC_LGUI);
+                tap_code(KC_S);
+                unregister_code(KC_LGUI);
+                unregister_code(KC_LCTL);
+            }
+        }
+
 
    if (mouse_key_pressed && !mouse_hold_handled && timer_elapsed(mouse_hold_timer) > TAPPING_TERM) {
        // HOLD detectado antes de soltar la tecla
@@ -1452,8 +1562,8 @@ void matrix_scan_user(void) {
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
-    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
-    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
+//    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
+//    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
     [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
 
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
@@ -1475,13 +1585,13 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, XXXXXXX,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
+   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  XXXXXXX, WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
+   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB,  A(KC_L),     XXXXXXX,  TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB, VOICE,     XXXXXXX,  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1495,7 +1605,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_CAPS, KC_SPC,  XXXXXXX,     TO(0),   A(KC_ENT), MS_WHLD
+                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0),   A(KC_ENT), KC_CAPS
                                       //`--------------------------'  `--------------------------'
  ),
 
@@ -1535,7 +1645,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      CHATGPT, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      VOICE, VOICE_A,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1546,7 +1656,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+    XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                 LT(9,KC_ENT), SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), MS_WHLD
                                  //`--------------------------'  `--------------------------'
@@ -1603,7 +1713,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_L), C(KC_T), VOICE_GOOGLE, XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_L), C(KC_T), XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1611,27 +1721,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                             //`--------------------------'  `--------------------------'
-        ), //LY 11 not used
+        ), //LY 11 super move 2
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, PAGE_PARAGRAPH_UP, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           KC_KP_SLASH, KC_KP_ASTERISK, KC_PLUS, KC_KP_MINUS, XXXXXXX, XXXXXXX,        XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, PAGE_PARAGRAPH_DOWN, KC_END,  LCTL(LSFT(KC_M)),
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           KC_CIRC, KC_DOLLAR, KC_EQL, KC_PERCENT, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_HOME), XXXXXXX, C(KC_END), XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                  MO(12), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
-         ), // LY12 not used
+         ), // LY12 super move 3
 
              [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, KC_7, KC_8, KC_9, KC_BSPC,
+            XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, SUPER_UP, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_0, KC_4, KC_5, KC_6,
+            RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_1, KC_2, KC_3, XXXXXXX,
+            RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                    KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                                //`--------------------------'  `--------------------------'
@@ -1646,6 +1756,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //Tap dance imple
 
 // > >=  plantilla
+/*
 void dance_rabk(tap_dance_state_t *state, void *user_data) {
 
    switch (state->count) {
@@ -1663,7 +1774,7 @@ void dance_labk(tap_dance_state_t *state, void *user_data) {
     } else {
        SEND_STRING(SS_LSFT(SS_TAP(X_COMM)) SS_TAP(X_EQUAL));
     }
-}
+}*/
 
 
 //Quad impl
@@ -1709,10 +1820,12 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
     switch (xtap_state.state) {
         case TD_SINGLE_TAP://copy normal
 
-              if (shift_active) {
-                unregister_code(KC_LSFT);
-                shift_active = false;
-                 }
+                if (shift_active) {
+                    unregister_code(KC_LSFT);     // Suelta físicamente la tecla
+                    del_mods(MOD_BIT(KC_LSFT));   // Borra cualquier bit de estado
+                    shift_active = false;
+
+                }
 
               if (ctrl_active) {
                 unregister_code(KC_LCTL);
@@ -1726,6 +1839,7 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
                 break;
 
         case TD_SINGLE_HOLD: //copy 1 line
+                tap_code_delay(KC_HOME, 10);
                 tap_code_delay(KC_HOME, 10);
                 register_code(KC_LSFT);
                 tap_code_delay(KC_END, 10);
@@ -1774,7 +1888,19 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 
         break;
 
-        case TD_SINGLE_HOLD: SEND_STRING(SS_LCTL(SS_LSFT("v"))); break; //portapapeles
+        case TD_SINGLE_HOLD:
+
+//        DESACTIVAR CTRL Y SHIFT
+
+                if (shift_active) {
+                    shift_active = false;
+                }
+
+              if (ctrl_active) {
+                  ctrl_active = false;
+                 }
+
+        SEND_STRING(SS_LCTL(SS_LSFT("v"))); break; //portapapeles
 
         case TD_DOUBLE_TAP: //paste 1 word
 
@@ -1812,6 +1938,8 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
          case TD_TRIPLE_TAP: // paste 1 line
 
                      // Ir al inicio
+                     tap_code(KC_HOME);
+                     wait_ms(10);
                      tap_code(KC_HOME);
                      wait_ms(10);
                      // Ctrl + Shift + End para seleccionar
@@ -2106,15 +2234,14 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 //#cuando se quiere poner exception a un Tap dance
      //if (keycode == TD(TDQ_SHIFT)) || keycode == TD(TDQ_MOVE_LY ))
 //     {return 180;}
-
-    if (QK_TAP_DANCE <= keycode && keycode <= QK_TAP_DANCE_MAX) {
+        if (QK_TAP_DANCE <= keycode && keycode <= QK_TAP_DANCE_MAX) {
         return 450;
     }
 
-    /*if (keycode == LT(1, KC_TILD)) {
-        return 30;  // Menor tiempo para detectar HOLD
-    }
-*/
+     switch (keycode) {
+         case LT(1, KC_TILD):
+             return 50;  // o incluso 80 ms
+     }
 
      return TAPPING_TERM;
   }
