@@ -26,16 +26,18 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    SUPER_UP,
+    SUPER_DOWN,
+    SUPER_LEFT,
+    SUPER_RIGHT,
+    SUPER_CTRL_LEFT,
+    SUPER_CTRL_RIGHT,
     HASH_CIRC,
     EQUAL_DBL,
     DOUBLE_PIPE,
     SELECT_W_ALL,
     VOICE_A,
     VOICE,
-    SUPER_UP,
-    SUPER_DOWN,
-    SUPER_RIGHT,
-    SUPER_LEFT,
 //    VOICE_GOOGLE,
     CHATGPT,
     SEL_WORD_PARAGRAPH,
@@ -201,6 +203,38 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+// Super UP
+bool super_up_pressed = false;
+bool super_up_sent_hold = false;
+uint16_t super_up_timer = 0;
+
+// Super RIGHT
+bool super_right_pressed = false;
+bool super_right_sent_hold = false;
+uint16_t super_right_timer = 0;
+
+// Super DOWN
+bool super_down_pressed = false;
+bool super_down_sent_hold = false;
+uint16_t super_down_timer = 0;
+
+// Super LEFT
+bool super_left_pressed = false;
+bool super_left_sent_hold = false;
+uint16_t super_left_timer = 0;
+
+// Super CTRL RIGHT
+bool super_ctrl_right_pressed = false;
+bool super_ctrl_right_sent_hold = false;
+uint16_t super_ctrl_right_timer = 0;
+
+// Super CTRL LEFT
+bool super_ctrl_left_pressed = false;
+bool super_ctrl_left_sent_hold = false;
+uint16_t super_ctrl_left_timer = 0;
+
+
 
 static bool hash_is_pressed = false;
 static bool hash_sent_hold = false;
@@ -409,6 +443,86 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+         case SUPER_UP:
+             if (record->event.pressed) {
+                 super_up_pressed = true;
+                 super_up_sent_hold = false;
+                 super_up_timer = timer_read();
+             } else {
+                 if (!super_up_sent_hold) {
+                     tap_code16(KC_UP);
+                 }
+                 super_up_pressed = false;
+             }
+             return false;
+
+         case SUPER_RIGHT:
+             if (record->event.pressed) {
+                 super_right_pressed = true;
+                 super_right_sent_hold = false;
+                 super_right_timer = timer_read();
+             } else {
+                 if (!super_right_sent_hold) {
+                     tap_code16(KC_RIGHT);
+                 }
+                 super_right_pressed = false;
+             }
+             return false;
+
+         case SUPER_DOWN:
+             if (record->event.pressed) {
+                 super_down_pressed = true;
+                 super_down_sent_hold = false;
+                 super_down_timer = timer_read();
+             } else {
+                 if (!super_down_sent_hold) {
+                     tap_code16(KC_DOWN);
+                 }
+                 super_down_pressed = false;
+             }
+             return false;
+
+         case SUPER_LEFT:
+             if (record->event.pressed) {
+                 super_left_pressed = true;
+                 super_left_sent_hold = false;
+                 super_left_timer = timer_read();
+             } else {
+                 if (!super_left_sent_hold) {
+                     tap_code16(KC_LEFT);
+                 }
+                 super_left_pressed = false;
+             }
+             return false;
+
+         case SUPER_CTRL_RIGHT:
+             if (record->event.pressed) {
+                 super_ctrl_right_pressed = true;
+                 super_ctrl_right_sent_hold = false;
+                 super_ctrl_right_timer = timer_read();
+             } else {
+                 if (!super_ctrl_right_sent_hold) {
+                     tap_code16(C(KC_RIGHT));
+                 }
+                 super_ctrl_right_pressed = false;
+             }
+             return false;
+
+         case SUPER_CTRL_LEFT:
+             if (record->event.pressed) {
+                 super_ctrl_left_pressed = true;
+                 super_ctrl_left_sent_hold = false;
+                 super_ctrl_left_timer = timer_read();
+             } else {
+                 if (!super_ctrl_left_sent_hold) {
+                     tap_code16(C(KC_LEFT));
+                 }
+                 super_ctrl_left_pressed = false;
+             }
+             return false;
+
+
+
 
             case HASH_CIRC:
                 if (record->event.pressed) {
@@ -521,38 +635,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;*/
 
-
-        case SUPER_UP:
-            if (record->event.pressed) {
-                for (int i = 0; i < 5; i++) {
-                    tap_code(KC_UP);
-                }
-            }
-            return false;
-
-        case SUPER_DOWN:
-            if (record->event.pressed) {
-                for (int i = 0; i < 5; i++) {
-                    tap_code(KC_DOWN);
-                }
-            }
-            return false;
-
-        case SUPER_RIGHT:
-            if (record->event.pressed) {
-                  for (int i = 0; i < 30; i++) {
-                    tap_code(KC_RIGHT);
-                }
-            }
-            return false;
-
-        case SUPER_LEFT:
-            if (record->event.pressed) {
-                for (int i = 0; i < 30; i++) {
-                    tap_code(KC_LEFT);
-                }
-            }
-            return false;
 
 
         case CHATGPT:
@@ -740,12 +822,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;
 
-            case  LT(1,KC_EQL):
+/*            case  LT(1,KC_EQL):
                     if (!record->tap.count && record->event.pressed) {
                        SEND_STRING("#"); // hold
                        return false;
                     }
-                    return true;
+                    return true;*/
 
             case  LT(1,KC_AT):
                   if (record->event.pressed) {
@@ -1489,6 +1571,36 @@ void matrix_scan_user(void) {
 
 //double key
 
+if (super_up_pressed && !super_up_sent_hold && timer_elapsed(super_up_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(KC_UP);
+        super_up_sent_hold = true;
+    }
+
+    if (super_right_pressed && !super_right_sent_hold && timer_elapsed(super_right_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(KC_RIGHT);
+        super_right_sent_hold = true;
+    }
+
+    if (super_down_pressed && !super_down_sent_hold && timer_elapsed(super_down_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(KC_DOWN);
+        super_down_sent_hold = true;
+    }
+
+    if (super_left_pressed && !super_left_sent_hold && timer_elapsed(super_left_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(KC_LEFT);
+        super_left_sent_hold = true;
+    }
+
+    if (super_ctrl_right_pressed && !super_ctrl_right_sent_hold && timer_elapsed(super_ctrl_right_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(C(KC_RIGHT));
+        super_ctrl_right_sent_hold = true;
+    }
+
+    if (super_ctrl_left_pressed && !super_ctrl_left_sent_hold && timer_elapsed(super_ctrl_left_timer) > TAPPING_TERM) {
+        for (int i = 0; i < 5; i++) tap_code16(C(KC_LEFT));
+        super_ctrl_left_sent_hold = true;
+    }
+
     if (hash_is_pressed && !hash_sent_hold && timer_elapsed(hash_timer) > TAPPING_TERM) {
         tap_code16(KC_CIRC);  // HOLD: ^
         hash_sent_hold = true;
@@ -1698,7 +1810,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB, VOICE,     XXXXXXX,  TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB, SUPER_UP,     XXXXXXX,  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1720,9 +1832,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
+  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1752,7 +1864,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      VOICE_A, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      CHATGPT, VOICE_A,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1810,7 +1922,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
           XXXXXXX, XXXXXXX, C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_TAB, DEL_LINE, DEL_WORD, KC_DEL, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), C(KC_LEFT), A(KC_DOWN), C(KC_RIGHT), HOME_END,
+          KC_TAB, DEL_LINE, DEL_WORD, KC_DEL, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Y), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
