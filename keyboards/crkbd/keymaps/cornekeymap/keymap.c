@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    SELECT_W_ALL,
     VOICE_A,
     VOICE,
     SUPER_UP,
@@ -197,6 +198,10 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+bool select_pressed = false;
+uint16_t select_timer = 0;
+bool select_hold_executed = false;
+
 
 bool voice_a_is_pressing = false;
 uint16_t voice_a_timer = 0;
@@ -380,6 +385,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+           case SELECT_W_ALL:
+               if (record->event.pressed) {
+                   select_pressed = true;
+                   select_hold_executed = false;
+                   select_timer = timer_read();
+               } else {
+                   select_pressed = false;
+                   if (!select_hold_executed) {
+                       // TAP: Ctrl + W
+                       register_code(KC_LCTL);
+                       tap_code(KC_W);
+                       unregister_code(KC_LCTL);
+                   }
+               }
+               return false;  // Bloquea comportamiento por defecto
 
            case VOICE_A:
                if (record->event.pressed) {
@@ -676,19 +696,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;
 
-             case LT(1, KC_TILD):
-                 if (record->event.pressed) {
-                     if (!record->tap.count) {
-                         // HOLD: `
-                         tap_code(KC_GRAVE);  // tecla física ` (grave accent, misma que KC_TILD)
-                         return false;
-                     } else {
-                         // TAP: ~
-                         tap_code16(S(KC_GRAVE));  // Shift + ` = ~
-                         return false;
-                     }
-                 }
-                 return true;
+
+
 
             case  LT(1,KC_AMPR):
                  if (record->event.pressed) {
@@ -1416,6 +1425,17 @@ void matrix_scan_user(void) {
 
 //double key
 
+    if (select_pressed && !select_hold_executed) {
+        if (timer_elapsed(select_timer) > 120) {  // Ejecutar HOLD a los 120 ms
+            select_hold_executed = true;
+            // HOLD: Ctrl + A
+            register_code(KC_LCTL);
+            tap_code(KC_A);
+            unregister_code(KC_LCTL);
+        }
+    }
+
+
     if (q_pressed && !q_sent && timer_elapsed(q_timer) > 200) {
         tap_code(KC_W);
         q_sent = true;
@@ -1581,7 +1601,7 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
-  //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   //LY 0
+  //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     //LY 0
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
@@ -1599,25 +1619,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //symbols ly 1
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), LT(1,KC_TILD),
+ XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), KC_GRAVE,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,             XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  XXXXXXX,
+ DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  S(KC_GRAVE),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0),   A(KC_ENT), KC_CAPS
+                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0), MS_WHLD, KC_CAPS
                                       //`--------------------------'  `--------------------------'
  ),
 
- //move ly 2
+ //move ly 2  LCTL(KC_W)
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, LCTL(KC_W), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
+  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  KC_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  M_SEL_COPY, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+  SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                        LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                       //`--------------------------'  `--------------------------'
@@ -1645,7 +1665,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      VOICE, VOICE_A,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      VOICE_A, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -2238,10 +2258,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         return 450;
     }
 
-     switch (keycode) {
+/*     switch (keycode) {
          case LT(1, KC_TILD):
              return 50;  // o incluso 80 ms
-     }
+     }*/
 
      return TAPPING_TERM;
   }
