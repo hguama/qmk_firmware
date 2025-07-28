@@ -26,6 +26,9 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    HASH_CIRC,
+    EQUAL_DBL,
+    DOUBLE_PIPE,
     SELECT_W_ALL,
     VOICE_A,
     VOICE,
@@ -198,6 +201,27 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+static bool hash_is_pressed = false;
+static bool hash_sent_hold = false;
+static uint16_t hash_timer = 0;
+
+static bool equal_is_pressed = false;
+static bool equal_sent_hold = false;
+static uint16_t equal_timer = 0;
+
+
+static uint16_t hash_timer;
+static uint16_t equal_timer;
+
+bool is_recent_loc_held = false;
+uint16_t recent_loc_timer = 0;
+bool recent_loc_sent = false;
+
+bool is_tab_split_held = false;
+uint16_t tab_split_timer = 0;
+bool tab_split_sent = false;
+
 bool select_pressed = false;
 uint16_t select_timer = 0;
 bool select_hold_executed = false;
@@ -384,6 +408,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+
+            case HASH_CIRC:
+                if (record->event.pressed) {
+                    hash_is_pressed = true;
+                    hash_sent_hold = false;
+                    hash_timer = timer_read();
+                } else {
+                    if (!hash_sent_hold) {
+                        tap_code16(KC_HASH);  // TAP: #
+                    }
+                    hash_is_pressed = false;
+                }
+                return false;
+
+            case EQUAL_DBL:
+                if (record->event.pressed) {
+                    equal_is_pressed = true;
+                    equal_sent_hold = false;
+                    equal_timer = timer_read();
+                } else {
+                    if (!equal_sent_hold) {
+                        tap_code16(KC_EQUAL);  // TAP: =
+                    }
+                    equal_is_pressed = false;
+                }
+                return false;
+
+
+
+
+           case DOUBLE_PIPE:
+               if (record->event.pressed) {
+                   tap_code16(KC_PIPE);
+                   tap_code16(KC_PIPE);
+               }
+               return false; // evita que se procese por defecto
+
 
            case SELECT_W_ALL:
                if (record->event.pressed) {
@@ -625,7 +687,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(1,KC_DQT):
                    if (record->event.pressed) {
                       if (!record->tap.count) {
-                         SEND_STRING(SS_TAP(X_QUOT)); // hold
+
+                         tap_code16(KC_GRAVE); // holdO
                           return false;
                       }else{
                          SEND_STRING("\""); // tap
@@ -705,7 +768,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                        SEND_STRING("$");// hold
                        return false;
                     }else {
-                        SEND_STRING("&");
+                        SEND_STRING("&&");
                          return false; // tap
                              }
                      }else {}
@@ -1105,18 +1168,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
 
             case RECENT_LOC:
-                    if (record->event.pressed) {
-                        timer_key = timer_read();
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                        //tap
-                            SEND_STRING(SS_LCTL("e"));
-                        }else {
-                        //hold
-                          SEND_STRING(SS_LCTL(SS_LSFT("e")));
-                        }
+                if (record->event.pressed) {
+                    recent_loc_timer = timer_read();
+                    is_recent_loc_held = true;
+                    recent_loc_sent = false;
+                } else {
+                    is_recent_loc_held = false;
+                    if (!recent_loc_sent) {
+                        // TAP → Ctrl+E
+                        SEND_STRING(SS_LCTL("e"));
                     }
-                    return false;
+                }
+                return false; // bloquea comportamiento por defecto
+
 
             case USAGES:
                     if (record->event.pressed) {
@@ -1152,18 +1216,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false; // Bloquea el comportamiento por defecto
 
             case TAB_SPLIT:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → TAB
-                            tap_code16(KC_TAB);
-                        }else {
-                            // HOLD GO TO NEXT WIN SPLIT
-                             tap_code16(KC_F20);
-                        }
+                if (record->event.pressed) {
+                    tab_split_timer = timer_read();
+                    is_tab_split_held = true;
+                    tab_split_sent = false;
+                } else {
+                    is_tab_split_held = false;
+                    if (!tab_split_sent) {
+                        // TAP: Ejecutar TAB solo si no se hizo el HOLD
+                        tap_code16(KC_TAB);
                     }
-                    return false; // Bloquea el comportamiento por defecto
+                }
+                return false; // Bloquear comportamiento por defecto
 
             case COMM:
                 if (record->event.pressed) {
@@ -1425,6 +1489,29 @@ void matrix_scan_user(void) {
 
 //double key
 
+    if (hash_is_pressed && !hash_sent_hold && timer_elapsed(hash_timer) > TAPPING_TERM) {
+        tap_code16(KC_CIRC);  // HOLD: ^
+        hash_sent_hold = true;
+    }
+
+    if (equal_is_pressed && !equal_sent_hold && timer_elapsed(equal_timer) > TAPPING_TERM) {
+        tap_code16(KC_EQUAL);
+        tap_code16(KC_EQUAL);  // HOLD: ==
+        equal_sent_hold = true;
+    }
+
+    if (is_recent_loc_held && !recent_loc_sent && timer_elapsed(recent_loc_timer) > TAPPING_TERM) {
+        // HOLD → Ctrl+Shift+E
+        SEND_STRING(SS_LCTL(SS_LSFT("e")));
+        recent_loc_sent = true;
+    }
+
+    if (is_tab_split_held && !tab_split_sent && timer_elapsed(tab_split_timer) > TAPPING_TERM) {
+        // HOLD detectado: Ejecutar solo una vez
+        tap_code16(KC_F20);
+        tab_split_sent = true;
+    }
+
     if (select_pressed && !select_hold_executed) {
         if (timer_elapsed(select_timer) > 120) {  // Ejecutar HOLD a los 120 ms
             select_hold_executed = true;
@@ -1619,11 +1706,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //symbols ly 1
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), LT(1,KC_EQL),  LT(1,KC_DQT), KC_GRAVE,
+ XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), EQUAL_DBL,  LT(1,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), KC_PIPE, XXXXXXX,             XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
+ KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- DOUBLE_COLON, KC_CIRC, LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  S(KC_GRAVE),
+ DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  S(KC_GRAVE),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, KC_SPC,  XXXXXXX,     TO(0), MS_WHLD, KC_CAPS
                                       //`--------------------------'  `--------------------------'
