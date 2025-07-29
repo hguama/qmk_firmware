@@ -26,6 +26,8 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    SUPER_DEL,
+    Z_UNDO,
     TRIPLE_WHLD,
     SUPER_UP,
     SUPER_DOWN,
@@ -204,6 +206,16 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+bool super_del_presionado = false;
+bool super_del_enviado = false;
+uint16_t super_del_timer = 0;
+
+
+bool z_undo_presionado = false;
+bool z_undo_enviado = false;
+uint16_t z_undo_timer = 0;
+
 
 // Super UP
 bool super_up_pressed = false;
@@ -444,96 +456,128 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
-
-        case TRIPLE_WHLD:
-            if (record->event.pressed) {
-                for (int i = 0; i < 8; i++) {
-                    tap_code16(MS_WHLD);
-                    wait_ms(10);
+            case SUPER_DEL:
+                if (record->event.pressed) {
+                    super_del_presionado = true;
+                    super_del_enviado = false;
+                    super_del_timer = timer_read();
+                } else {
+                    super_del_presionado = false;
+                    if (!super_del_enviado && timer_elapsed(super_del_timer) < TAPPING_TERM) {
+                        // TAP: borrar palabra adelante
+                        tap_code16_delay(C(KC_LEFT), 10);
+                        tap_code16_delay(C(S(KC_RIGHT)), 10);
+                        tap_code(KC_BSPC);
+                    }
                 }
-                tap_code16(KC_ENT);
-            }
-            return false;
+                return false;
+
+
+            case Z_UNDO:
+                if (record->event.pressed) {
+                    z_undo_presionado = true;
+                    z_undo_enviado = false;
+                    z_undo_timer = timer_read();
+                } else {
+                    z_undo_presionado = false;
+                    if (!z_undo_enviado) {
+                        // Tap: Ctrl + Z
+                        register_mods(MOD_BIT(KC_LCTL));
+                        tap_code(KC_Z);
+                        unregister_mods(MOD_BIT(KC_LCTL));
+                    }
+                }
+                return false;
+
+            case TRIPLE_WHLD:
+                if (record->event.pressed) {
+                    for (int i = 0; i < 8; i++) {
+                        tap_code16(MS_WHLD);
+                        wait_ms(10);
+                    }
+                    tap_code16(KC_ENT);
+                }
+                return false;
 
 
 
-         case SUPER_UP:
-             if (record->event.pressed) {
-                 super_up_pressed = true;
-                 super_up_sent_hold = false;
-                 super_up_timer = timer_read();
-             } else {
-                 if (!super_up_sent_hold) {
-                     tap_code16(KC_UP);
+             case SUPER_UP:
+                 if (record->event.pressed) {
+                     super_up_pressed = true;
+                     super_up_sent_hold = false;
+                     super_up_timer = timer_read();
+                 } else {
+                     if (!super_up_sent_hold) {
+                         tap_code16(KC_UP);
+                     }
+                     super_up_pressed = false;
                  }
-                 super_up_pressed = false;
-             }
-             return false;
+                 return false;
 
-         case SUPER_RIGHT:
-             if (record->event.pressed) {
-                 super_right_pressed = true;
-                 super_right_sent_hold = false;
-                 super_right_timer = timer_read();
-             } else {
-                 if (!super_right_sent_hold) {
-                     tap_code16(KC_RIGHT);
+             case SUPER_RIGHT:
+                 if (record->event.pressed) {
+                     super_right_pressed = true;
+                     super_right_sent_hold = false;
+                     super_right_timer = timer_read();
+                 } else {
+                     if (!super_right_sent_hold) {
+                         tap_code16(KC_RIGHT);
+                     }
+                     super_right_pressed = false;
                  }
-                 super_right_pressed = false;
-             }
-             return false;
+                 return false;
 
-         case SUPER_DOWN:
-             if (record->event.pressed) {
-                 super_down_pressed = true;
-                 super_down_sent_hold = false;
-                 super_down_timer = timer_read();
-             } else {
-                 if (!super_down_sent_hold) {
-                     tap_code16(KC_DOWN);
+             case SUPER_DOWN:
+                 if (record->event.pressed) {
+                     super_down_pressed = true;
+                     super_down_sent_hold = false;
+                     super_down_timer = timer_read();
+                 } else {
+                     if (!super_down_sent_hold) {
+                         tap_code16(KC_DOWN);
+                     }
+                     super_down_pressed = false;
                  }
-                 super_down_pressed = false;
-             }
-             return false;
+                 return false;
 
-         case SUPER_LEFT:
-             if (record->event.pressed) {
-                 super_left_pressed = true;
-                 super_left_sent_hold = false;
-                 super_left_timer = timer_read();
-             } else {
-                 if (!super_left_sent_hold) {
-                     tap_code16(KC_LEFT);
+             case SUPER_LEFT:
+                 if (record->event.pressed) {
+                     super_left_pressed = true;
+                     super_left_sent_hold = false;
+                     super_left_timer = timer_read();
+                 } else {
+                     if (!super_left_sent_hold) {
+                         tap_code16(KC_LEFT);
+                     }
+                     super_left_pressed = false;
                  }
-                 super_left_pressed = false;
-             }
-             return false;
+                 return false;
 
-         case SUPER_CTRL_RIGHT:
-             if (record->event.pressed) {
-                 super_ctrl_right_pressed = true;
-                 super_ctrl_right_sent_hold = false;
-                 super_ctrl_right_timer = timer_read();
-             } else {
-                 if (!super_ctrl_right_sent_hold) {
-                     tap_code16(C(KC_RIGHT));
+             case SUPER_CTRL_RIGHT:
+                 if (record->event.pressed) {
+                     super_ctrl_right_pressed = true;
+                     super_ctrl_right_sent_hold = false;
+                     super_ctrl_right_timer = timer_read();
+                 } else {
+                     if (!super_ctrl_right_sent_hold) {
+                         tap_code16(C(KC_RIGHT));
+                     }
+                     super_ctrl_right_pressed = false;
                  }
-                 super_ctrl_right_pressed = false;
-             }
-             return false;
+                 return false;
 
-         case SUPER_CTRL_LEFT:
-             if (record->event.pressed) {
-                 super_ctrl_left_pressed = true;
-                 super_ctrl_left_sent_hold = false;
-                 super_ctrl_left_timer = timer_read();
-             } else {
-                 if (!super_ctrl_left_sent_hold) {
-                     tap_code16(C(KC_LEFT));
+             case SUPER_CTRL_LEFT:
+                 if (record->event.pressed) {
+                     super_ctrl_left_pressed = true;
+                     super_ctrl_left_sent_hold = false;
+                     super_ctrl_left_timer = timer_read();
+                 } else {
+                     if (!super_ctrl_left_sent_hold) {
+                         tap_code16(C(KC_LEFT));
+                     }
+                     super_ctrl_left_pressed = false;
                  }
-                 super_ctrl_left_pressed = false;
-             }
-             return false;
+                 return false;
 
 
 
@@ -1606,10 +1650,30 @@ void matrix_scan_user(void) {
 
 //double key
 
-if (super_up_pressed && !super_up_sent_hold && timer_elapsed(super_up_timer) > TAPPING_TERM) {
-        for (int i = 0; i < 5; i++) tap_code16(KC_UP);
-        super_up_sent_hold = true;
+    if (super_del_presionado && !super_del_enviado && timer_elapsed(super_del_timer) > TAPPING_TERM) {
+        // HOLD: borrar línea completa
+        tap_code_delay(KC_HOME, 10);
+        register_code(KC_LSFT);
+        wait_ms(10);
+        tap_code_delay(KC_END, 10);
+        tap_code_delay(KC_BSPC, 10);
+        unregister_code(KC_LSFT);
+
+        super_del_enviado = true;
     }
+
+    if (z_undo_presionado && !z_undo_enviado && timer_elapsed(z_undo_timer) > TAPPING_TERM) {
+        // Hold: Ctrl + Y (ejecutado sin soltar)
+        register_mods(MOD_BIT(KC_LCTL));
+        tap_code(KC_Y);
+        unregister_mods(MOD_BIT(KC_LCTL));
+        z_undo_enviado = true;
+    }
+
+    if (super_up_pressed && !super_up_sent_hold && timer_elapsed(super_up_timer) > TAPPING_TERM) {
+            for (int i = 0; i < 5; i++) tap_code16(KC_UP);
+            super_up_sent_hold = true;
+        }
 
     if (super_right_pressed && !super_right_sent_hold && timer_elapsed(super_right_timer) > TAPPING_TERM) {
         for (int i = 0; i < 5; i++) tap_code16(KC_RIGHT);
@@ -1899,7 +1963,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      CHATGPT, VOICE_A,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      XXXXXXX, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1955,13 +2019,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, C(KC_Z), M_ALT_TAB, XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, VOICE, CHATGPT, VOICE_A, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_TAB, DEL_LINE, DEL_WORD, KC_DEL, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
+          XXXXXXX, XXXXXXX, Z_UNDO, M_ALT_TAB, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Y), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
+          XXXXXXX, XXXXXXX, SUPER_DEL, KC_DEL, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              KC_ENT, KC_SPACE,  _______,     TO(0),   A(KC_ENT), XXXXXXX
+                                              KC_ENT, KC_TAB,  _______,     TO(0),   A(KC_ENT), XXXXXXX
                                           //`--------------------------'  `--------------------------'
      ), //LY 10 super close window
 
