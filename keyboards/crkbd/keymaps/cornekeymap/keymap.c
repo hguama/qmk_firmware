@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    TRIPLE_WHLD,
     SUPER_UP,
     SUPER_DOWN,
     SUPER_LEFT,
@@ -443,6 +444,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+
+        case TRIPLE_WHLD:
+            if (record->event.pressed) {
+                for (int i = 0; i < 8; i++) {
+                    tap_code16(MS_WHLD);
+                    wait_ms(10);
+                }
+                tap_code16(KC_ENT);
+            }
+            return false;
+
+
+
          case SUPER_UP:
              if (record->event.pressed) {
                  super_up_pressed = true;
@@ -822,6 +836,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;
 
+            case  LT(1,KC_PERC):
+                  if (record->event.pressed) {
+                    if (!record->tap.count) {
+//                      SEND_STRING("?"); // hold
+                      tap_code16(KC_PERC);
+                       return false;
+                    }else {
+//                       SEND_STRING("@");
+                       tap_code16(KC_PLUS);
+                         return false;
+                        }
+                    }
+                    return true;
+
 /*            case  LT(1,KC_EQL):
                     if (!record->tap.count && record->event.pressed) {
                        SEND_STRING("#"); // hold
@@ -1087,12 +1115,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
                     if (!spc_tab_enviado && timer_elapsed(spc_tab_timer) < TAPPING_TERM) {
                         // TAP
-                        tap_code(KC_SPACE);
+                           register_code16(KC_SPACE);
+                           unregister_code16(KC_SPACE);
+
+//                            wait_ms(5);  // ayuda a que la siguiente tecla no se pierda
+
                     }
 
                     // Si fue HOLD, ya se ejecutó en matrix_scan_user()
                 }
-                return false; // bloquear comportamiento por defecto
+                return false; // bloquear comportamiento por defectob
+
+
+
 
             case NAV_ERROR:
                    if (record->event.pressed) {
@@ -1810,7 +1845,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB, SUPER_UP,     XXXXXXX,  TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB, TRIPLE_WHLD,     XXXXXXX,  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1824,7 +1859,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  S(KC_GRAVE),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0), MS_WHLD, KC_CAPS
+                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
  ),
 
@@ -1877,7 +1912,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                LT(9,KC_ENT), SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), MS_WHLD
+                                LT(9,KC_ENT), SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
                                  //`--------------------------'  `--------------------------'
 ),
 //mouse ly 6
@@ -2112,10 +2147,12 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 //        DESACTIVAR CTRL Y SHIFT
 
                 if (shift_active) {
+                    unregister_code(KC_LSFT);
                     shift_active = false;
                 }
 
               if (ctrl_active) {
+                  unregister_code(KC_LCTL);
                   ctrl_active = false;
                  }
 
@@ -2457,10 +2494,19 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         return 450;
     }
 
-/*     switch (keycode) {
-         case LT(1, KC_TILD):
-             return 50;  // o incluso 80 ms
-     }*/
+/*      if (keycode == SPC_CTRL_TAB) {
+        return 80;
+    }*/
+
+/*
+
+     switch (keycode) {
+         case SPC_CTRL_TAB:
+             return 80;  // o incluso 80 ms
+     }
+*/
+
+
 
      return TAPPING_TERM;
   }
