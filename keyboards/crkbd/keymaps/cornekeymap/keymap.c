@@ -1652,11 +1652,12 @@ void matrix_scan_user(void) {
 
     if (super_del_presionado && !super_del_enviado && timer_elapsed(super_del_timer) > TAPPING_TERM) {
         // HOLD: borrar línea completa
-        tap_code_delay(KC_HOME, 10);
+        tap_code_delay(KC_HOME, 20);
         register_code(KC_LSFT);
-        wait_ms(10);
-        tap_code_delay(KC_END, 10);
-        tap_code_delay(KC_BSPC, 10);
+        wait_ms(20);
+        tap_code_delay(KC_END, 20);
+        tap_code_delay(KC_BSPC, 20);
+        wait_ms(20);
         unregister_code(KC_LSFT);
 
         super_del_enviado = true;
