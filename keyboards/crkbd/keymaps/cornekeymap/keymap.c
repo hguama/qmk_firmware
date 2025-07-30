@@ -874,20 +874,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return true;
 
             case  LT(1,KC_MINS):
-                    if (!record->tap.count && record->event.pressed) {
-                      SEND_STRING("_"); //hold
+                  if (record->event.pressed) {
+                       if (!record->tap.count) {
+//                        SEND_STRING("-"); //hold
+                         tap_code(KC_MINS);
                        return false;
+                    }else{
+//                         SEND_STRING("_"); //tap
+                         tap_code16(S(KC_MINS));
+                         return false;
+                     }
                     }
                     return true;
 
             case  LT(1,KC_PERC):
                   if (record->event.pressed) {
                     if (!record->tap.count) {
-//                      SEND_STRING("?"); // hold
                       tap_code16(KC_PERC);
                        return false;
                     }else {
-//                       SEND_STRING("@");
                        tap_code16(KC_PLUS);
                          return false;
                         }
