@@ -143,12 +143,11 @@ enum custom_keycodes {
 enum {
     TD_ESC_CAPS,
     TD_ESC_INS,
-    TD_RABK_EQ,
-    TD_LABK_EQ,
+//    TD_RABK_EQ,
+//    TD_LABK_EQ,
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
-    TDQ_DEL,
     TDQ_CLICK,
     TDQ_Z_ENG,
     TDQ_TOGGLE_HOLD,
@@ -328,7 +327,6 @@ void x_reset(tap_dance_state_t *state, void *user_data);
 void tdq_copy_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 void tdq_cut_finished(tap_dance_state_t *state, void *user_data);
-void tdq_del_finished(tap_dance_state_t *state, void *user_data);
 void tdq_click_finished(tap_dance_state_t *state, void *user_data);
 void tdq_z_eng_finished(tap_dance_state_t *state, void *user_data);
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
@@ -1900,7 +1898,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
     [TDQ_CUT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_cut_finished, x_reset),
-    [TDQ_DEL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_del_finished, x_reset),
     [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
     [TDQ_CLICK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_click_finished, x_reset),
     [TDQ_Z_ENG] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_z_eng_finished, x_reset),
@@ -2343,41 +2340,6 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
                  tap_code16(LCTL(KC_X));
 
          break;
-
-        default: break;
-    }
-}
-
-void tdq_del_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP: SEND_STRING(SS_TAP(X_BSPC)); break; //backspace
-
-        case TD_SINGLE_HOLD: //del 1 line
-
-                tap_code_delay(KC_HOME, 10);
-                register_code(KC_LSFT);
-                tap_code_delay(KC_END, 10);
-                tap_code_delay(KC_BSPC, 10);
-                unregister_code(KC_LSFT);
-          break;
-
-        case TD_DOUBLE_TAP: //del 1 word
-               tap_code16_delay(C(KC_LEFT), 10);
-               tap_code16_delay(C(S(KC_RIGHT)), 10);
-               tap_code(KC_BSPC);
-
-        break;
-
-        case TD_DOUBLE_HOLD: //del todoo hacia la derecha en 1 linea
-               tap_code16_delay(S(KC_END), 10);
-               tap_code(KC_DEL);
-        break;
-
-        case TD_TRIPLE_HOLD: //del todoo hacia la izq en 1 linea
-                       tap_code16_delay(S(KC_HOME), 10);
-                       tap_code(KC_DEL);
-                break;
 
         default: break;
     }
