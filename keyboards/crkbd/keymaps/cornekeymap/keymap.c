@@ -47,7 +47,6 @@ enum custom_keycodes {
     M_ALT_TAB,
     M_CTRL_TAB,
     SPC_CTRL_TAB,
-    ALT_RIGHT,
     Q_W,
     B_V,
     N_ENIE,
@@ -143,6 +142,7 @@ enum custom_keycodes {
 //Tap Dance enum
 enum {
     TD_ESC_CAPS,
+    TD_ESC_INS,
     TD_RABK_EQ,
     TD_LABK_EQ,
     TDQ_COPY,
@@ -453,7 +453,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        switch (keycode) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
             case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
-            case ALT_RIGHT: if (record->event.pressed) { tap_code16(A(KC_RIGHT)); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
             case SUPER_DEL:
@@ -663,14 +662,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     if (!voice_hold_sent) {
                         // TAP: Activar/Desactivar dictado y cambiar idioma
                         if (!voice_mode) {
-                            tap_code16(G(KC_SPC)); // Cambiar a español
+
+                            wait_ms(100);
+                            tap_code16(C(KC_L)); // Cambiar IDIOMA
+                            wait_ms(100);
+                            tap_code16(G(KC_SPC));
                             wait_ms(100);
                             tap_code16(G(KC_H));   // Activar dictado
-                            voice_mode = true;
+                                voice_mode = true;
                         } else {
+                            wait_ms(100);
+                            tap_code16(C(KC_L)); // Cambiar  IDIOMA
+                            wait_ms(100);
                             tap_code(KC_ESC);      // Detener dictado
                             wait_ms(100);
-                            tap_code16(G(KC_SPC)); // Volver a inglés
+                            tap_code16(G(KC_SPC));
                             voice_mode = false;
                         }
                     }
@@ -1886,6 +1892,7 @@ void matrix_scan_user(void) {
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
+    [TD_ESC_INS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_INS), //plantillai
 //    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
 //    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
     [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
@@ -1909,13 +1916,13 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   KC_ESC, Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
+   TD(TD_ESC_INS), Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB, TRIPLE_WHLD,     XXXXXXX,  TG(5), KC_ENT
+                                      TG(2), SPC_CTRL_TAB, A(KC_RIGHT),     XXXXXXX,  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1937,11 +1944,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  KC_ESC, SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
+  TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, ALT_RIGHT, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+  SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, A(KC_RIGHT), CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
   //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                        LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                       //`--------------------------'  `--------------------------'
@@ -2021,7 +2028,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                             XXXXXXX, XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                         //`--------------------------'  `--------------------------'
-   ), // super move ly9
+   ), // super move ly
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -2037,11 +2044,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_L), C(KC_T), XXXXXXX, XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), A(KC_RIGHT),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX, XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, A(KC_LEFT), A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_T)), XXXXXXX, XXXXXXX, A(KC_F4),
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_T)), XXXXXXX, C(KC_F21), A(KC_F4),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                             //`--------------------------'  `--------------------------'
