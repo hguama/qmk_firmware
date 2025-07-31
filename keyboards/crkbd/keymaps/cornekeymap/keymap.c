@@ -45,16 +45,16 @@ enum custom_keycodes {
     CHATGPT,
     SEL_WORD_PARAGRAPH,
     M_ALT_TAB,
-    M_CTRL_TAB,
+//    M_CTRL_TAB,
     SPC_CTRL_TAB,
     Q_W,
     B_V,
     N_ENIE,
-    DBL_CLICK,
-    DEL_WORD,
-    DEL_LINE,
-    CLEAR_WIN,
-    HIDE_WIN,
+//    DBL_CLICK,
+//    DEL_WORD,
+//    DEL_LINE,
+//    CLEAR_WIN,
+//    HIDE_WIN,
     WIN_D,
     CTRL_SHIFT_ENTER,
     LLAMBDA,
@@ -62,7 +62,7 @@ enum custom_keycodes {
     DOUBLE_COLON,
     ENV_VAR,
     LBRC2,
-    SEL_MOUSE,
+//    SEL_MOUSE,
     HOME_END,
     PGUP_CTRLPG,
     PGDW_CTRLPG,
@@ -93,8 +93,8 @@ enum custom_keycodes {
     SHIFT_TOGGLE,
     CTRL_TOGGLE,
     ALT_TOGGLE,
-    MOD_CLEAR,
-    CUT,
+//    MOD_CLEAR,
+//    CUT,
     TG_0,
     TG_6,
     SLEEP,
@@ -150,7 +150,7 @@ enum {
     TDQ_CUT,
     TDQ_CLICK,
     TDQ_Z_ENG,
-    TDQ_TOGGLE_HOLD,
+//    TDQ_TOGGLE_HOLD,
     TDQ_BOOKMARK,
     TDQ_GOTO,
     TDQ_FIND,
@@ -318,8 +318,8 @@ uint16_t chatgpt_timer = 0;
 // Prototypes quad
 //void dance_rabk(tap_dance_state_t *state, void *user_data); //plantilla
 //void dance_labk(tap_dance_state_t *state, void *user_data); //plantilla
-void tdq_toggle_hold_finished(tap_dance_state_t *state, void *user_data);//plantilla
-void tdq_toggle_hold_reset(tap_dance_state_t *state, void *user_data); //plantilla
+//void tdq_toggle_hold_finished(tap_dance_state_t *state, void *user_data);//plantilla
+//void tdq_toggle_hold_reset(tap_dance_state_t *state, void *user_data); //plantilla
 
 td_state_t cur_dance(tap_dance_state_t *state);
 void x_finished(tap_dance_state_t *state, void *user_data);
@@ -450,7 +450,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
-            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
+//            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
             case SUPER_DEL:
@@ -742,25 +742,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                   }
               break;
 
-            case DBL_CLICK:
+/*            case DBL_CLICK:
                     if (record->event.pressed) {
                         tap_code(KC_BTN1);
                         wait_ms(50);
                         tap_code(KC_BTN1);
                     }
-               break;
+               break;*/
 
-             case CLEAR_WIN:
+/*             case CLEAR_WIN:
                     if (record->event.pressed) {
                       SEND_STRING(SS_LGUI("d"));
                      }
-                 break;
-
+                 break;*/
+/*
             case HIDE_WIN:
                 if (record->event.pressed) {
                  tap_code16(C(S(KC_F12)));
                  }
-                 break;
+                 break;*/
 
             case SLEEP:
                   if (record->event.pressed) {
@@ -781,15 +781,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                      tap_code(KC_H);
                   }
               break;
-
+/*
             case DEL_WORD:
                 if (record->event.pressed) {
                   tap_code16_delay(C(KC_LEFT), 10);
                   tap_code16_delay(C(S(KC_RIGHT)), 10);
                   tap_code(KC_BSPC);
                  }
-                 break;
-
+                 break;*/
+/*
             case DEL_LINE:
                 if (record->event.pressed) {
                    tap_code_delay(KC_HOME, 10);
@@ -798,7 +798,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                    tap_code_delay(KC_BSPC, 10);
                    unregister_code(KC_LSFT);
                  }
-                 break;
+                 break;*/
 
 
             case CTRL_SHIFT_ENTER :
@@ -1366,7 +1366,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }
                     }
                     return false;
-
+/*
             case CUT:
                     if (record->event.pressed) {
                         timer_key = timer_read(); // Inicia el temporizador
@@ -1383,7 +1383,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                             unregister_code(KC_LSFT);
                         }
                     }
-                    return false; // Bloquea el comportamiento por defecto
+                    return false; // Bloquea el comportamiento por defecto*/
 
             case TAB_SPLIT:
                 if (record->event.pressed) {
@@ -1583,14 +1583,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                 }
                   break;
-
+/*
             case MOD_CLEAR:
                    if (record->event.pressed) {
                     if (shift_active) { unregister_code(KC_LSFT); shift_active = false; }
                     if (ctrl_active)  { unregister_code(KC_LCTL); ctrl_active  = false; }
                     if (alt_active)   { unregister_code(KC_LALT); alt_active   = false; }
                    }
-                   break;
+                   break;*/
 
             case TG(2):
                     if (!record->event.pressed) {
@@ -1893,7 +1893,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_ESC_INS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_INS), //plantillai
 //    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
 //    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
-    [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
+//    [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
 
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
@@ -1941,7 +1941,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, M_CTRL_TAB, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
+  TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), XXXXXXX,          XXXXXXX, XXXXXXX, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
   LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -2344,7 +2344,7 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
         default: break;
     }
 }
-
+/*
 void tdq_toggle_hold_finished(tap_dance_state_t *state, void *user_data) {
      xtap_state.state = cur_dance(state);
         switch (xtap_state.state) {
@@ -2365,7 +2365,7 @@ void tdq_toggle_hold_reset(tap_dance_state_t *state, void *user_data) {
        }
 
      xtap_state.state = TD_NONE;
-}
+}*/
 
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
@@ -2395,11 +2395,11 @@ void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
 void tdq_goto_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
-        case TD_SINGLE_TAP:  tap_code16(C(KC_B)); break;
-        case TD_SINGLE_HOLD: tap_code16(C(A(KC_B))); break;
-        case TD_DOUBLE_TAP:  tap_code16(C(S(KC_B))); break;
-        case TD_DOUBLE_HOLD: tap_code16(C(S(KC_T))); break;
-        case TD_TRIPLE_HOLD: tap_code16(C(KC_U));  break;
+        case TD_SINGLE_TAP:  tap_code16(C(KC_B)); break; //go to definition
+        case TD_SINGLE_HOLD: tap_code16(C(A(KC_B))); break;//go to implemetation
+        case TD_DOUBLE_TAP:  tap_code16(C(S(KC_B))); break;//Go to Type Declaration
+        case TD_DOUBLE_HOLD: tap_code16(C(S(KC_T))); break;//go to test
+        case TD_TRIPLE_HOLD: tap_code16(C(KC_U));  break;//Go to Super Method / Class
         default: break;
     }
 }
@@ -2468,13 +2468,15 @@ void tdq_find_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_DOUBLE_TAP: //find on 1 word
-                tap_code16_delay(C(KC_RGHT), 10);
-                tap_code16_delay(C(S(KC_LEFT)), 10);
+                tap_code16_delay(C(KC_LEFT), 10);
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
                 tap_code16_delay(C(KC_F), 10);
             break;
 
         case TD_DOUBLE_HOLD: //ctrl shift f //find in files
-             tap_code16(LCTL(LSFT(KC_F)));
+                tap_code16_delay(C(KC_LEFT), 10);
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
+                tap_code16(LCTL(LSFT(KC_F)));
             break;
         default:
             break;
