@@ -206,6 +206,17 @@ bool n_sent = false;
 
 //vars
 
+// Variables para PAGE_PARAGRAPH_UP
+bool para_up_pressed = false;
+bool para_up_sent = false;
+uint16_t para_up_timer = 0;
+
+// Variables para PAGE_PARAGRAPH_DOWN
+bool para_down_pressed = false;
+bool para_down_sent = false;
+uint16_t para_down_timer = 0;
+
+
 bool super_del_presionado = false;
 bool super_del_enviado = false;
 uint16_t super_del_timer = 0;
@@ -1074,30 +1085,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false; // Bloquea el comportamiento por defecto
 
-            case PAGE_PARAGRAPH_DOWN:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → ALT PAGE DOWN
-                            tap_code16(A(KC_PGDN));
-                        }else {
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
 
             case PAGE_PARAGRAPH_UP:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → ALT PAGE DOWN
-                            tap_code16(A(KC_PGUP));
-
-                        }else {
-                        }
+                if (record->event.pressed) {
+                    para_up_pressed = true;
+                    para_up_sent = false;
+                    para_up_timer = timer_read();
+                } else {
+                    if (!para_up_sent) {
+                        // TAP
+                        tap_code16(A(KC_PGUP));
                     }
-                    return false; // Bloquea el comportamiento por defecto
+                    para_up_pressed = false;
+                }
+                return false;
+
+            case PAGE_PARAGRAPH_DOWN:
+                if (record->event.pressed) {
+                    para_down_pressed = true;
+                    para_down_sent = false;
+                    para_down_timer = timer_read();
+                } else {
+                    if (!para_down_sent) {
+                        // TAP
+                        tap_code16(A(KC_PGDN));
+                    }
+                    para_down_pressed = false;
+                }
+                return false;
 
 
             case   SEL_WORD_PARAGRAPH:
@@ -1659,6 +1674,22 @@ void matrix_scan_user(void) {
 
 //double key
 
+    if (para_up_pressed && !para_up_sent && timer_elapsed(para_up_timer) > TAPPING_TERM) {
+        // HOLD para PAGE_PARAGRAPH_UP
+        tap_code16(A(KC_PGUP));
+        tap_code(KC_DOWN);
+        tap_code(KC_END);
+        para_up_sent = true;
+    }
+
+    if (para_down_pressed && !para_down_sent && timer_elapsed(para_down_timer) > TAPPING_TERM) {
+        // HOLD para PAGE_PARAGRAPH_DOWN
+        tap_code16(A(KC_PGDN));
+        tap_code(KC_UP);
+        tap_code(KC_END);
+        para_down_sent = true;
+    }
+
     if (super_del_presionado && !super_del_enviado && timer_elapsed(super_del_timer) > TAPPING_TERM) {
         // HOLD: borrar línea completa
         tap_code_delay(KC_HOME, 20);
@@ -2031,7 +2062,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
           XXXXXXX, XXXXXXX, VOICE, CHATGPT, VOICE_A, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, Z_UNDO, M_ALT_TAB, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
+          KC_LCTL, XXXXXXX, Z_UNDO, M_ALT_TAB, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, SUPER_DEL, KC_DEL, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
