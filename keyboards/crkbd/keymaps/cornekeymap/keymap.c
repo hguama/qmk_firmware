@@ -47,7 +47,7 @@ enum custom_keycodes {
     M_ALT_TAB,
 //    M_CTRL_TAB,
     SPC_CTRL_TAB,
-    Q_W,
+    G_W,
     B_V,
     N_ENIE,
 //    DBL_CLICK,
@@ -192,21 +192,24 @@ static bool alt_active   = false;
 
 
 //for doubles key
-bool q_pressed = false;
+bool g_pressed = false;
 bool b_pressed = false;
 bool n_pressed = false;
 
-uint16_t q_timer = 0;
+uint16_t g_timer = 0;
 uint16_t b_timer = 0;
 uint16_t n_timer = 0;
 
-bool q_sent = false;
+bool g_sent = false;
 bool b_sent = false;
 bool n_sent = false;
 
 //vars
 
 // Variables para PAGE_PARAGRAPH_UP
+
+
+
 bool para_up_pressed = false;
 bool para_up_sent = false;
 uint16_t para_up_timer = 0;
@@ -1233,17 +1236,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;
 
-            case Q_W:
+            case G_W:
                     if (record->event.pressed) {
-                        q_pressed = true;
-                        q_sent = false;
-                        q_timer = timer_read();
+                        g_pressed = true;
+                        g_sent = false;
+                        g_timer = timer_read();
                     } else {
-                        q_pressed = false;
+                        g_pressed = false;
 
-                        if (!q_sent) {
+                        if (!g_sent) {
                             // Tap: enviar Q si no se envió W por hold
-                            tap_code(KC_Q);
+                            tap_code(KC_G);
                         }
                     }
                     return false;  // bloquea el comportamiento estándar
@@ -1781,9 +1784,9 @@ void matrix_scan_user(void) {
     }
 
 
-    if (q_pressed && !q_sent && timer_elapsed(q_timer) > 200) {
+    if (g_pressed && !g_sent && timer_elapsed(g_timer) > 200) {
         tap_code(KC_W);
-        q_sent = true;
+        g_sent = true;
     }
 
     if (b_pressed && !b_sent && timer_elapsed(b_timer) > 200) {
@@ -1951,7 +1954,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
+      TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1965,11 +1968,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   TD(TD_ESC_INS), Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
+   TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,            XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(2, KC_S), LT(0,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(0,KC_K), LT(2, KC_L), RSFT_T(KC_P),
+   LSFT_T(KC_A), LT(9,KC_S), KC_D, KC_F, G_W, C(KC_S),                             SLEEP,  KC_H, KC_J, LT(0,KC_K), KC_L, RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
+   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        TO(0), SPC_CTRL_TAB, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
@@ -2010,7 +2013,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     XXXXXXX, C(KC_F19), C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, TD(TDQ_BOOKMARK), C(KC_0), C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, TD(TDQ_BOOKMARK), XXXXXXX, C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
