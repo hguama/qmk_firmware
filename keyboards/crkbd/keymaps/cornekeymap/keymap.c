@@ -825,21 +825,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               }
               return true; //normal tap
 
-            case LT(1,KC_SCLN):
+            case LT(2,KC_SCLN):
                 if (!record->tap.count && record->event.pressed) {
                    SEND_STRING(SS_LSFT(SS_TAP(X_SCLN))); // hold
                     return false;
                 }
                 return true;
 
-            case LT(1,KC_SLSH):
+            case LT(2,KC_SLSH):
                 if (!record->tap.count && record->event.pressed) {
                    SEND_STRING("\\"); // hold
                     return false;
                 }
                 return true;
 
-            case  LT(1,KC_DQT):
+            case  LT(2,KC_DQT):
                    if (record->event.pressed) {
                       if (!record->tap.count) {
 
@@ -852,7 +852,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       }
                       return true;
 
-            case  LT(1,KC_EXLM):
+            case  LT(2,KC_EXLM):
                   if (record->event.pressed) {
                      if (!record->tap.count) {
                        SEND_STRING("!="); // hold
@@ -864,7 +864,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                      }
                      return true;
 
-            case  LT(1,KC_LABK):
+            case  LT(2,KC_LABK):
                   if (record->event.pressed) {
                      if (!record->tap.count) {
                        SEND_STRING("<="); // hold
@@ -876,7 +876,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }
                      return true;
 
-            case  LT(1,KC_RABK):
+            case  LT(2,KC_RABK):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                       SEND_STRING(">="); // hold
@@ -888,7 +888,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }
                     return true;
 
-            case  LT(1,KC_MINS):
+            case  LT(2,KC_MINS):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
 //                        SEND_STRING("-"); //hold
@@ -902,7 +902,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;
 
-            case  LT(1,KC_PERC):
+            case  LT(2,KC_PERC):
                   if (record->event.pressed) {
                     if (!record->tap.count) {
                       tap_code16(KC_PERC);
@@ -921,7 +921,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;*/
 
-            case  LT(1,KC_AT):
+            case  LT(2,KC_AT):
                   if (record->event.pressed) {
                     if (!record->tap.count) {
                       SEND_STRING("?"); // hold
@@ -936,7 +936,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-            case  LT(1,KC_AMPR):
+            case  LT(2,KC_AMPR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                        SEND_STRING("$");// hold
@@ -948,7 +948,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                      }else {}
                     return true;
 
-            case  LT(1,ENV_VAR):
+            case  LT(2,ENV_VAR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                        SEND_STRING("#{}#");
@@ -978,7 +978,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                    }
                   break;
 
-            case  LT(1,KC_LPRN):
+            case  LT(2,KC_LPRN):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                       SEND_STRING(")");
@@ -990,7 +990,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                    break;
 
-            case  LT(1,KC_LCBR):
+            case  LT(2,KC_LCBR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                      SEND_STRING("}");
@@ -1002,7 +1002,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                        }
                     break;
 
-            case  LT(1,LBRC2):
+            case  LT(2,LBRC2):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                       SEND_STRING("]");
@@ -1248,7 +1248,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false;  // bloquea el comportamiento estándar
 
-             case  LT(1,KC_PSCR):
+             case  LT(2,KC_PSCR):
                   if (record->event.pressed) {
 
                     if (!record->tap.count) {
@@ -1640,7 +1640,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                           return true; //hold
                        }else {
                            clear_all();
-                           layer_invert(2); //tap
+                           layer_invert(1); //tap
 
                             return false;
                                }
@@ -1942,45 +1942,49 @@ tap_dance_action_t tap_dance_actions[] = {
  //KEY MAP
   //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     //LY 0
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
     [0] = LAYOUT_split_3x6_3(
+      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
+      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, A(KC_RIGHT), CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+      //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                           LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
+                                          //`--------------------------'  `--------------------------'
+      ),
+
+
+     //alfa ly
+    [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
    TD(TD_ESC_INS), Q_W, LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,                           XXXXXXX, KC_Y, KC_U, KC_I,  KC_O, TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(1, KC_S), LT(2,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(2,KC_K), LT(1, KC_L), RSFT_T(KC_P),
+   LSFT_T(KC_A), LT(2, KC_S), LT(0,KC_D), KC_F, KC_G, C(KC_S),                     SLEEP,  KC_H, KC_J, LT(0,KC_K), LT(2, KC_L), RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                           HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                      TG(2), SPC_CTRL_TAB, A(KC_RIGHT),     XXXXXXX,  TG(5), KC_ENT
+                                       TO(0), SPC_CTRL_TAB, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
   ),
+
 //symbols ly 1
-    [1] = LAYOUT_split_3x6_3(
+    [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), LT(1,ENV_VAR), XXXXXXX,        XXXXXXX, LT(1,KC_PSCR), LT(1,KC_AT), EQUAL_DBL,  LT(1,KC_DQT), KC_QUOT,
+ XXXXXXX, LT(2,KC_PERC), LT(2,KC_MINS), LT(2,KC_SLSH), LT(2,ENV_VAR), XXXXXXX,        XXXXXXX, LT(2,KC_PSCR), LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, LT(1, KC_AMPR), LT(1,KC_LABK), LT(1,KC_RABK), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, LT(1,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(1,KC_LPRN), LT(1,KC_LCBR),
+ KC_ASTR, LT(2, KC_AMPR), LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, LT(2,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(2,KC_LPRN), LT(2,KC_LCBR),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(1,KC_SCLN),  LT(1,LBRC2),  S(KC_GRAVE),
+ DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(2,KC_SCLN),  LT(2,LBRC2),  S(KC_GRAVE),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, KC_SPC,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
  ),
 
- //move ly 2  LCTL(KC_W)
 
-    [2] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-  SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, A(KC_RIGHT), CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
-  //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(7), SHOW_QUICK_ENT, LT(3,KC_ENT)
-                                      //`--------------------------'  `--------------------------'
-  ),
 
   //dev ly 3
     [3] = LAYOUT_split_3x6_3(
@@ -2011,7 +2015,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [5] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    XXXXXXX, LT(1,KC_PERC), LT(1,KC_MINS), LT(1,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
+    XXXXXXX, LT(2,KC_PERC), LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -2641,8 +2645,8 @@ const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 0
-    NULL,               // 1
-    my_layer2_layer,    // 2
+    my_layer2_layer,    // 1
+    NULL,               // 2
     NULL,               // 3
     NULL,               // 4
     my_layer5_layer,    // 5
@@ -2671,6 +2675,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
 //    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
 
+    rgblight_set_layer_state(1, false); //alfa LY OFF
     rgblight_set_layer_state(2, false); // MOVE LY OFF
     rgblight_set_layer_state(5, false); // NUMBERS LY OFF
     rgblight_set_layer_state(6, false); // MOUSE LY OFF
@@ -2680,12 +2685,12 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
-            case 2:
-                 rgblight_set_layer_state(2, true); // MOVE LY
+            case 1:
+                 rgblight_set_layer_state(1, true); // MOVE LY
                  send_layer_status("LAYER_MOVE");
                 break;
             case 5:
-                 rgblight_set_layer_state(5, true); // aNUMBERS LY
+                 rgblight_set_layer_state(5, true); // NUMBERS LY
                  send_layer_status("LAYER_NUM");
                 break;
             case 6:
