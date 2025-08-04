@@ -1557,18 +1557,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-            case SHIFT_TOGGLE:
-                  if (record->event.pressed) {
+        case SHIFT_TOGGLE:
+            if (record->event.pressed) {
+                shift_toggle_timer = timer_read();  // usa el nuevo nombre
+                layer_on(2);  // activa momentáneamente la capa 2
+            } else {
+                if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
+                    // TAP: Toggle shift
                     shift_active = !shift_active;
-                    shift_toggle_timer = timer_read();
-
                     if (shift_active) {
                         register_code(KC_LSFT);
                     } else {
                         unregister_code(KC_LSFT);
                     }
                 }
-                break;
+                layer_off(2);  // desactiva la capa momentánea
+            }
+            return false;  // evita el comportamiento predeterminado
+
 
             case CTRL_TOGGLE:
                   if (record->event.pressed) {
@@ -1947,7 +1953,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, TAB_SPLIT, KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), VOICE, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, A(KC_RIGHT), CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
