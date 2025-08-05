@@ -70,7 +70,6 @@ enum custom_keycodes {
     PAGE_PARAGRAPH_DOWN,
     SPACE_ENTER,
     EVERYW_ACT,
-    CLOSE_TAB,
     TAB_SPLIT,
     PROJECT_VIEW,
     NEW_FILE,
@@ -1152,30 +1151,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false; // Bloquea el comportamiento por defecto
 
-            case LT(10, CLOSE_TAB):
-                    if (record->event.pressed) {
-                        if (!record->tap.count) {
-                              return true; //hold
-                           }else {
-                                // TAP →  close tab
-                                tap_code16(C(KC_F4));
-                                return false;
-                                   }
-                               }
-                           return true;
-                    /*
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP →  close tab
-                            tap_code16(C(KC_F4));
-                        }else {
-                            // HOLD →  close others tab
-                            tap_code16(C(KC_F21));
-                        }
-                    }*/
-
-
             case SPC_CTRL_TAB:
                 if (record->event.pressed) {
                     spc_tab_presionado = true;
@@ -1958,7 +1933,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                           //`--------------------------'  `--------------------------'
@@ -2085,13 +2060,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), A(KC_RIGHT),
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, A(KC_LEFT), A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
+         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_T)), XXXXXXX, C(KC_F21), A(KC_F4),
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                A(KC_F4), _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
                                             //`--------------------------'  `--------------------------'
         ), //LY 11 super move 2
 
