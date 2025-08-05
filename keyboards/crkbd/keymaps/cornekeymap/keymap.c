@@ -1958,7 +1958,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, A(KC_RIGHT), CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, LT(10, CLOSE_TAB), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                           //`--------------------------'  `--------------------------'
@@ -2075,7 +2075,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
           XXXXXXX, XXXXXXX, VOICE, CHATGPT, VOICE_A, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_LSFT, XXXXXXX, Z_UNDO, M_ALT_TAB, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
+          KC_LSFT, XXXXXXX, MO(10), Z_UNDO, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, SUPER_DEL, KC_DEL, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
