@@ -1887,12 +1887,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), XXXXXXX, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
-                                          //`--------------------------'  `--------------------------'
+                                           //`--------------------------'  `--------------------------'
       ),
 
 
@@ -1948,7 +1948,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      XXXXXXX, XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
+                                      MO(8), XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
                        //`--------------------------'  `--------------------------'
 ),
  //numbers ly 5
@@ -1970,11 +1970,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   TG(6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+   XXXXXXX, MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      TD(TDQ_Z_ENG), MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_ENT,  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
+                                         TG(6),  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
                                        //`--------------------------'  `--------------------------'
   ), // mouse2 ly7 - single mouse hand left
 
@@ -2020,21 +2020,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
+         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                A(KC_F4), _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
+                                                 KC_LCTL, _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
                                             //`--------------------------'  `--------------------------'
         ), //LY 11 super DEL
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, PAGE_PARAGRAPH_UP, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, DEL_LINE, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, DEL_LINE, DEL_WORD, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, PAGE_PARAGRAPH_DOWN, KC_END,  LCTL(LSFT(KC_M)),
+           XXXXXXX, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, KC_DOWN, KC_END,  LCTL(LSFT(KC_M)),
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_HOME), XXXXXXX, C(KC_END), XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  MO(12), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                  C(KC_Z), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
          ), // LY12 super move 3
 
