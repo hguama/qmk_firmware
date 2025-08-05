@@ -2034,7 +2034,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_HOME), XXXXXXX, C(KC_END), XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  C(KC_Z), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                  Z_UNDO, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
          ), // LY12 super move 3
 
