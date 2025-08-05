@@ -70,7 +70,6 @@ enum custom_keycodes {
     PAGE_PARAGRAPH_DOWN,
     SPACE_ENTER,
     EVERYW_ACT,
-    TAB_SPLIT,
     PROJECT_VIEW,
     NEW_FILE,
     SPLIT_WIN,
@@ -277,10 +276,6 @@ bool is_recent_loc_held = false;
 uint16_t recent_loc_timer = 0;
 bool recent_loc_sent = false;
 
-bool is_tab_split_held = false;
-uint16_t tab_split_timer = 0;
-bool tab_split_sent = false;
-
 bool select_pressed = false;
 uint16_t select_timer = 0;
 bool select_hold_executed = false;
@@ -392,9 +387,6 @@ const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
 //const uint16_t PROGMEM cb_backspace_mouse[] = {TD(TDQ_COPY), MS_LEFT, COMBO_END}; //base    //medio, indice
 
 //const uint16_t PROGMEM cb_tab[] = {LT(5,KC_F), KC_J, COMBO_END}; //base   //indices //YA USADA
-
-//const uint16_t PROGMEM cb_close_tab[]    = {KC_UP, TAB_SPLIT, COMBO_END}; //move right ly //medio anular arriba //YA USADA
-//const uint16_t PROGMEM cb_close_others[] = {M_ALT_TAB,  KC_UP, TAB_SPLIT, COMBO_END}; //move right ly //indice medio anular arriba
 
 //const uint16_t PROGMEM cb_all_copy[] = {LGUI_T(KC_E), KC_I, COMBO_END}; //base left right //medios arriba
 //const uint16_t PROGMEM cb_hide_win[] = {KC_DOWN, KC_RIGHT, COMBO_END}; //move right// medio anular
@@ -1359,38 +1351,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         }
                     }
                     return false;
-/*
-            case CUT:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → CTRL X
-                            tap_code16(C(KC_X));
-                        }else {
-                            // HOLD
-                            tap_code_delay(KC_HOME, 30);
-                            register_code(KC_LSFT);
-                            tap_code_delay(KC_END, 30);
-                            tap_code16_delay(C(KC_X), 30);
-                            unregister_code(KC_LSFT);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto*/
-
-            case TAB_SPLIT:
-                if (record->event.pressed) {
-                    tab_split_timer = timer_read();
-                    is_tab_split_held = true;
-                    tab_split_sent = false;
-                } else {
-                    is_tab_split_held = false;
-                    if (!tab_split_sent) {
-                        // TAP: Ejecutar TAB solo si no se hizo el HOLD
-                        tap_code16(KC_TAB);
-                    }
-                }
-                return false; // Bloquear comportamiento por defecto
 
             case COMM:
                 if (record->event.pressed) {
@@ -1742,12 +1702,6 @@ void matrix_scan_user(void) {
         recent_loc_sent = true;
     }
 
-    if (is_tab_split_held && !tab_split_sent && timer_elapsed(tab_split_timer) > TAPPING_TERM) {
-        // HOLD detectado: Ejecutar solo una vez
-        tap_code16(KC_F20);
-        tab_split_sent = true;
-    }
-
     if (select_pressed && !select_hold_executed) {
         if (timer_elapsed(select_timer) > 120) {  // Ejecutar HOLD a los 120 ms
             select_hold_executed = true;
@@ -1933,7 +1887,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                           //`--------------------------'  `--------------------------'
