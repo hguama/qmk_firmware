@@ -50,9 +50,9 @@ enum custom_keycodes {
     G_W,
     B_V,
     N_ENIE,
+    DEL_WORD,
+    DEL_LINE,
 //    DBL_CLICK,
-//    DEL_WORD,
-//    DEL_LINE,
 //    CLEAR_WIN,
 //    HIDE_WIN,
     WIN_D,
@@ -786,15 +786,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                      tap_code(KC_H);
                   }
               break;
-/*
+
             case DEL_WORD:
                 if (record->event.pressed) {
                   tap_code16_delay(C(KC_LEFT), 10);
                   tap_code16_delay(C(S(KC_RIGHT)), 10);
                   tap_code(KC_BSPC);
                  }
-                 break;*/
-/*
+                 break;
+
             case DEL_LINE:
                 if (record->event.pressed) {
                    tap_code_delay(KC_HOME, 10);
@@ -803,7 +803,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                    tap_code_delay(KC_BSPC, 10);
                    unregister_code(KC_LSFT);
                  }
-                 break;*/
+                 break;
 
 
             case CTRL_SHIFT_ENTER :
@@ -1837,22 +1837,24 @@ void matrix_scan_user(void) {
 
       if (ctrl_active){
         if (timer_elapsed(ctrl_toggle_timer) > 20000) {
-         unregister_code(KC_LCTL);
+             unregister_code(KC_LCTL);
          ctrl_active = false;
-      }*/
+      }
+
+          if (alt_active){
+             if (timer_elapsed(alt_tab_timer) > 20000) {
+            unregister_code(KC_LALT);
+            alt_active = false;
+
+            }
+
+          }
+      */
+
 
      }
 
-    /*  if (alt_active){
-       if (timer_elapsed(alt_tab_timer) > 20000) {
-//      unregister_code(KC_LALT);
-      alt_active = false;
 
-      }
-
-    }
-  }
-*/
 
 
 
@@ -1887,7 +1889,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(4,TG_6), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(9,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, XXXXXXX, MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                           //`--------------------------'  `--------------------------'
@@ -1901,7 +1903,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
    LSFT_T(KC_A), LT(9,KC_S), KC_D, KC_F, G_W, C(KC_S),                             SLEEP,  KC_H, KC_J, LT(0,KC_K), KC_L, RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(9,KC_BSPC), N_ENIE,
+   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        TO(0), SPC_CTRL_TAB, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
@@ -2004,9 +2006,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
           XXXXXXX, XXXXXXX, VOICE, CHATGPT, VOICE_A, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_LSFT, XXXXXXX, MO(10), Z_UNDO, KC_BSPC, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
+          KC_LSFT, XXXXXXX, MO(10), Z_UNDO, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, SUPER_DEL, KC_DEL, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
+          XXXXXXX, XXXXXXX, XXXXXXX, M_ALT_TAB, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                               KC_ENT, KC_TAB,  _______,     TO(0),   A(KC_ENT), XXXXXXX
                                           //`--------------------------'  `--------------------------'
@@ -2022,13 +2024,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                 A(KC_F4), _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
                                             //`--------------------------'  `--------------------------'
-        ), //LY 11 super move 2
+        ), //LY 11 super DEL
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, PAGE_PARAGRAPH_UP, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, PAGE_PARAGRAPH_DOWN, KC_END,  LCTL(LSFT(KC_M)),
+           XXXXXXX, DEL_LINE, DEL_WORD, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, PAGE_PARAGRAPH_DOWN, KC_END,  LCTL(LSFT(KC_M)),
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_HOME), XXXXXXX, C(KC_END), XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
