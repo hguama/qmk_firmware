@@ -448,6 +448,8 @@ const uint16_t PROGMEM cb_undo_left[] = {LT(1, KC_S), LT(2,KC_D), COMBO_END}; //
 void clear_all(void) {
     clear_mods();             // Libera Ctrl, Shift, Alt, etc.
     clear_keyboard();         // Libera cualquier tecla registrada
+
+    if (is_alt_tab_active)   { unregister_code(KC_LALT); unregister_code(KC_TAB); is_alt_tab_active = false; }
 }
 
 //PR record
@@ -1880,16 +1882,16 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
-  //LY 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     //LY 0
+  //LY 0  SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD(TD_ESC_INS), SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, XXXXXXX, M_ALT_TAB,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
+      TD(TD_ESC_INS), MO(2), A(KC_TAB), M_ALT_TAB, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, XXXXXXX,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), XXXXXXX, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, KC_F20, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
@@ -2028,11 +2030,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
             [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, DEL_LINE, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, DEL_LINE, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HOME, KC_DOWN, KC_END,  LCTL(LSFT(KC_M)),
+           XXXXXXX, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_DOWN)), C(S(KC_DOWN)), XXXXXXX,  XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, C(KC_HOME), XXXXXXX, C(KC_END), XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                   Z_UNDO, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
