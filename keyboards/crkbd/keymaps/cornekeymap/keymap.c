@@ -486,10 +486,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     z_undo_presionado = false;
                     if (!z_undo_enviado) {
                         // Tap: Ctrl + Z
-                        register_mods(MOD_BIT(KC_LCTL));
+                        tap_code16(C(KC_Z));
+                        /*register_mods(MOD_BIT(KC_LCTL));
                         tap_code(KC_Z);
                         unregister_mods(MOD_BIT(KC_LCTL));
-                    }
+*/                    }
                 }
                 return false;
 
@@ -1651,9 +1652,9 @@ void matrix_scan_user(void) {
 
     if (z_undo_presionado && !z_undo_enviado && timer_elapsed(z_undo_timer) > TAPPING_TERM) {
         // Hold: Ctrl + Y (ejecutado sin soltar)
-        register_mods(MOD_BIT(KC_LCTL));
-        tap_code(KC_Y);
-        unregister_mods(MOD_BIT(KC_LCTL));
+        tap_code16(C(KC_Y));
+//        register_mods(MOD_BIT(KC_LCTL));
+//        unregister_mods(MOD_BIT(KC_LCTL));
         z_undo_enviado = true;
     }
 
@@ -1882,18 +1883,18 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
-  //LY 0  SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE
+  //LY 0  SHIFT_TOGGLE, CTRL_TOGGLE, ALT_TOGGLE  SPC_CTRL_TAB
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), MO(2), A(KC_TAB), M_ALT_TAB, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, XXXXXXX,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), XXXXXXX, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,TG_0), SPC_CTRL_TAB, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
+                                           LT(3,TG_0), KC_SPACE, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
@@ -1907,7 +1908,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       TO(0), SPC_CTRL_TAB, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
+                                       TO(0), KC_SPACE, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
