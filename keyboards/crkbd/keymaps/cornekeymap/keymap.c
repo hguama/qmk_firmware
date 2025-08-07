@@ -1499,7 +1499,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SHIFT_TOGGLE:
             if (record->event.pressed) {
                 shift_toggle_timer = timer_read();  // usa el nuevo nombre
-                layer_on(2);  // activa momentáneamente la capa 2
+                layer_on(5);  // activa momentáneamente la capa 2
             } else {
                 if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
                     // TAP: Toggle shift
@@ -1510,7 +1510,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         unregister_code(KC_LSFT);
                     }
                 }
-                layer_off(2);  // desactiva la capa momentánea
+                layer_off(5);  // desactiva la capa momentánea
             }
             return false;  // evita el comportamiento predeterminado
 
@@ -1886,13 +1886,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, XXXXXXX, SUPER_UP, LT(2,KC_TAB), KC_ESC,
+      TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      KC_TAB, LT(4,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,KC_SPACE), XXXXXXX, XXXXXXX,     TO(0), XXXXXXX, LT(3,KC_ENT)
+                                           LT(3,KC_SPACE), KC_LCTL, XXXXXXX,     TO(0), SHIFT_TOGGLE, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
@@ -2005,13 +2005,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, VOICE, CHATGPT, VOICE_A, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, VOICE_A, XXXXXXX, XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_LSFT, XXXXXXX, MO(10), Z_UNDO, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
+          KC_LSFT, XXXXXXX, MO(10), VOICE, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, M_ALT_TAB, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              KC_ENT, KC_TAB,  _______,     TO(0),   A(KC_ENT), XXXXXXX
+                                              CHATGPT, XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                           //`--------------------------'  `--------------------------'
      ), //LY 10 super close window
 
@@ -2023,7 +2023,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 KC_LCTL, _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
+                                                 XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
                                             //`--------------------------'  `--------------------------'
         ), //LY 11 super DEL
 
