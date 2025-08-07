@@ -206,8 +206,6 @@ bool n_sent = false;
 
 // Variables para PAGE_PARAGRAPH_UP
 
-
-
 bool para_up_pressed = false;
 bool para_up_sent = false;
 uint16_t para_up_timer = 0;
@@ -669,8 +667,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         // TAP: Activar/Desactivar dictado y cambiar idioma
                         if (!voice_mode) {
 
-                            wait_ms(100);
-                            tap_code16(C(KC_L)); // Cambiar IDIOMA
+//                            wait_ms(100);
+//                            tap_code16(C(KC_L)); //
                             wait_ms(100);
                             tap_code16(G(KC_SPC));
                             wait_ms(100);
@@ -1581,7 +1579,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case TO(0): clear_all(); break;
 
-            case LT(3,TG_0):
+            case LT(2,TG_0):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
                           return true; //hold
@@ -1888,13 +1886,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD(TD_ESC_INS), MO(2), A(KC_TAB), M_ALT_TAB, TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, XXXXXXX,  SUPER_UP, LT(2,KC_TAB), KC_ESC,
+      TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, XXXXXXX, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, XXXXXXX, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      SELECT_W_ALL, LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,TG_0), KC_SPACE, XXXXXXX,     TO(0), SHOW_QUICK_ENT, LT(3,KC_ENT)
+                                           LT(3,KC_SPACE), XXXXXXX, XXXXXXX,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
@@ -1902,13 +1900,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-   TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), LT(6,KC_R), KC_T, VOICE_A,            XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
+    TD(TD_ESC_INS), LT(2,KC_Q), KC_E, LGUI_T(KC_R), KC_T, VOICE_A,                  XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-   LSFT_T(KC_A), LT(9,KC_S), KC_D, KC_F, G_W, C(KC_S),                             SLEEP,  KC_H, KC_J, LT(0,KC_K), KC_L, RSFT_T(KC_P),
+    LSFT_T(KC_A), LT(12,KC_S), KC_D, KC_F, G_W, C(KC_S),                                   SLEEP,  KC_H, KC_J, KC_K, KC_L, RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-   KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
+    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       TO(0), KC_SPACE, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
+                                       KC_SPACE, XXXXXXX, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
                                       //`--------------------------'  `--------------------------'
 
 
@@ -1923,7 +1921,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(2,KC_SCLN),  LT(2,LBRC2),  S(KC_GRAVE),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_ENT, KC_SPC,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
+                                          TO(0), KC_SPC,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
  ),
 
@@ -2019,11 +2017,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
           [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
         //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                  KC_LCTL, _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
                                             //`--------------------------'  `--------------------------'
@@ -2043,9 +2041,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
              [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, KC_COMMA, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, SUPER_UP, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, XXXXXXX,
+            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
