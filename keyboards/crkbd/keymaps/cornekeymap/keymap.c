@@ -447,7 +447,11 @@ void clear_all(void) {
     clear_mods();             // Libera Ctrl, Shift, Alt, etc.
     clear_keyboard();         // Libera cualquier tecla registrada
 
-    if (is_alt_tab_active)   { unregister_code(KC_LALT); unregister_code(KC_TAB); is_alt_tab_active = false; }
+    if (is_alt_tab_active)   {
+       unregister_code(KC_LALT);
+       unregister_code(KC_TAB);
+       is_alt_tab_active = false;
+       }
 }
 
 //PR record
@@ -1010,7 +1014,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     break;
 
 
-            case  LT(3,KC_ENT):
+/*            case  LT(3,KC_ENT):
                    if (record->event.pressed) {
                            timer_key = timer_read();
                            layer_on(3);
@@ -1037,8 +1041,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
                            }
                        }
-                    return false;
+                    return false;*/
 
+
+            case  LT(3,KC_ENT):
+                   if (record->event.pressed) {
+                      clear_all();
+                       }
+
+                    return true;
+
+            case  LT(9,KC_ENT):
+                   if (record->event.pressed) {
+                      clear_all();
+                       }
+
+                    return true;
 
             case  HOME_END:
                    if (record->event.pressed) {
@@ -1497,22 +1515,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
         case SHIFT_TOGGLE:
-            if (record->event.pressed) {
-                shift_toggle_timer = timer_read();  // usa el nuevo nombre
-//                layer_on(5);  // activa momentáneamente la capa 2
-            } else {
-                if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
-                    // TAP: Toggle shift
-                    shift_active = !shift_active;
-                    if (shift_active) {
-                        register_code(KC_LSFT);
-                    } else {
-                        unregister_code(KC_LSFT);
-                    }
-                }
-//                layer_off(5);  // desactiva la capa momentánea
-            }
-            return false;  // evita el comportamiento predeterminado
+                 if (record->event.pressed) {
+                     shift_toggle_timer = timer_read();
+
+                     // Para HOLD: activa Shift y Alt
+                     register_code(KC_LSFT);
+                     register_code(KC_LALT);
+
+                 } else {
+                     if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
+                         // --- TAP ---
+                         // Toggle Shift (como antes)
+                         shift_active = !shift_active;
+                         if (shift_active) {
+                             register_code(KC_LSFT);
+                         } else {
+                             unregister_code(KC_LSFT);
+                         }
+                     } else {
+                         // --- HOLD ---
+                         // Suelta Shift y Alt
+                         unregister_code(KC_LSFT);
+                         unregister_code(KC_LALT);
+                     }
+                 }
+                 return false;  // evita el comportamiento predeterminado
+
 
 
             case CTRL_TOGGLE:
@@ -1888,7 +1916,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      MO(11), LT(9,KC_ENT), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LCTL_T(KC_TAB), LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1900,13 +1928,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), KC_R, KC_T, VOICE_A,                  XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
+    TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LSFT_T(KC_A), LT(12,KC_S), KC_D, KC_F, G_W, C(KC_S),                                   SLEEP,  KC_H, KC_J, KC_K, KC_L, RSFT_T(KC_P),
+    LT(11,KC_A), LT(12,KC_S), KC_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                        HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
+    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       KC_SPACE, XXXXXXX, A(KC_RIGHT),     TO(0),  TG(5), KC_ENT
+                                       LSFT_T(KC_SPACE), XXXXXXX, A(KC_RIGHT),     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
 
 
@@ -2041,9 +2069,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
              [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, SUPER_UP, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, XXXXXXX,
+            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
