@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    GUI_E,
     BASE_D,
     SUPER_DEL,
     Z_UNDO,
@@ -204,6 +205,16 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+static uint16_t sel_timer = 0;
+static bool sel_pressed = false;
+static bool sel_is_hold = false;
+
+static uint16_t guie_timer = 0;
+static bool guie_pressed = false;
+static bool guie_is_hold = false;
+
+
 static uint16_t base_d_timer = 0;
 static bool base_d_pressed = false;
 static bool base_d_is_hold = false;
@@ -465,6 +476,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
 
+            case GUI_E:
+                if (record->event.pressed) {
+                    guie_pressed = true;
+                    guie_is_hold = false;
+                    guie_timer = timer_read();
+                } else {
+                    if (!guie_is_hold) {
+                        // TAP → enviar E
+                        tap_code(KC_E);
+                    }
+                    guie_pressed = false;
+                    guie_is_hold = false;
+                }
+                return false; // evitamos el comportamiento por defecto
 
             case BASE_D:
                 if (record->event.pressed) {
@@ -1153,25 +1178,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;
 
-
-            case   SEL_WORD_PARAGRAPH:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → select word
-                               tap_code16_delay(C(KC_LEFT), 10);
-                               tap_code16_delay(C(S(KC_RIGHT)), 10);
-
-                        }else {
-                            // HOLD →  select paragraph
-                                tap_code(KC_HOME);
-                                register_code(KC_LSFT);
-                                tap_code16(LALT(KC_PGDN));
-                                unregister_code(KC_LSFT);
-                        }
+            case SEL_WORD_PARAGRAPH:
+                if (record->event.pressed) {
+                    sel_pressed = true;
+                    sel_is_hold = false;
+                    sel_timer = timer_read();
+                } else {
+                    if (!sel_is_hold) {
+                        // TAP → seleccionar palabra
+                        tap_code16_delay(C(KC_LEFT), 10);
+                        tap_code16_delay(C(S(KC_RIGHT)), 10);
                     }
-                    return false; // Bloquea el comportamiento por defecto
+                    // En HOLD no hacemos nada aquí porque ya lo ejecutamos en matrix_scan_user
+                    sel_pressed = false;
+                    sel_is_hold = false;
+                }
+                return false; // ya manejamos la tecla
+
 
 
             case EVERYW_ACT:
@@ -1673,9 +1696,19 @@ void matrix_scan_user(void) {
 
 //double key
 
-    if (base_d_pressed && !base_d_is_hold && timer_elapsed(base_d_timer) > TAPPING_TERM) {
-        base_d_is_hold = true;
-        register_code(KC_D); // empieza a mantener la tecla 'd' inmediatamente
+    if (sel_pressed && !sel_is_hold && timer_elapsed(sel_timer) > TAPPING_TERM) {
+        sel_is_hold = true;
+        // HOLD → seleccionar párrafo (ejecutar inmediatamente)
+        tap_code(KC_HOME);
+        register_code(KC_LSFT);
+        tap_code16(LALT(KC_PGDN));
+        unregister_code(KC_LSFT);
+    }
+
+    if (guie_pressed && !guie_is_hold && timer_elapsed(guie_timer) > TAPPING_TERM) {
+        guie_is_hold = true;
+        // HOLD → presionar Windows inmediatamente
+        tap_code(KC_LGUI);
     }
 
     if (para_up_pressed && !para_up_sent && timer_elapsed(para_up_timer) > TAPPING_TERM) {
@@ -1959,7 +1992,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
+    TD(TD_ESC_INS), LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LT(11,KC_A), LT(12,KC_S), BASE_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
