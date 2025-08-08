@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    BASE_D,
     SUPER_DEL,
     Z_UNDO,
     TRIPLE_WHLD,
@@ -203,8 +204,10 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+static uint16_t base_d_timer = 0;
+static bool base_d_pressed = false;
+static bool base_d_is_hold = false;
 
-// Variables para PAGE_PARAGRAPH_UP
 
 bool para_up_pressed = false;
 bool para_up_sent = false;
@@ -461,6 +464,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
 //            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+
+            case BASE_D:
+                if (record->event.pressed) {
+                    // key down
+                    base_d_pressed = true;
+                    base_d_is_hold = false;
+                    base_d_timer = timer_read();
+                } else {
+                    // key up
+                    if (!base_d_is_hold) {
+                        // TAP: cambio permanente a capa base (0)
+                        layer_move(0);
+                    } else {
+                        // HOLD: soltar la 'd' que registramos en matrix_scan_user
+                        unregister_code(KC_D);
+                    }
+                    // reset estado
+                    base_d_pressed = false;
+                    base_d_is_hold = false;
+                }
+                return false; // ya procesamos la tecla
+
 
             case SUPER_DEL:
                 if (record->event.pressed) {
@@ -1647,6 +1673,11 @@ void matrix_scan_user(void) {
 
 //double key
 
+    if (base_d_pressed && !base_d_is_hold && timer_elapsed(base_d_timer) > TAPPING_TERM) {
+        base_d_is_hold = true;
+        register_code(KC_D); // empieza a mantener la tecla 'd' inmediatamente
+    }
+
     if (para_up_pressed && !para_up_sent && timer_elapsed(para_up_timer) > TAPPING_TERM) {
         // HOLD para PAGE_PARAGRAPH_UP
         tap_code16(A(KC_PGUP));
@@ -1930,7 +1961,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
     TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), KC_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+    LT(11,KC_A), LT(12,KC_S), BASE_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
     KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
