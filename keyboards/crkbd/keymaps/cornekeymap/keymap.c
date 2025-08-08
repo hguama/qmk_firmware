@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    MS_ACL0_TOGGLE,
     DEV_LY_SPACE,
     GUI_E,
     BASE_D,
@@ -206,6 +207,8 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+bool ms_acl0_active = false;
+
 static uint16_t dev_ly_space_timer = 0;
 static bool dev_ly_space_pressed = false;
 
@@ -478,6 +481,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
 //            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+        case MS_ACL0_TOGGLE:
+            if (record->event.pressed) {
+                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
+
+                if (ms_acl0_active) {
+                    register_code(KC_MS_ACCEL0);   // Activa y mantiene
+                } else {
+                    unregister_code(KC_MS_ACCEL0); // Desactiva
+                }
+            }
+            return false; // Ya manejamos la tecla
 
             case DEV_LY_SPACE:
                 if (record->event.pressed) {
@@ -2031,7 +2046,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
     KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       LSFT_T(KC_SPACE), XXXXXXX, A(KC_RIGHT),     TO(0),  TG(5),  RSFT_T(KC_ENT)
+                                       LSFT_T(KC_SPACE), KC_COMM, A(KC_RIGHT),     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
 
 
@@ -2090,17 +2105,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 LT(9,KC_ENT), SPC_CTRL_TAB, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
                                  //`--------------------------'  `--------------------------'
 ),
-//mouse ly 6
+//mouse ly 6 TD(TDQ_Z_ENG) TD(TDQ_CLICK)
 
       [6] = LAYOUT_split_3x6_3(
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   KC_ESC, MS_ACL0, TD(TDQ_CLICK), MS_ACL2, CTRL_TOGGLE, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
+   KC_ESC, MS_ACL0_TOGGLE, MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   XXXXXXX, MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), TD(TDQ_CUT), C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+   MS_ACL2, MS_WHLL, MS_WHLD, MS_WHLR, XXXXXXX, C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     TD(TDQ_Z_ENG), MS_WHLL, MS_WHLR, MOUSE_PRESSED_CLICK, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         TG(6),  SPC_CTRL_TAB,     XXXXXXX,     TO(0), A(KC_ENT), KC_ENT
+                                         TG(6),  XXXXXXX,     XXXXXXX,     TO(0), XXXXXXX, XXXXXXX
                                        //`--------------------------'  `--------------------------'
   ), // mouse2 ly7 - single mouse hand left
 
