@@ -1499,7 +1499,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case SHIFT_TOGGLE:
             if (record->event.pressed) {
                 shift_toggle_timer = timer_read();  // usa el nuevo nombre
-                layer_on(5);  // activa momentáneamente la capa 2
+//                layer_on(5);  // activa momentáneamente la capa 2
             } else {
                 if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
                     // TAP: Toggle shift
@@ -1510,7 +1510,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         unregister_code(KC_LSFT);
                     }
                 }
-                layer_off(5);  // desactiva la capa momentánea
+//                layer_off(5);  // desactiva la capa momentánea
             }
             return false;  // evita el comportamiento predeterminado
 
@@ -1888,11 +1888,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      MO(11), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      LT(11,KC_ENT), MO(9), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TAB, LT(4,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      LCTL_T(KC_TAB), LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,KC_SPACE), KC_LCTL, XXXXXXX,     TO(0), SHIFT_TOGGLE, LT(3,KC_ENT)
+                                           LT(3,KC_SPACE), SHIFT_TOGGLE, XXXXXXX,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
@@ -1900,7 +1900,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    TD(TD_ESC_INS), LT(2,KC_Q), KC_E, LGUI_T(KC_R), KC_T, VOICE_A,                  XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
+    TD(TD_ESC_INS), LT(2,KC_Q), LGUI_T(KC_E), KC_R, KC_T, VOICE_A,                  XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LSFT_T(KC_A), LT(12,KC_S), KC_D, KC_F, G_W, C(KC_S),                                   SLEEP,  KC_H, KC_J, KC_K, KC_L, RSFT_T(KC_P),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
