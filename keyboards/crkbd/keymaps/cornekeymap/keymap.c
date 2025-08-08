@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     M_SEL_COPY = SAFE_RANGE,
+    DEV_LY_SPACE,
     GUI_E,
     BASE_D,
     SUPER_DEL,
@@ -205,6 +206,8 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+static uint16_t dev_ly_space_timer = 0;
+static bool dev_ly_space_pressed = false;
 
 static uint16_t sel_timer = 0;
 static bool sel_pressed = false;
@@ -475,6 +478,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case M_SEL_COPY: SEND_STRING(SS_LCTL("a")); break;
 //            case M_CTRL_TAB: if (record->event.pressed) { SEND_STRING(SS_LCTL(SS_TAP(X_TAB))); } break;
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+            case DEV_LY_SPACE:
+                if (record->event.pressed) {
+                    dev_ly_space_pressed = true;
+                    dev_ly_space_timer = timer_read();
+                } else {
+                    if (timer_elapsed(dev_ly_space_timer) < TAPPING_TERM) {
+                        // TAP → soltar Alt si está activo y enviar Espacio
+                        if (get_mods() & MOD_MASK_ALT) {
+                            unregister_mods(MOD_MASK_ALT);
+                            is_alt_tab_active = false;
+                        }
+                        tap_code(KC_SPACE);
+                    } else {
+                        // HOLD → al soltar, desactiva la capa momentánea
+                        layer_off(3);
+                    }
+                    dev_ly_space_pressed = false;
+                }
+                return false; // evitamos el comportamiento por defecto
 
             case GUI_E:
                 if (record->event.pressed) {
@@ -1695,6 +1718,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 void matrix_scan_user(void) {
 
 //double key
+    if (dev_ly_space_pressed && timer_elapsed(dev_ly_space_timer) >= TAPPING_TERM) {
+        layer_on(3);
+    }
+
+    if (base_d_pressed && !base_d_is_hold) {
+        if (timer_elapsed(base_d_timer) >= TAPPING_TERM) {
+            base_d_is_hold = true;
+            register_code(KC_D); // ejecuta HOLD inmediatamente
+        }
+    }
 
     if (sel_pressed && !sel_is_hold && timer_elapsed(sel_timer) > TAPPING_TERM) {
         sel_is_hold = true;
@@ -1980,11 +2013,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      MO(11), LT(9,KC_ENT), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      MO(11), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LCTL_T(KC_TAB), LT(4,TG_6), MO(5), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      KC_LCTL, LT(4,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,KC_SPACE), SHIFT_TOGGLE, XXXXXXX,     TO(0), XXXXXXX, LT(3,KC_ENT)
+                                           DEV_LY_SPACE, SHIFT_TOGGLE, XXXXXXX,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
