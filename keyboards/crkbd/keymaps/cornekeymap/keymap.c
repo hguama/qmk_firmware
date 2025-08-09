@@ -144,9 +144,6 @@ enum custom_keycodes {
 //Tap Dance enum
 enum {
     TD_ESC_CAPS,
-    TD_ESC_INS,
-//    TD_RABK_EQ,
-//    TD_LABK_EQ,
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
@@ -2013,12 +2010,6 @@ void matrix_scan_user(void) {
 
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
-//    [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
-//    [TD_ESC_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, esc_caps_finished, esc_caps_reset),
-    [TD_ESC_INS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_INS), //plantillai
-//    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
-//    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
-//    [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
 
     [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
@@ -2030,6 +2021,8 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
 
+//    [TDQ_TOGGLE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_toggle_hold_finished, tdq_toggle_hold_reset), //plantilla
+
 };
 
 
@@ -2039,7 +2032,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_INS,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -2053,7 +2046,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    TD(TD_ESC_INS), LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_ESC,
+    KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LT(11,KC_A), LT(12,KC_S), BASE_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
@@ -2158,7 +2151,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, VOICE_A, XXXXXXX, XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, VOICE_A, C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_LSFT, XXXXXXX, MO(10), VOICE, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), SUPER_CTRL_LEFT, A(KC_DOWN), SUPER_CTRL_RIGHT, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
