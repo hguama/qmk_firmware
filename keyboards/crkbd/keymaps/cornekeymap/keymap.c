@@ -207,6 +207,10 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+bool shift_toggle_pressed = false;
+bool shift_toggle_is_hold = false;
+
 bool ms_acl0_active = false;
 
 static uint16_t dev_ly_space_timer = 0;
@@ -1602,31 +1606,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
         case SHIFT_TOGGLE:
-                 if (record->event.pressed) {
-                     shift_toggle_timer = timer_read();
+            if (record->event.pressed) {
+                shift_toggle_pressed = true;
+                shift_toggle_is_hold = false;
+                shift_toggle_timer = timer_read();
+            } else {
+                // Tecla soltada
+                if (!shift_toggle_is_hold) {
+                    // TAP → Toggle Shift
+                    shift_active = !shift_active;
+                    if (shift_active) {
+                        register_code(KC_LSFT);
+                    } else {
+                        unregister_code(KC_LSFT);
+                    }
+                } else {
+                    // HOLD → soltar Shift y Alt
+                    unregister_code(KC_LSFT);
+                    unregister_code(KC_LALT);
+                }
+                shift_toggle_pressed = false;
+                shift_toggle_is_hold = false;
+            }
+            return false;
 
-                     // Para HOLD: activa Shift y Alt
-                     register_code(KC_LSFT);
-                     register_code(KC_LALT);
-
-                 } else {
-                     if (timer_elapsed(shift_toggle_timer) < TAPPING_TERM) {
-                         // --- TAP ---
-                         // Toggle Shift (como antes)
-                         shift_active = !shift_active;
-                         if (shift_active) {
-                             register_code(KC_LSFT);
-                         } else {
-                             unregister_code(KC_LSFT);
-                         }
-                     } else {
-                         // --- HOLD ---
-                         // Suelta Shift y Alt
-                         unregister_code(KC_LSFT);
-                         unregister_code(KC_LALT);
-                     }
-                 }
-                 return false;  // evita el comportamiento predeterminado
 
 
 
@@ -1733,6 +1736,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 void matrix_scan_user(void) {
 
 //double key
+
+    if (shift_toggle_pressed && !shift_toggle_is_hold) {
+        if (timer_elapsed(shift_toggle_timer) > TAPPING_TERM) {
+            shift_toggle_is_hold = true;
+            register_code(KC_LSFT);
+            register_code(KC_LALT);
+        }
+    }
+
     if (dev_ly_space_pressed && timer_elapsed(dev_ly_space_timer) >= TAPPING_TERM) {
         layer_on(3);
     }
@@ -2001,7 +2013,8 @@ void matrix_scan_user(void) {
 
 //Quad actions
 tap_dance_action_t tap_dance_actions[] = {
-    [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
+//    [TD_ESC_CAPS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_CAPS), //plantillai
+//    [TD_ESC_CAPS] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, esc_caps_finished, esc_caps_reset),
     [TD_ESC_INS] = ACTION_TAP_DANCE_DOUBLE(KC_ESC, KC_INS), //plantillai
 //    [TD_RABK_EQ] =  ACTION_TAP_DANCE_FN(dance_rabk), //plantilla
 //    [TD_LABK_EQ] =  ACTION_TAP_DANCE_FN(dance_labk), //plantilla
@@ -2028,7 +2041,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       TD(TD_ESC_INS), LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_ESC,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      MO(11), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(4,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -2040,13 +2053,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    TD(TD_ESC_INS), LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), TD(TD_ESC_CAPS),
+    TD(TD_ESC_INS), LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_ESC,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LT(11,KC_A), LT(12,KC_S), BASE_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
     KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       LSFT_T(KC_SPACE), KC_COMM, A(KC_RIGHT),     TO(0),  TG(5),  RSFT_T(KC_ENT)
+                                       LSFT_T(KC_SPACE), KC_CAPS, XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
 
 
