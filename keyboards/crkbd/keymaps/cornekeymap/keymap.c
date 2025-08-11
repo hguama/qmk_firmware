@@ -1828,7 +1828,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, DEL_LINE, DEL_WORD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, DEL_WORD, DEL_LINE, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_DOWN)), C(S(KC_DOWN)), XXXXXXX,  XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
