@@ -101,6 +101,7 @@ enum {
     TDQ_BOOKMARK,
     TDQ_GOTO,
     TDQ_FIND,
+    TDQ_REPLACE,
     TDQ_OVERRIDE,
 
 };
@@ -297,6 +298,7 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data);
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
 void tdq_find_finished(tap_dance_state_t *state, void *user_data);
+void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 void tdq_z_eng_finished(tap_dance_state_t *state, void *user_data);
 
@@ -1672,6 +1674,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
     [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
+    [TDQ_REPLACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_replace_finished, x_reset),
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
     [TDQ_Z_ENG] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_z_eng_finished, x_reset),
 };
@@ -1728,7 +1731,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,               XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      C(A(KC_T)), COMM, TD(TDQ_FIND), C(KC_R), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+      C(A(KC_T)), COMM, TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1769,7 +1772,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
    MS_ACL2, MS_WHLL, MS_WHLD, MS_WHLR, XXXXXXX, C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, XXXXXXX, S(KC_F7), KC_F7, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+     XXXXXXX, C(A(KC_R)), S(KC_F7), KC_F7, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          TG(6),  XXXXXXX,     XXXXXXX,     TO(0), XXXXXXX, XXXXXXX
                                        //`--------------------------'  `--------------------------'
@@ -2092,12 +2095,12 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
-        case TD_SINGLE_TAP: SEND_STRING(SS_LALT("2")); break; //show list markers
-        case TD_SINGLE_HOLD: //show list markers floating window
+        case TD_SINGLE_TAP: //show list markers floating window
                           register_code(KC_LSFT);   // Mantener Shift
                           tap_code(KC_F11);         // Presionar F11
                           unregister_code(KC_LSFT); // Soltar Shift
                           break;
+        case TD_SINGLE_HOLD: SEND_STRING(SS_LALT("2")); break; //show list markers
         case TD_DOUBLE_TAP://create marker
                       tap_code(KC_F11);
                       break;
@@ -2171,6 +2174,35 @@ void tdq_find_finished(tap_dance_state_t *state, void *user_data) {
                 tap_code16_delay(C(KC_LEFT), 10);
                 tap_code16_delay(C(S(KC_RIGHT)), 10);
                 tap_code16(LCTL(LSFT(KC_F)));
+            break;
+        default:
+            break;
+    }
+}
+
+void tdq_replace_finished(tap_dance_state_t *state, void *user_data) {
+        xtap_state.state = cur_dance(state);
+
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP: //ctrl R //replace normal.
+            tap_code16(C(KC_R));
+            break;
+
+        /*case TD_SINGLE_HOLD: //ctrl R + ctrl alt e //search on selection
+                tap_code16_delay(LCTL(KC_R), 10);  // Ctrl + R
+                tap_code16(LCTL(LALT(KC_E)));       // Ctrl + Alt + E
+            break;*/
+
+        case TD_DOUBLE_TAP: //replace on 1 word
+                tap_code16_delay(C(KC_LEFT), 10);
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
+                tap_code16_delay(C(KC_R), 10);
+            break;
+
+        case TD_DOUBLE_HOLD: //ctrl shift R //replace in files
+                tap_code16_delay(C(KC_LEFT), 10);
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
+                tap_code16(LCTL(LSFT(KC_R)));
             break;
         default:
             break;
