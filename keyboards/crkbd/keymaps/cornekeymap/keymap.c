@@ -1285,10 +1285,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }else {
                         if (timer_elapsed(timer_key) < TAPPING_TERM) {
                             // TAP - desplegar 1 region
-                            tap_code16(LCTL(KC_KP_PLUS));
+                            tap_code16(KC_F22);
                         }else {
                             // HOLD - contrae o cierra todos
-                            tap_code16(LCTL(LSFT(KC_KP_MINUS)));
+//                            tap_code16(LCTL(LSFT(KC_KP_MINUS)));
 
                         }
                     }
