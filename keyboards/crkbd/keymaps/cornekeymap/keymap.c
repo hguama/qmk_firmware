@@ -53,7 +53,6 @@ enum custom_keycodes {
     DEL_WORD,
     DEL_LINE,
     WIN_D,
-    CTRL_SHIFT_ENTER,
     LLAMBDA,
     RLAMBDA,
     DOUBLE_COLON,
@@ -146,6 +145,11 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+static bool dc_pressed = false;
+static bool dc_hold_executed = false;
+
+
 
 bool shift_toggle_pressed = false;
 bool shift_toggle_is_hold = false;
@@ -662,13 +666,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 return false;
 
             case DOUBLE_COLON:
-                if (record->event.pressed){
-                   SEND_STRING(":"); //when pressed
+                if (record->event.pressed) {
+                    dc_pressed = true;
+                    dc_hold_executed = false;
+                    timer_key = timer_read();
+                } else {
+                    if (!dc_hold_executed) {
+                        // TAP → un solo ":"
+                        tap_code16(KC_COLN);
+                    }
+                    dc_pressed = false;
+                }
+                return false;
 
-                   }else{
-                   SEND_STRING(":"); //when release
-                   }
-                break;
 
             case M_ALT_TAB:
                   if (record->event.pressed) {
@@ -723,12 +733,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                  break;
 
 
-            case CTRL_SHIFT_ENTER :
-                   if (record->event.pressed) {
-                       SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_ENTER))));
-                       }
-                   break;
-
             case LT(0,KC_DOWN):
               if (!record->tap.count && record->event.pressed) {
                   tap_code16(KC_RIGHT); // hold
@@ -736,12 +740,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               }
               return true; //normal tap
 
-            case LT(2,KC_SCLN):
-                if (!record->tap.count && record->event.pressed) {
-                   SEND_STRING(SS_LSFT(SS_TAP(X_SCLN))); // hold
-                    return false;
-                }
-                return true;
 
             case LT(2,KC_SLSH):
                 if (!record->tap.count && record->event.pressed) {
@@ -810,18 +808,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                          tap_code16(S(KC_MINS));
                          return false;
                      }
-                    }
-                    return true;
-
-            case  LT(2,KC_PERC):
-                  if (record->event.pressed) {
-                    if (!record->tap.count) {
-                      tap_code16(KC_PERC);
-                       return false;
-                    }else {
-                       tap_code16(KC_PLUS);
-                         return false;
-                        }
                     }
                     return true;
 
@@ -1427,6 +1413,16 @@ void matrix_scan_user(void) {
 
 //double key
 
+        if (dc_pressed && !dc_hold_executed) {
+            if (timer_elapsed(timer_key) > 200) {  // Tiempo para detectar HOLD
+                // HOLD → "::" inmediatamente
+                tap_code16(KC_COLN);
+                tap_code16(KC_COLN);
+                dc_hold_executed = true;
+            }
+        }
+
+
     if (shift_toggle_pressed && !shift_toggle_is_hold) {
         if (timer_elapsed(shift_toggle_timer) > TAPPING_TERM) {
             shift_toggle_is_hold = true;
@@ -1712,16 +1708,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   ),
 
-//symbols ly 1
+//symbols ly 1 S(KC_GRAVE)
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- XXXXXXX, LT(2,KC_PERC), LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,        XXXXXXX, LT(2,KC_PSCR), LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
+ KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,                   XXXXXXX, LT(2,KC_PSCR), LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, LT(2, KC_AMPR), LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, LT(2,KC_EXLM) , KC_DOT, CTRL_SHIFT_ENTER,  LT(2,KC_LPRN), LT(2,KC_LCBR),
+ KC_ASTR, LT(2, KC_AMPR), LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,        XXXXXXX, LT(2,KC_EXLM) , KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- DOUBLE_COLON, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                           QK_BOOT, XXXXXXX, KC_COMM, LT(2,KC_SCLN),  LT(2,LBRC2),  S(KC_GRAVE),
+ XXXXXXX, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                            QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, XXXXXXX,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          TO(0), KC_SPC,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
+                                          C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
  ),
 
@@ -1828,7 +1824,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, DEL_WORD, DEL_LINE, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
+           XXXXXXX, DEL_LINE, DEL_WORD, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_DOWN)), C(S(KC_DOWN)), XXXXXXX,  XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
