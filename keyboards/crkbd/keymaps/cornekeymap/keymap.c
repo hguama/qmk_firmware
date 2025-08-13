@@ -26,6 +26,9 @@ JKL
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    OPEN_EXCL,
+    OPEN_QUEST,
+    NOT_EQUAL,
     MS_ACL0_TOGGLE,
     DEV_LY_SPACE,
     BASE_D,
@@ -761,17 +764,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       }
                       return true;
 
-            case  LT(2,KC_EXLM):
-                  if (record->event.pressed) {
-                     if (!record->tap.count) {
-                       SEND_STRING("!="); // hold
-                        return false;
-                     }else {
-                     SEND_STRING("!"); //tap
-                       return false;
-                       }
-                     }
-                     return true;
+            case NOT_EQUAL:
+                if (record->event.pressed) {
+                    send_string("!="); // Envía  !=
+                }
+                return false;
+
 
             case  LT(2,KC_LABK):
                   if (record->event.pressed) {
@@ -1050,20 +1048,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false;  // bloquea el comportamiento estándar
 
-             case  LT(2,KC_PSCR):
-                  if (record->event.pressed) {
 
-                    if (!record->tap.count) {
-                          //tap ¡
-                          SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_9) SS_TAP(X_KP_1) SS_UP(X_LALT));
-                         return false;
-                    }else {
-                          //hold ¿
-                          SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_0) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_1) SS_UP(X_LALT));
-                         return false;
-                        }
-                    }
-                    return false;
+case OPEN_EXCL: // ¡
+    if (record->event.pressed) {
+        SEND_STRING(
+            SS_DOWN(X_LALT)
+            SS_TAP(X_KP_0)
+            SS_TAP(X_KP_1)
+            SS_TAP(X_KP_6)
+            SS_TAP(X_KP_1)
+            SS_UP(X_LALT)
+        );
+    }
+    break;
+
+case OPEN_QUEST: // ¿
+    if (record->event.pressed) {
+        SEND_STRING(
+            SS_DOWN(X_LALT)
+            SS_TAP(X_KP_0)
+            SS_TAP(X_KP_1)
+            SS_TAP(X_KP_9)
+            SS_TAP(X_KP_1)
+            SS_UP(X_LALT)
+        );
+    }
+    break;
+
+
+
+
 
             case PROJECT_VIEW:
                     if (record->event.pressed) {
@@ -1563,7 +1577,8 @@ void matrix_scan_user(void) {
     }
 
     if (n_pressed && !n_sent && timer_elapsed(n_timer) > 200) {
-        SEND_STRING("ñ");
+        // ñ minúscula
+        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT));
         n_sent = true;
     }
 
@@ -1708,14 +1723,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   ),
 
-//symbols ly 1 S(KC_GRAVE)
+//symbols ly 1
+
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,                   XXXXXXX, LT(2,KC_PSCR), LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
+ KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, LT(2, KC_AMPR), LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,        XXXXXXX, LT(2,KC_EXLM) , KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+ KC_ASTR, KC_EXLM, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, LT(2, KC_AMPR), KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- XXXXXXX, HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                            QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, XXXXXXX,  DOUBLE_COLON,
+ S(KC_GRAVE), HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
