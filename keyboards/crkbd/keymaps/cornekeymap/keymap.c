@@ -148,6 +148,9 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+bool exc_dlr_pressed = false;
+bool exc_dlr_hold = false;
+
 
 static bool dc_pressed = false;
 static bool dc_hold_executed = false;
@@ -353,6 +356,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
        switch (keycode) {
 
             case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+
+        case EXC_DLR:
+            if (record->event.pressed) {
+                exc_dlr_pressed = true;
+                timer_key = timer_read();
+            } else {
+                // Si se soltó y no fue HOLD → TAP
+                if (!exc_dlr_hold) {
+                    tap_code16(KC_EXLM); // !
+                }
+                exc_dlr_pressed = false;
+                exc_dlr_hold = false;
+            }
+            return false; // evitamos comportamiento por defecto
+
 
             case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
@@ -824,7 +842,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_AMPR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-                       SEND_STRING("$");// hold
+//                       SEND_STRING("$");// hold
                        return false;
                     }else {
                         SEND_STRING("&&");
@@ -1049,35 +1067,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;  // bloquea el comportamiento estándar
 
 
-case OPEN_EXCL: // ¡
-    if (record->event.pressed) {
-        SEND_STRING(
-            SS_DOWN(X_LALT)
-            SS_TAP(X_KP_0)
-            SS_TAP(X_KP_1)
-            SS_TAP(X_KP_6)
-            SS_TAP(X_KP_1)
-            SS_UP(X_LALT)
-        );
-    }
-    break;
+            case OPEN_EXCL: // ¡
+                if (record->event.pressed) {
+                    SEND_STRING(
+                        SS_DOWN(X_LALT)
+                        SS_TAP(X_KP_0)
+                        SS_TAP(X_KP_1)
+                        SS_TAP(X_KP_6)
+                        SS_TAP(X_KP_1)
+                        SS_UP(X_LALT)
+                    );
+                }
+                break;
 
-case OPEN_QUEST: // ¿
-    if (record->event.pressed) {
-        SEND_STRING(
-            SS_DOWN(X_LALT)
-            SS_TAP(X_KP_0)
-            SS_TAP(X_KP_1)
-            SS_TAP(X_KP_9)
-            SS_TAP(X_KP_1)
-            SS_UP(X_LALT)
-        );
-    }
-    break;
-
-
-
-
+            case OPEN_QUEST: // ¿
+                if (record->event.pressed) {
+                    SEND_STRING(
+                        SS_DOWN(X_LALT)
+                        SS_TAP(X_KP_0)
+                        SS_TAP(X_KP_1)
+                        SS_TAP(X_KP_9)
+                        SS_TAP(X_KP_1)
+                        SS_UP(X_LALT)
+                    );
+                }
+                break;
 
             case PROJECT_VIEW:
                     if (record->event.pressed) {
@@ -1427,14 +1441,20 @@ void matrix_scan_user(void) {
 
 //double key
 
-        if (dc_pressed && !dc_hold_executed) {
-            if (timer_elapsed(timer_key) > 200) {  // Tiempo para detectar HOLD
-                // HOLD → "::" inmediatamente
-                tap_code16(KC_COLN);
-                tap_code16(KC_COLN);
-                dc_hold_executed = true;
-            }
+    if (exc_dlr_pressed && !exc_dlr_hold && timer_elapsed(timer_key) > 200) {
+        exc_dlr_hold = true;
+        tap_code16(KC_DLR); // $
+    }
+
+
+    if (dc_pressed && !dc_hold_executed) {
+        if (timer_elapsed(timer_key) > 200) {  // Tiempo para detectar HOLD
+            // HOLD → "::" inmediatamente
+            tap_code16(KC_COLN);
+            tap_code16(KC_COLN);
+            dc_hold_executed = true;
         }
+    }
 
 
     if (shift_toggle_pressed && !shift_toggle_is_hold) {
@@ -1729,7 +1749,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
  KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, KC_EXLM, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, LT(2, KC_AMPR), KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+ KC_ASTR, EXC_DLR, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, LT(2, KC_AMPR), KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  S(KC_GRAVE), HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
