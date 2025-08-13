@@ -357,21 +357,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
 
-            case WIN_D: if (record->event.pressed) { SEND_STRING(SS_LGUI("d"));  } break;
+            case WIN_D:
+                if (record->event.pressed) {
+                    SEND_STRING(SS_LGUI("d"));
+                    }
+                    break;
 
-        case EXC_DLR:
-            if (record->event.pressed) {
-                exc_dlr_pressed = true;
-                timer_key = timer_read();
-            } else {
-                // Si se soltó y no fue HOLD → TAP
-                if (!exc_dlr_hold) {
-                    tap_code16(KC_EXLM); // !
+            case EXC_DLR:
+                if (record->event.pressed) {
+                    exc_dlr_pressed = true;
+                    timer_key = timer_read();
+                } else {
+                    // Si se soltó y no fue HOLD → TAP
+                    if (!exc_dlr_hold) {
+                        tap_code16(KC_EXLM); // !
+                    }
+                    exc_dlr_pressed = false;
+                    exc_dlr_hold = false;
                 }
-                exc_dlr_pressed = false;
-                exc_dlr_hold = false;
-            }
-            return false; // evitamos comportamiento por defecto
+                return false; // evitamos comportamiento por defecto
 
 
             case MS_ACL0_TOGGLE:
@@ -818,11 +822,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_MINS):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
-//                        SEND_STRING("-"); //hold
                          tap_code(KC_MINS);
                        return false;
                     }else{
-//                         SEND_STRING("_"); //tap
                          tap_code16(S(KC_MINS));
                          return false;
                      }
@@ -832,10 +834,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_AT):
                   if (record->event.pressed) {
                     if (!record->tap.count) {
-                      SEND_STRING("?"); // hold
+//                      SEND_STRING("?"); // hold
+                      tap_code16(KC_QUES);
                        return false;
                     }else {
-                       SEND_STRING("@");
+//                       SEND_STRING("@");
+                       tap_code16(KC_AT);
                          return false;
                         }
                     }
