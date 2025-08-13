@@ -26,6 +26,8 @@ JKL
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    AMP_DOUBLE,
+    EXC_DLR,
     OPEN_EXCL,
     OPEN_QUEST,
     NOT_EQUAL,
@@ -839,17 +841,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return true;
 
-            case  LT(2,KC_AMPR):
+            case  AMP_DOUBLE :
                  if (record->event.pressed) {
-                    if (!record->tap.count) {
-//                       SEND_STRING("$");// hold
-                       return false;
-                    }else {
-                        SEND_STRING("&&");
-                         return false; // tap
-                             }
-                     }else {}
-                    return true;
+                        tap_code16(KC_AMPR); // &
+                        tap_code16(KC_AMPR); // &
+                    }
+                    return false; // no procesar más
 
             case  LLAMBDA:
                    if (record->event.pressed) {
@@ -1749,7 +1746,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
  KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, EXC_DLR, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, LT(2, KC_AMPR), KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+ KC_ASTR, EXC_DLR, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  S(KC_GRAVE), HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
