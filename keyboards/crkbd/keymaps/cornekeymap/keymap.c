@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    ALT_TAB,
     AMP_DOUBLE,
     EXC_DLR,
     OPEN_EXCL,
@@ -356,6 +357,20 @@ void clear_all(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
+
+
+
+            case LT(4, ALT_TAB):
+               if (record->event.pressed) {
+                   if (!record->tap.count) {
+                       return true; // HOLD: QMK activa capa 4
+                   } else {
+                          tap_code16(A(KC_TAB)); // TAP: Alt+Tab
+                       return false; // No enviar el KC original
+                   }
+               }
+               return true;
+
 
             case WIN_D:
                 if (record->event.pressed) {
@@ -1417,7 +1432,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-            case LT(4,TG_6):
+            case LT(12,TG_6):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
                           return true; //hold
@@ -1718,11 +1733,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_ESC, LT(2,TG_0), M_ALT_TAB, A(KC_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_INS,
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, SELECT_W_ALL, SUPER_UP, LT(2,KC_TAB), KC_INS,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, MO(4), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(4,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            DEV_LY_SPACE, SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
@@ -1871,15 +1886,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                               //`--------------------------'  `--------------------------'
          ), // LY12 super move 3
 
+//run debug
     [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
             XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, SUPER_UP, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_F10)), S(KC_F10), A(S(KC_F10)), C(KC_F5),
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                   KC_SPC, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                   KC_SPC, _______,  _______,     TO(0),   XXXXXXX, C(KC_F2)
                                                //`--------------------------'  `--------------------------'
           )
 
