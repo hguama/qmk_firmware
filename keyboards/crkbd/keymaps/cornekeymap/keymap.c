@@ -52,7 +52,7 @@ enum custom_keycodes {
     CHATGPT,
     SEL_WORD_PARAGRAPH,
     M_ALT_TAB,
-    G_W,
+    F_W,
     B_V,
     N_ENIE,
     DEL_WORD,
@@ -137,15 +137,15 @@ uint16_t alt_tab_timer = 0;
 static bool shift_active = false;
 
 //for doubles key
-bool g_pressed = false;
+bool f_pressed = false;
 bool b_pressed = false;
 bool n_pressed = false;
 
-uint16_t g_timer = 0;
+
 uint16_t b_timer = 0;
 uint16_t n_timer = 0;
 
-bool g_sent = false;
+bool f_sent = false;
 bool b_sent = false;
 bool n_sent = false;
 
@@ -1052,17 +1052,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;
 
-            case G_W:
+            case F_W:
                     if (record->event.pressed) {
-                        g_pressed = true;
-                        g_sent = false;
-                        g_timer = timer_read();
+                        f_pressed = true;
+                        f_sent = false;
+                        timer_key = timer_read();
                     } else {
-                        g_pressed = false;
+                        f_pressed = false;
 
-                        if (!g_sent) {
+                        if (!f_sent) {
                             // Tap: enviar Q si no se envió W por hold
-                            tap_code(KC_G);
+                            tap_code(KC_F);
                         }
                     }
                     return false;  // bloquea el comportamiento estándar
@@ -1587,9 +1587,9 @@ void matrix_scan_user(void) {
     }
 
 
-    if (g_pressed && !g_sent && timer_elapsed(g_timer) > 200) {
+    if (f_pressed && !f_sent && timer_elapsed(timer_key) > 200) {
         tap_code(KC_W);
-        g_sent = true;
+        f_sent = true;
     }
 
     if (b_pressed && !b_sent && timer_elapsed(b_timer) > 200) {
@@ -1734,9 +1734,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
     KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), BASE_D, KC_F, G_W, C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+    LT(11,KC_A), LT(12,KC_S), BASE_D, F_W, KC_G , C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, LCTL_T(KC_X), LT(5,KC_C), B_V,  C(G(KC_S)), WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
+    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        LSFT_T(KC_SPACE), KC_CAPS, XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
