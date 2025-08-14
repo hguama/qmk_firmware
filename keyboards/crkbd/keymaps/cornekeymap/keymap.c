@@ -797,24 +797,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case  LT(2,KC_LABK):
                   if (record->event.pressed) {
-                     if (!record->tap.count) {
-                       SEND_STRING("<="); // hold
+                     if (!record->tap.count) {//hold
+                        SEND_STRING("<=");
                         return false;
-                     }else {
-                       SEND_STRING("<"); //tap
+                     }
+                     else {
+                     tap_code16(KC_LABK); //tap <
                         return false;
                            }
                         }
                      return true;
 
             case  LT(2,KC_RABK):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-                      SEND_STRING(">="); // hold
-                       return false;
-                    }else {
-                        SEND_STRING(">"); //tap
-                         return false;
+                      if (record->event.pressed) {
+                        if (!record->tap.count) {
+                           SEND_STRING(">=");
+                             return false;
+                        }else {
+                            tap_code16(KC_GT);
+                             return false;
                             }
                         }
                     return true;
@@ -838,7 +839,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                       tap_code16(KC_QUES);
                        return false;
                     }else {
-//                       SEND_STRING("@");
                        tap_code16(KC_AT);
                          return false;
                         }
@@ -1750,9 +1750,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
  KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, EXC_DLR, LT(2,KC_LABK), LT(2,KC_RABK), DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+ KC_ASTR, EXC_DLR, LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- S(KC_GRAVE), HASH_CIRC , LLAMBDA, RLAMBDA, XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
+ S(KC_GRAVE), HASH_CIRC , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
