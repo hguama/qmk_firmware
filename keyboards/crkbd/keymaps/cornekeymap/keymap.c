@@ -35,7 +35,6 @@ enum custom_keycodes {
     NOT_EQUAL,
     MS_ACL0_TOGGLE,
     DEV_LY_SPACE,
-    BASE_D,
     SUPER_DEL,
     Z_UNDO,
     TRIPLE_WHLD,
@@ -177,12 +176,6 @@ static bool sel_is_hold = false;
 static uint16_t guie_timer = 0;
 static bool guie_pressed = false;
 static bool guie_is_hold = false;
-
-
-static uint16_t base_d_timer = 0;
-static bool base_d_pressed = false;
-static bool base_d_is_hold = false;
-
 
 bool para_up_pressed = false;
 bool para_up_sent = false;
@@ -453,27 +446,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     guie_is_hold = false;
                 }
                 return false; // evitamos el comportamiento por defecto
-
-            case BASE_D:
-                if (record->event.pressed) {
-                    // key down
-                    base_d_pressed = true;
-                    base_d_is_hold = false;
-                    base_d_timer = timer_read();
-                } else {
-                    // key up
-                    if (!base_d_is_hold) {
-                        // TAP: cambio permanente a capa base (0)
-                        layer_move(0);
-                    } else {
-                        // HOLD: soltar la 'd' que registramos en matrix_scan_user
-                        unregister_code(KC_D);
-                    }
-                    // reset estado
-                    base_d_pressed = false;
-                    base_d_is_hold = false;
-                }
-                return false; // ya procesamos la tecla
 
 
             case SUPER_DEL:
@@ -1499,12 +1471,6 @@ void matrix_scan_user(void) {
         layer_on(3);
     }
 
-    if (base_d_pressed && !base_d_is_hold) {
-        if (timer_elapsed(base_d_timer) >= TAPPING_TERM) {
-            base_d_is_hold = true;
-            register_code(KC_D); // ejecuta HOLD inmediatamente
-        }
-    }
 
     if (sel_pressed && !sel_is_hold && timer_elapsed(sel_timer) > TAPPING_TERM) {
         sel_is_hold = true;
@@ -1763,7 +1729,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
     KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), BASE_D, F_W, KC_G , C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+    LT(11,KC_A), LT(12,KC_S), KC_D, F_W, KC_G , C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
     KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
