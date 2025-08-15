@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    CTRLW_L4,
     SPACE_BASE,
     ALT_TAB,
     AMP_DOUBLE,
@@ -47,7 +48,6 @@ enum custom_keycodes {
     HASH_CIRC,
     EQUAL_DBL,
     DOUBLE_PIPE,
-    SELECT_W_ALL,
     VOICE_A,
     VOICE,
     CHATGPT,
@@ -245,11 +245,6 @@ bool is_recent_loc_held = false;
 uint16_t recent_loc_timer = 0;
 bool recent_loc_sent = false;
 
-bool select_pressed = false;
-uint16_t select_timer = 0;
-bool select_hold_executed = false;
-
-
 bool voice_a_is_pressing = false;
 uint16_t voice_a_timer = 0;
 bool voice_a_hold_executed = false;
@@ -352,6 +347,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
 
+
+
+            case LT(4, CTRLW_L4):
+               if (record->event.pressed) {
+                   if (!record->tap.count) {
+                       return true; // HOLD: QMK activa capa 4
+                   } else {
+                          tap_code16(C(KC_W));  // TAP → Ctrl+W
+                       return false; // No enviar el KC original
+                   }
+               }
+               return true;
 
             case LT(2,SPACE_BASE):
                   if (record->event.pressed) {
@@ -607,22 +614,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                }
                return false; // evita que se procese por defecto
 
-
-           case SELECT_W_ALL:
-               if (record->event.pressed) {
-                   select_pressed = true;
-                   select_hold_executed = false;
-                   select_timer = timer_read();
-               } else {
-                   select_pressed = false;
-                   if (!select_hold_executed) {
-                       // TAP: Ctrl + W
-                       register_code(KC_LCTL);
-                       tap_code(KC_W);
-                       unregister_code(KC_LCTL);
-                   }
-               }
-               return false;  // Bloquea comportamiento por defecto
 
            case VOICE_A:
                if (record->event.pressed) {
@@ -1571,18 +1562,8 @@ void matrix_scan_user(void) {
         recent_loc_sent = true;
     }
 
-    if (select_pressed && !select_hold_executed) {
-        if (timer_elapsed(select_timer) > 120) {  // Ejecutar HOLD a los 120 ms
-            select_hold_executed = true;
-            // HOLD: Ctrl + A
-            register_code(KC_LCTL);
-            tap_code(KC_A);
-            unregister_code(KC_LCTL);
-        }
-    }
 
-
-    if (f_pressed && !f_sent && timer_elapsed(timer_key) > 200) {
+     if (f_pressed && !f_sent && timer_elapsed(timer_key) > 200) {
         tap_code(KC_W);
         f_sent = true;
     }
@@ -1713,9 +1694,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, MO(4), SUPER_UP, LT(2,KC_TAB), KC_INS,
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), SUPER_UP, LT(2,KC_TAB), KC_INS,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, SELECT_W_ALL, SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1727,11 +1708,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, VOICE_A,                   XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
+    KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, XXXXXXX,                              XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), KC_D, F_W, KC_G , C(KC_S),                                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+    LT(11,KC_A), LT(12,KC_S), KC_D, F_W, KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                         HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
+    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
