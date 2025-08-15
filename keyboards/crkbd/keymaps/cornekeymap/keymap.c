@@ -151,6 +151,9 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+//static uint16_t space_base_timer = 0;
+static bool space_base_double_tap = false;
+
 bool exc_dlr_pressed = false;
 bool exc_dlr_hold = false;
 
@@ -361,18 +364,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                return true;
 
             case LT(2,SPACE_BASE):
-                  if (record->event.pressed) {
-                       if (!record->tap.count) {
 
-                           layer_invert(1);
-                          return false; //hold
-                       }else {
-                           tap_code(KC_SPACE);
+                if (record->event.pressed) {
+                    if (record->tap.count == 2) {
+                        // DOBLE TAP → activar espacio sostenido
+                        space_base_double_tap = true;
+                        register_code(KC_SPC);
+                        return false;
+                    }
+                    if (record->tap.count == 0) {
+                        // HOLD sin taps → cambiar capa base
+                            layer_invert(1);
+                        return false;
+                    }
+                    if (record->tap.count == 1) {
+                        // TAP simple → un espacio
+                        tap_code(KC_SPC);
+                        return false;
+                    }
+                } else {
+                    // Al soltar, cortar espacio sostenido si estaba en doble tap
+                    if (space_base_double_tap) {
+                        unregister_code(KC_SPC);
+                        space_base_double_tap = false;
+                    }
+                }
+                return true;
 
-                            return false;
-                               }
-                           }
-                       return true;
 
             case LT(4, ALT_TAB):
                if (record->event.pressed) {
