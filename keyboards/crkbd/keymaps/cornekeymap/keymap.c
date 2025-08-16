@@ -436,7 +436,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false; // Ya manejamos la tecla
-
+/*
             case DEV_LY_SPACE:
                 if (record->event.pressed) {
                     dev_ly_space_pressed = true;
@@ -455,7 +455,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     dev_ly_space_pressed = false;
                 }
-                return false; // evitamos el comportamiento por defecto
+                return false; // evitamos el comportamiento por defecto*/
+
+
+            case LT(3, KC_SPACE):
+                if (record->event.pressed) {
+                    if (record->tap.count == 2) {
+                        // DOBLE TAP → activar espacio sostenido
+                        space_base_double_tap = true;
+                        register_code(KC_SPC);
+                        return false;
+                    }
+                    if (record->tap.count == 0) {
+                        // HOLD → activar momentáneamente capa 3
+                        layer_on(3);
+                        return false;
+                    }
+                    if (record->tap.count == 1) {
+                        // TAP simple → soltar Alt si está activo y enviar Espacio
+                        if (get_mods() & MOD_MASK_ALT) {
+                            unregister_mods(MOD_MASK_ALT);
+                            is_alt_tab_active = false;
+                        }
+                        tap_code(KC_SPC);
+                        return false;
+                    }
+                } else {
+                    // Al soltar tecla
+                    if (space_base_double_tap) {
+                        // cortar espacio sostenido
+                        unregister_code(KC_SPC);
+                        space_base_double_tap = false;
+                    } else {
+                        // si fue HOLD → apagar capa 3
+                        layer_off(3);
+                    }
+                }
+                return true;
+
 
             case GUI_E:
                 if (record->event.pressed) {
@@ -1718,7 +1755,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           DEV_LY_SPACE, SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
+                                           LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
       ),
 
