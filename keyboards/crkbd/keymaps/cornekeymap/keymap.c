@@ -444,8 +444,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     if (record->tap.count == 0) {
                         // HOLD → activar momentáneamente capa 3
-                        layer_on(3);
-                        return false;
+                        return true;
                     }
                     if (record->tap.count == 1) {
                         // TAP simple → soltar Alt si está activo y enviar Espacio
@@ -462,9 +461,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         // cortar espacio sostenido
                         unregister_code(KC_SPC);
                         space_base_double_tap = false;
-                    } else {
-                        // si fue HOLD → apagar capa 3
-                        layer_off(3);
                     }
                 }
                 return true;
