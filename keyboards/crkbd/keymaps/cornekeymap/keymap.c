@@ -169,9 +169,6 @@ uint16_t shift_toggle_timer = 0;
 
 bool ms_acl0_active = false;
 
-static uint16_t dev_ly_space_timer = 0;
-static bool dev_ly_space_pressed = false;
-
 static uint16_t sel_timer = 0;
 static bool sel_pressed = false;
 static bool sel_is_hold = false;
@@ -436,27 +433,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false; // Ya manejamos la tecla
-/*
-            case DEV_LY_SPACE:
-                if (record->event.pressed) {
-                    dev_ly_space_pressed = true;
-                    dev_ly_space_timer = timer_read();
-                } else {
-                    if (timer_elapsed(dev_ly_space_timer) < TAPPING_TERM) {
-                        // TAP → soltar Alt si está activo y enviar Espacio
-                        if (get_mods() & MOD_MASK_ALT) {
-                            unregister_mods(MOD_MASK_ALT);
-                            is_alt_tab_active = false;
-                        }
-                        tap_code(KC_SPACE);
-                    } else {
-                        // HOLD → al soltar, desactiva la capa momentánea
-                        layer_off(3);
-                    }
-                    dev_ly_space_pressed = false;
-                }
-                return false; // evitamos el comportamiento por defecto*/
-
 
             case LT(3, KC_SPACE):
                 if (record->event.pressed) {
@@ -1512,11 +1488,6 @@ void matrix_scan_user(void) {
             register_code(KC_LALT);
         }
     }
-
-    if (dev_ly_space_pressed && timer_elapsed(dev_ly_space_timer) >= TAPPING_TERM) {
-        layer_on(3);
-    }
-
 
     if (sel_pressed && !sel_is_hold && timer_elapsed(sel_timer) > TAPPING_TERM) {
         sel_is_hold = true;
