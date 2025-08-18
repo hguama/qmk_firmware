@@ -42,7 +42,6 @@ enum custom_keycodes {
     SUPER_UP,
     SUPER_DOWN,
     SUPER_LEFT,
-    SUPER_RIGHT,
     SUPER_CTRL_LEFT,
     SUPER_CTRL_RIGHT,
     HASH_CIRC,
@@ -152,6 +151,8 @@ bool n_sent = false;
 
 //vars
 //static uint16_t space_base_timer = 0;
+static bool sr_repeat = false;
+
 static bool space_base_double_tap = false;
 
 bool exc_dlr_pressed = false;
@@ -202,10 +203,6 @@ bool super_up_pressed = false;
 bool super_up_sent_hold = false;
 uint16_t super_up_timer = 0;
 
-// Super RIGHT
-bool super_right_pressed = false;
-bool super_right_sent_hold = false;
-uint16_t super_right_timer = 0;
 
 // Super DOWN
 bool super_down_pressed = false;
@@ -541,18 +538,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                  }
                  return false;
 
-             case SUPER_RIGHT:
-                 if (record->event.pressed) {
-                     super_right_pressed = true;
-                     super_right_sent_hold = false;
-                     super_right_timer = timer_read();
-                 } else {
-                     if (!super_right_sent_hold) {
-                         tap_code16(KC_RIGHT);
-                     }
-                     super_right_pressed = false;
-                 }
-                 return false;
+
+      case LT(1, KC_RIGHT):
+            if (record->event.pressed) {
+                if (record->tap.count == 2) {
+                    // DOBLE TAP + (mantener) → repetir en ciclos de 5
+                    sr_repeat = true;
+                    timer_key  = timer_read();
+                    return false;
+                }
+                if (record->tap.count == 0) {
+                    // HOLD → 10 flechas inmediatas
+                    for (int i = 0; i < 40; i++) {
+                        tap_code(KC_RGHT);
+                    }
+                    return false;
+                }
+                if (record->tap.count == 1) {
+                    // TAP simple → 1 flecha
+                    tap_code(KC_RGHT);
+                    return false;
+                }
+            } else {
+                // Al soltar, detener el ciclo (si estaba activo)
+                if (sr_repeat) {
+                    sr_repeat = false;
+                }
+            }
+            return true;
 
              case SUPER_DOWN:
                  if (record->event.pressed) {
@@ -1461,6 +1474,31 @@ void matrix_scan_user(void) {
 
 //double key
 
+    if (sr_repeat) {
+        if (timer_elapsed(timer_key) > 130) {
+            for (int i = 0; i < 5; i++) {
+                tap_code(KC_RGHT);
+            }
+            timer_key = timer_read();
+        }
+    }
+
+     /*if (ciclo_activo && timer_elapsed(ciclo_timer) > 300) {
+         for (int i = 0; i < 5; i++) {
+             tap_code(KC_RIGHT);
+         }
+         ciclo_timer = timer_read();
+     }
+*/
+//    if (superright_repeat) {
+//        // Repite 5 flechas derechas en cada ciclo
+//        for (int i = 0; i < 5; i++) {
+//            tap_code(KC_RIGHT);
+//        }
+//        wait_ms(150); // control de velocidad de repetición
+//    }
+
+
     if (exc_dlr_pressed && !exc_dlr_hold && timer_elapsed(timer_key) > 200) {
         exc_dlr_hold = true;
         tap_code16(KC_DLR); // $
@@ -1541,11 +1579,6 @@ void matrix_scan_user(void) {
             for (int i = 0; i < 5; i++) tap_code16(KC_UP);
             super_up_sent_hold = true;
         }
-
-    if (super_right_pressed && !super_right_sent_hold && timer_elapsed(super_right_timer) > TAPPING_TERM) {
-        for (int i = 0; i < 5; i++) tap_code16(KC_RIGHT);
-        super_right_sent_hold = true;
-    }
 
     if (super_down_pressed && !super_down_sent_hold && timer_elapsed(super_down_timer) > TAPPING_TERM) {
         for (int i = 0; i < 5; i++) tap_code16(KC_DOWN);
@@ -1716,9 +1749,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), SUPER_UP, LT(2,KC_TAB), KC_INS,
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), SUPER_UP, LT(2,KC_TAB), LT(4,KC_INS),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), SUPER_LEFT, SUPER_DOWN, SUPER_RIGHT, HOME_END,
+      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), SUPER_LEFT, SUPER_DOWN, LT(1, KC_RIGHT), HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1775,7 +1808,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     XXXXXXX, C(KC_F19), C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, TD(TDQ_BOOKMARK), XXXXXXX, C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1790,7 +1823,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     KC_ASTR, KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, KC_CIRC, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
+    XXXXXXX, KC_CIRC, XXXXXXX, KC_LALT, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                 LT(9,KC_ENT), XXXXXXX, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
                                  //`--------------------------'  `--------------------------'
@@ -2296,6 +2329,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         if (QK_TAP_DANCE <= keycode && keycode <= QK_TAP_DANCE_MAX) {
         return 450;
     }
+
+    if (keycode == LT(1, KC_RIGHT)) {
+            return 200;  // prueba 110–130 ms
+        }
 
       return TAPPING_TERM;
   }
