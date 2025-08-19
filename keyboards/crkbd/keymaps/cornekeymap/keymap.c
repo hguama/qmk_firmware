@@ -248,9 +248,6 @@ static uint16_t defer_timer_copy = 0;
 static uint16_t defer_timer_cut = 0;
 
 
-static bool spc_tab_presionado = false;
-static bool spc_tab_enviado = false;
-static uint16_t spc_tab_timer = 0;
 
 static bool refactor_pressed = false;
 static bool refactor_hold_executed = false;
@@ -1550,10 +1547,6 @@ void matrix_scan_user(void) {
             tap_code16(C(KC_X));
          }
 
-        if (spc_tab_presionado && !spc_tab_enviado && timer_elapsed(spc_tab_timer) >= TAPPING_TERM) {
-            tap_code16(A(KC_TAB));  // Ejecutar Alt + Tab una sola vez
-            spc_tab_enviado = true;
-        }
 
         if (refactor_pressed && !refactor_hold_executed && timer_elapsed(refactor_timer) >= TAPPING_TERM) {
             tap_code16(LSFT(KC_F6));  // Rename
@@ -1603,13 +1596,13 @@ void matrix_scan_user(void) {
    }
 
 
-      if (shift_active) {
+      /*if (shift_active) {
         if (timer_elapsed(shift_toggle_timer) > 30000) {
             unregister_code(KC_LSFT);
             shift_active = false;
       }
-
     }
+*/
 
 
 
