@@ -160,8 +160,6 @@ static bool     is_pressed = false; // para saber si sigue apretada
 
 static bool space_base_double_tap = false;
 
-bool exc_dlr_pressed = false;
-bool exc_dlr_hold = false;
 
 
 static bool dc_pressed = false;
@@ -398,19 +396,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     break;
 
-            case EXC_DLR:
-                if (record->event.pressed) {
-                    exc_dlr_pressed = true;
-                    timer_key = timer_read();
-                } else {
-                    // Si se soltó y no fue HOLD → TAP
-                    if (!exc_dlr_hold) {
+case  LT(2,EXC_DLR):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+        tap_code16(KC_DLR); // $
+
+                       return false;
+                    }else {
                         tap_code16(KC_EXLM); // !
-                    }
-                    exc_dlr_pressed = false;
-                    exc_dlr_hold = false;
-                }
-                return false; // evitamos comportamiento por defecto
+
+                       return false;
+                         }
+                     }
+                       return false;
 
 
             case MS_ACL0_TOGGLE:
@@ -842,14 +840,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,LBRC2):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-                      SEND_STRING("]");
+                      SEND_STRING("]"); //hold
                        return false;
                     }else {
-                       SEND_STRING("[");
+                       SEND_STRING("["); //tap
                        return false;
                          }
                      }
-                    break;
+                       return false;
+
 
 
             case  LT(3,KC_ENT):
@@ -1413,10 +1412,6 @@ void matrix_scan_user(void) {
         }
     }*/
 
-    if (exc_dlr_pressed && !exc_dlr_hold && timer_elapsed(timer_key) > 200) {
-        exc_dlr_hold = true;
-        tap_code16(KC_DLR); // $
-    }
 
 
     if (dc_pressed && !dc_hold_executed) {
@@ -1660,7 +1655,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
  KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, EXC_DLR, LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+ KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  S(KC_GRAVE), HASH_CIRC , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
