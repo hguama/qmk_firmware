@@ -157,7 +157,7 @@ static bool     is_pressed = false; // para saber si sigue apretada
 
 
 //static uint16_t space_base_timer = 0;
-static bool sr_repeat = false;
+//static bool sr_repeat = false;
 
 static bool space_base_double_tap = false;
 
@@ -560,7 +560,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                  }
                  return false;
 
-
+/*
       case LT(1, KC_RIGHT):
             if (record->event.pressed) {
                 if (record->tap.count == 2) {
@@ -587,7 +587,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     sr_repeat = false;
                 }
             }
-            return true;
+            return true;*/
 
              case SUPER_DOWN:
                  if (record->event.pressed) {
@@ -1511,7 +1511,7 @@ void matrix_scan_user(void) {
         }
     }
 
-
+/*
     if (sr_repeat) {
         if (timer_elapsed(timer_key) > 130) {
             for (int i = 0; i < 5; i++) {
@@ -1519,23 +1519,7 @@ void matrix_scan_user(void) {
             }
             timer_key = timer_read();
         }
-    }
-
-     /*if (ciclo_activo && timer_elapsed(ciclo_timer) > 300) {
-         for (int i = 0; i < 5; i++) {
-             tap_code(KC_RIGHT);
-         }
-         ciclo_timer = timer_read();
-     }
-*/
-//    if (superright_repeat) {
-//        // Repite 5 flechas derechas en cada ciclo
-//        for (int i = 0; i < 5; i++) {
-//            tap_code(KC_RIGHT);
-//        }
-//        wait_ms(150); // control de velocidad de repetición
-//    }
-
+    }*/
 
     if (exc_dlr_pressed && !exc_dlr_hold && timer_elapsed(timer_key) > 200) {
         exc_dlr_hold = true;
