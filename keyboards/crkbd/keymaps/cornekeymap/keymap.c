@@ -101,7 +101,7 @@ enum {
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
-    TDQ_Z_ENG,
+
     TDQ_BOOKMARK,
     TDQ_GOTO,
     TDQ_FIND,
@@ -277,7 +277,7 @@ void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
 void tdq_find_finished(tap_dance_state_t *state, void *user_data);
 void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
-void tdq_z_eng_finished(tap_dance_state_t *state, void *user_data);
+
 
 //Config revert to repeat key
 /*uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
@@ -1624,7 +1624,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
     [TDQ_REPLACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_replace_finished, x_reset),
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
-    [TDQ_Z_ENG] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_z_eng_finished, x_reset),
+
 };
 
 
@@ -1714,7 +1714,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  //`--------------------------'  `--------------------------'
 ),
 
-//mouse ly 6 TD(TDQ_Z_ENG)
+//mouse ly 6
     [6] = LAYOUT_split_3x6_3(
    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
    KC_ESC, MS_ACL0_TOGGLE, MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
@@ -1731,7 +1731,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, MS_WHLU, XXXXXXX, MS_WHLD, MS_ACL2,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, TD(TDQ_Z_ENG) , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, XXXXXXX , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -2080,26 +2080,6 @@ void tdq_goto_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void tdq_z_eng_finished(tap_dance_state_t *state, void *user_data) {
-        xtap_state.state = cur_dance(state);
-
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:
-            SEND_STRING(SS_LCTL("z"));  // Deshacer
-            break;
-        case TD_SINGLE_HOLD:
-            SEND_STRING(SS_LCTL(SS_LALT(SS_LSFT("o"))));  // reverso
-            break;
-        case TD_DOUBLE_TAP:
-            SEND_STRING(SS_LALT("q"));  // text to speech
-            break;
-        case TD_DOUBLE_HOLD:
-            SEND_STRING(SS_LALT("p"));  // read aloud
-            break;
-        default:
-            break;
-    }
-}
 
 void tdq_find_finished(tap_dance_state_t *state, void *user_data) {
         xtap_state.state = cur_dance(state);
