@@ -859,12 +859,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
                     return true;
 
-            case  LT(9,KC_ENT):
-                   if (record->event.pressed) {
-                      clear_all();
-                       }
-
-                    return true;
 
             case  HOME_END:
                    if (record->event.pressed) {
@@ -1710,7 +1704,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, KC_CIRC, XXXXXXX, KC_LALT, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                LT(9,KC_ENT), XXXXXXX, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
+                                KC_ENT, XXXXXXX, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
                                  //`--------------------------'  `--------------------------'
 ),
 
