@@ -26,6 +26,7 @@ JKL
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    ARROW_CTRL,
     CTRLW_L4,
     SPACE_BASE,
     ALT_TAB,
@@ -150,6 +151,11 @@ bool b_sent = false;
 bool n_sent = false;
 
 //vars
+
+static bool     is_hold = false; // estado de hold
+static bool     is_pressed = false; // para saber si sigue apretada
+
+
 //static uint16_t space_base_timer = 0;
 static bool sr_repeat = false;
 
@@ -339,10 +345,26 @@ void clear_all(void) {
        }
 }
 
-//PR record
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
+
+
+//PR record
+
+        case ARROW_CTRL:
+            if (record->event.pressed) {
+                timer_key = timer_read();
+                is_hold = false;
+                is_pressed = true;
+            } else {
+                is_pressed = false;
+                if (!is_hold) {
+                    // TAP → Flecha derecha
+                    tap_code(KC_RGHT);
+                }
+            }
+            return false;
 
 
 
@@ -1472,7 +1494,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for  macro
 void matrix_scan_user(void) {
 
-//double key
+//matrix
+    static uint16_t rpt_timer;
+
+    if (is_pressed && !is_hold && timer_elapsed(timer_key) > TAPPING_TERM) {
+        // Cambia a modo HOLD
+        is_hold = true;
+        tap_code16(C(KC_RGHT)); // primer envío inmediato
+        rpt_timer = timer_read();
+    }
+
+    if (is_hold && is_pressed) {
+        if (timer_elapsed(rpt_timer) > 150) { // delay entre repeticiones
+            tap_code16(C(KC_RGHT));
+            rpt_timer = timer_read();
+        }
+    }
+
 
     if (sr_repeat) {
         if (timer_elapsed(timer_key) > 130) {
@@ -1753,7 +1791,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), SUPER_LEFT, SUPER_DOWN, LT(1, KC_RIGHT), HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
+      KC_LCTL, LT(12,TG_6), LT(5,KC_ENT), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
