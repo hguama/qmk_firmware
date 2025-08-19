@@ -209,13 +209,10 @@ static bool hash_is_pressed = false;
 static bool hash_sent_hold = false;
 static uint16_t hash_timer = 0;
 
-static bool equal_is_pressed = false;
-static bool equal_sent_hold = false;
-static uint16_t equal_timer = 0;
 
 
 static uint16_t hash_timer;
-static uint16_t equal_timer;
+
 
 bool is_recent_loc_held = false;
 uint16_t recent_loc_timer = 0;
@@ -550,18 +547,21 @@ case  LT(2,EXC_DLR):
                 }
                 return false;
 
-            case EQUAL_DBL:
-                if (record->event.pressed) {
-                    equal_is_pressed = true;
-                    equal_sent_hold = false;
-                    equal_timer = timer_read();
-                } else {
-                    if (!equal_sent_hold) {
+
+            case  LT(2,EQUAL_DBL):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code16(KC_EQUAL);  // hold ==
+                        tap_code16(KC_EQUAL);
+                       return false;
+                    }else {
                         tap_code16(KC_EQUAL);  // TAP: =
-                    }
-                    equal_is_pressed = false;
-                }
-                return false;
+                       return false;
+                         }
+                     }
+                       return false;
+
+
 
 
            case DOUBLE_PIPE:
@@ -839,11 +839,11 @@ case  LT(2,EXC_DLR):
 
             case  LT(2,LBRC2):
                  if (record->event.pressed) {
-                    if (!record->tap.count) {
-                      SEND_STRING("]"); //hold
+                    if (!record->tap.count) {//hold
+                      SEND_STRING("]");
                        return false;
-                    }else {
-                       SEND_STRING("["); //tap
+                    }else {//tap
+                       SEND_STRING("[");
                        return false;
                          }
                      }
@@ -1483,11 +1483,6 @@ void matrix_scan_user(void) {
         hash_sent_hold = true;
     }
 
-    if (equal_is_pressed && !equal_sent_hold && timer_elapsed(equal_timer) > TAPPING_TERM) {
-        tap_code16(KC_EQUAL);
-        tap_code16(KC_EQUAL);  // HOLD: ==
-        equal_sent_hold = true;
-    }
 
     if (is_recent_loc_held && !recent_loc_sent && timer_elapsed(recent_loc_timer) > TAPPING_TERM) {
         // HOLD → Ctrl+Shift+E
@@ -1625,7 +1620,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       LT(4,KC_ESC), LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(4,KC_INS),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, LT(1, KC_RIGHT), HOME_END,
+      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1653,7 +1648,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), EQUAL_DBL,  LT(2,KC_DQT), KC_QUOT,
+ KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), LT(2,EQUAL_DBL),  LT(2,KC_DQT), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
@@ -1682,7 +1677,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
      C(KC_F20), C(KC_F19), MO(8), C(S(KC_F21)), C(KC_F22), XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, MO(8), C(KC_F16), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, XXXXXXX, MO(8), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
