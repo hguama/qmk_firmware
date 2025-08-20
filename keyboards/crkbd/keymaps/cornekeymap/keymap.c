@@ -191,9 +191,6 @@ bool para_down_sent = false;
 uint16_t para_down_timer = 0;
 
 
-bool z_undo_presionado = false;
-bool z_undo_enviado = false;
-uint16_t z_undo_timer = 0;
 
 
 
@@ -205,13 +202,10 @@ uint16_t z_undo_timer = 0;
 
 
 
-static bool hash_is_pressed = false;
-static bool hash_sent_hold = false;
-static uint16_t hash_timer = 0;
 
 
 
-static uint16_t hash_timer;
+
 
 
 bool is_recent_loc_held = false;
@@ -468,24 +462,32 @@ case  LT(2,EXC_DLR):
                 return false; // evitamos el comportamiento por defecto
 
 
+            case  LT(2,EQUAL_DBL):
+                             if (record->event.pressed) {
+                                if (!record->tap.count) {
+                                    tap_code16(KC_EQUAL);  // hold ==
+                                    tap_code16(KC_EQUAL);
+                                   return false;
+                                }else {
+                                    tap_code16(KC_EQUAL);  // TAP: =
+                                   return false;
+                                     }
+                                 }
+                                   return false;
 
 
-            case Z_UNDO:
-                if (record->event.pressed) {
-                    z_undo_presionado = true;
-                    z_undo_enviado = false;
-                    z_undo_timer = timer_read();
-                } else {
-                    z_undo_presionado = false;
-                    if (!z_undo_enviado) {
-                        // Tap: Ctrl + Z
-                        tap_code16(C(KC_Z));
-                        /*register_mods(MOD_BIT(KC_LCTL));
-                        tap_code(KC_Z);
-                        unregister_mods(MOD_BIT(KC_LCTL));
-*/                    }
-                }
-                return false;
+            case  LT(0,Z_UNDO):
+                     if (record->event.pressed) {
+                        if (!record->tap.count) {
+                            tap_code16(C(KC_Y));
+                           return false;
+                        }else {
+                            tap_code16(C(KC_Z));
+                           return false;
+                             }
+                         }
+                    return false;
+
 
             case TRIPLE_WHLD:
                 if (record->event.pressed) {
@@ -534,32 +536,19 @@ case  LT(2,EXC_DLR):
 
 
 
-            case HASH_CIRC:
-                if (record->event.pressed) {
-                    hash_is_pressed = true;
-                    hash_sent_hold = false;
-                    hash_timer = timer_read();
-                } else {
-                    if (!hash_sent_hold) {
-                        tap_code16(KC_HASH);  // TAP: #
-                    }
-                    hash_is_pressed = false;
-                }
-                return false;
-
-
-            case  LT(2,EQUAL_DBL):
+            case  LT(2,HASH_CIRC):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-                        tap_code16(KC_EQUAL);  // hold ==
-                        tap_code16(KC_EQUAL);
+                        tap_code16(KC_CIRC);  // HOLD: ^
                        return false;
                     }else {
-                        tap_code16(KC_EQUAL);  // TAP: =
+                        tap_code16(KC_HASH);  // TAP: #
                        return false;
                          }
                      }
                        return false;
+
+
 
 
 
@@ -1465,23 +1454,12 @@ void matrix_scan_user(void) {
 
 
 
-    if (z_undo_presionado && !z_undo_enviado && timer_elapsed(z_undo_timer) > TAPPING_TERM) {
-        // Hold: Ctrl + Y (ejecutado sin soltar)
-        tap_code16(C(KC_Y));
-//        register_mods(MOD_BIT(KC_LCTL));
-//        unregister_mods(MOD_BIT(KC_LCTL));
-        z_undo_enviado = true;
-    }
 
 
 
 
 
 
-    if (hash_is_pressed && !hash_sent_hold && timer_elapsed(hash_timer) > TAPPING_TERM) {
-        tap_code16(KC_CIRC);  // HOLD: ^
-        hash_sent_hold = true;
-    }
 
 
     if (is_recent_loc_held && !recent_loc_sent && timer_elapsed(recent_loc_timer) > TAPPING_TERM) {
@@ -1618,9 +1596,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      LT(4,KC_ESC), LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(4,KC_INS),
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), KC_INS,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), Z_UNDO, C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(0,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1652,7 +1630,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- S(KC_GRAVE), HASH_CIRC , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
+ S(KC_GRAVE), LT(2,HASH_CIRC) , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
@@ -1767,7 +1745,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  Z_UNDO, _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                  LT(0,Z_UNDO), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
          ), // LY12 super move 3
 
