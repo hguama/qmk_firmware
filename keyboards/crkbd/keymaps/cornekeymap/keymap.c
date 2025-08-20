@@ -230,9 +230,6 @@ bool mouse_hold_handled = false;
 uint16_t mouse_hold_timer = 0;
 bool mouse_key_pressed = false;
 
-static bool comm_presionado = false;
-static bool comm_hold_enviado = false;
-static uint16_t comm_timer = 0;
 
 static bool defer_copy = false;
 static bool defer_cut = false;
@@ -1177,22 +1174,28 @@ case  LT(2,EXC_DLR):
                     }
                     return false;
 
-            case COMM:
-                if (record->event.pressed) {
-                    comm_presionado = true;
-                    comm_hold_enviado = false;
-                    comm_timer = timer_read();  // Iniciar temporizador
-                } else {
-                    comm_presionado = false;
+         case  LT(2,COMM):
+             if (record->event.pressed) {
+                if (!record->tap.count) {
+                   if (shift_active) {
+                         unregister_code(KC_LSFT);
+                         shift_active = false;
+                           }
 
-                    if (!comm_hold_enviado && timer_elapsed(comm_timer) < TAPPING_TERM) {
-                        // TAP - comentar línea
+                        tap_code16(LCTL(LSFT(KC_SLSH)));
+                   return false;
+                }else {
+                    if (shift_active) {
+                          unregister_code(KC_LSFT);
+                          shift_active = false;
+                        }
+
                         tap_code16(LCTL(KC_SLSH));
-                    }
+                   return false;
+                     }
+                 }
+                   return false;
 
-                    // Si ya se ejecutó el HOLD, no hacemos nada más aquí
-                }
-                return false;  // Bloquear comportamiento por defecto
 
 
         case MOUSE_PRESSED_CLICK:
@@ -1501,17 +1504,6 @@ void matrix_scan_user(void) {
 
 
 
-    if (comm_presionado && !comm_hold_enviado && timer_elapsed(comm_timer) >= TAPPING_TERM) {
-        // Ejecutar HOLD - comentar bloque
-        if (shift_active) {
-            unregister_code(KC_LSFT);
-            shift_active = false;
-        }
-
-        tap_code16(LCTL(LSFT(KC_SLSH)));
-
-        comm_hold_enviado = true;  // Asegura que no se repita
-    }
 
         if (defer_copy && timer_elapsed(defer_timer_copy) > 2) {
             defer_copy = false;
@@ -1654,7 +1646,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,               XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      C(A(KC_T)), COMM, TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+      C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
