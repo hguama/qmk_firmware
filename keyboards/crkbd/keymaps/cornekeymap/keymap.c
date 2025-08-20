@@ -238,9 +238,6 @@ static uint16_t defer_timer_cut = 0;
 
 
 
-static bool refactor_pressed = false;
-static bool refactor_hold_executed = false;
-static uint16_t refactor_timer = 0;
 
 
 bool chatgpt_pressed = false;
@@ -1306,22 +1303,19 @@ case  LT(2,EXC_DLR):
                     }
                     return false; // Bloquea el comportamiento por defecto
 
-            case REFACTOR:
-                if (record->event.pressed) {
-                    refactor_pressed = true;
-                    refactor_hold_executed = false;
-                    refactor_timer = timer_read();
-                } else {
-                    refactor_pressed = false;
 
-                    // Si se soltó antes del tiempo y el hold no se ejecutó, es TAP
-                    if (!refactor_hold_executed && timer_elapsed(refactor_timer) < TAPPING_TERM) {
-                        tap_code16(LCTL(LALT(LSFT(KC_T))));  // Refactor This
-                    }
+            case  LT(2,REFACTOR):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code16(LSFT(KC_F6));  // Rename
+                       return false;
+                    }else {
+                         tap_code16(LCTL(LALT(LSFT(KC_T))));  // Refactor This
+                       return false;
+                         }
+                     }
+                       return false;
 
-                    // Si fue HOLD, no hacemos nada aquí porque ya se ejecutó en matrix_scan_user
-                }
-                return false;
 
 
         case SHIFT_TOGGLE:
@@ -1518,10 +1512,6 @@ void matrix_scan_user(void) {
          }
 
 
-        if (refactor_pressed && !refactor_hold_executed && timer_elapsed(refactor_timer) >= TAPPING_TERM) {
-            tap_code16(LSFT(KC_F6));  // Rename
-            refactor_hold_executed = true;
-        }
 
 
         if (chatgpt_pressed && !chatgpt_hold_executed) {
@@ -1648,7 +1638,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      A(KC_Q), C(KC_D), REFACTOR, TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
+      A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                  MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,     TO(0),   C(S(KC_U)), EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
