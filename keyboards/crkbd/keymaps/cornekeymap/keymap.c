@@ -173,9 +173,6 @@ uint16_t shift_toggle_timer = 0;
 
 bool ms_acl0_active = false;
 
-static uint16_t sel_timer = 0;
-static bool sel_pressed = false;
-static bool sel_is_hold = false;
 
 static uint16_t guie_timer = 0;
 static bool guie_pressed = false;
@@ -917,22 +914,28 @@ case  LT(2,EXC_DLR):
                 }
                 return false;
 
-            case SEL_WORD_PARAGRAPH:
-                if (record->event.pressed) {
-                    sel_pressed = true;
-                    sel_is_hold = false;
-                    sel_timer = timer_read();
-                } else {
-                    if (!sel_is_hold) {
+
+            case  LT(0, SEL_WORD_PARAGRAPH):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD → seleccionar párrafo (ejecutar inmediatamente)
+                        tap_code16_delay(KC_HOME,10);
+                        tap_code16_delay(KC_HOME,10);
+                        register_code(KC_LSFT);
+                        tap_code16(LALT(KC_PGDN));
+                        unregister_code(KC_LSFT);
+                       return false;
+                    }else {
+
                         // TAP → seleccionar palabra
                         tap_code16_delay(C(KC_LEFT), 10);
                         tap_code16_delay(C(S(KC_RIGHT)), 10);
-                    }
-                    // En HOLD no hacemos nada aquí porque ya lo ejecutamos en matrix_scan_user
-                    sel_pressed = false;
-                    sel_is_hold = false;
-                }
-                return false; // ya manejamos la tecla
+
+                       return false;
+                         }
+                     }
+                       return false;
+
 
             case EVERYW_ACT:
                     if (record->event.pressed) {
@@ -1421,14 +1424,6 @@ void matrix_scan_user(void) {
         }
     }
 
-    if (sel_pressed && !sel_is_hold && timer_elapsed(sel_timer) > TAPPING_TERM) {
-        sel_is_hold = true;
-        // HOLD → seleccionar párrafo (ejecutar inmediatamente)
-        tap_code(KC_HOME);
-        register_code(KC_LSFT);
-        tap_code16(LALT(KC_PGDN));
-        unregister_code(KC_LSFT);
-    }
 
     if (guie_pressed && !guie_is_hold && timer_elapsed(guie_timer) > TAPPING_TERM) {
         guie_is_hold = true;
@@ -1596,7 +1591,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), KC_INS,
+      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), SHIFT_TOGGLE,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
