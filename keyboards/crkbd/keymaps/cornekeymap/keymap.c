@@ -844,7 +844,7 @@ case  LT(2,EXC_DLR):
 
                     return true;
 
-            case  LT(2,HOME_END):
+            case  LT(0,HOME_END):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
 
@@ -1598,9 +1598,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), SHIFT_TOGGLE,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, LT(2,HOME_END),
+      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, LT(0,HOME_END),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), LT(0, SEL_WORD_PARAGRAPH),
+      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
@@ -1614,7 +1614,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LT(11,KC_A), LT(12,KC_S), KC_D, F_W, KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, LT(11,KC_BSPC), N_ENIE,
+    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, KC_BSPC, N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
