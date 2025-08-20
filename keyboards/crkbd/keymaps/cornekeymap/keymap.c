@@ -476,7 +476,7 @@ case  LT(2,EXC_DLR):
                                    return false;
 
 
-            case  LT(0,Z_UNDO):
+            case  LT(12,Z_UNDO):
                      if (record->event.pressed) {
                         if (!record->tap.count) {
                             tap_code16(C(KC_Y));
@@ -1598,7 +1598,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), KC_INS,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(0,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
+      LT(11,KC_ENT), LT(4,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), KC_LEFT, KC_DOWN, KC_RIGHT, HOME_END,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, LT(11,KC_BSPC), SEL_WORD_PARAGRAPH,
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1745,7 +1745,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  LT(0,Z_UNDO), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                                  LT(12,Z_UNDO), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
          ), // LY12 super move 3
 
