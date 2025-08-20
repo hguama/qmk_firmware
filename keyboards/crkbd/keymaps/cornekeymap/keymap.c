@@ -248,9 +248,6 @@ static bool refactor_pressed = false;
 static bool refactor_hold_executed = false;
 static uint16_t refactor_timer = 0;
 
-static bool showquick_pressed = false;
-static bool showquick_hold_executed = false;
-static uint16_t showquick_timer = 0;
 
 bool chatgpt_pressed = false;
 bool chatgpt_hold_executed = false;
@@ -1212,36 +1209,38 @@ case  LT(2,EXC_DLR):
             return false;
 
 
-        case SHOW_QUICK_ENT:
-            if (record->event.pressed) {
-                showquick_pressed = true;
-                showquick_hold_executed = false;
-                showquick_timer = timer_read();
-            } else {
-                showquick_pressed = false;
 
-                // TAP: ALT + ENTER (si no fue HOLD)
-                if (!showquick_hold_executed && timer_elapsed(showquick_timer) < TAPPING_TERM) {
-                    tap_code16(LALT(KC_ENT));
-                }
-            }
-            return false;
-
-
-            case CODE_COMPLET:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
+            case  LT(2, SHOW_QUICK_ENT):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                      tap_code16(LCTL(KC_F1));  // HOLD: CTRL + F1
+                       return false;
                     }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
+                       // TAP: ALT + ENTER (si no fue HOLD)
+                        tap_code16(LALT(KC_ENT));
+                       return false;
+                         }
+                     }
+                       return false;
+
+
+
+
+            case  LT(2,CODE_COMPLET):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD - code completion adv
+                         tap_code16(LCTL(LSFT(KC_SPACE)));
+
+                       return false;
+                    }else {
                             // TAP - code completion basic
                             tap_code16(LCTL(KC_SPACE));
-                        }else {
-                            // HOLD - code completion adv
-                            tap_code16(LCTL(LSFT(KC_SPACE)));
+                       return false;
+                         }
+                     }
+                       return false;
 
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
 
             case INFOPARM:
                     if (record->event.pressed) {
@@ -1546,10 +1545,6 @@ void matrix_scan_user(void) {
             refactor_hold_executed = true;
         }
 
-        if (showquick_pressed && !showquick_hold_executed && timer_elapsed(showquick_timer) >= TAPPING_TERM) {
-            tap_code16(LCTL(KC_F1));  // HOLD: CTRL + F1
-            showquick_hold_executed = true;
-        }
 
         if (chatgpt_pressed && !chatgpt_hold_executed) {
             if (timer_elapsed(chatgpt_timer) > TAPPING_TERM) {
@@ -1631,7 +1626,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL_LEFT, WIN_D,     HIBERNATE, XXXXXXX, SHOW_QUICK_ENT, CODE_COMPLET, KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL_LEFT, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
