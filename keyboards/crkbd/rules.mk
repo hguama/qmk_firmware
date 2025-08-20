@@ -1,9 +1,12 @@
 
 TAP_DANCE_ENABLE = yes
-COMBO_ENABLE = no
 MOUSEKEY_ENABLE = yes
-REPEAT_KEY_ENABLE = no
 RAW_ENABLE = yes
+RGBLIGHT_ENABLE = yes #yes activa la iluminación RGB
+
+RGB_MATRIX_ENABLE = no  # activa RGB matrix //RGBLIGHT_ENABLE debe estar en NO
+COMBO_ENABLE = no
+REPEAT_KEY_ENABLE = no
 
 
 
@@ -17,8 +20,6 @@ COMMAND_ENABLE = no #depuracion
 EXTRAKEY_ENABLE = no #para teclas multimedia
 NKRO_ENABLE = no      # varias teclas presionadas simultaneo. Desactivado acepta hasta 6 teclas en simultaneo
 BACKLIGHT_ENABLE = no
-RGBLIGHT_ENABLE = yes #yes activa la iluminación RGB
-RGB_MATRIX_ENABLE = no  # activa RGB matrix //RGBLIGHT_ENABLE debe estar en NO
 AUDIO_ENABLE = no     # Desactiva sonidos
 SPACE_CADET_ENABLE = no
 GRAVE_ESC_ENABLE = no
