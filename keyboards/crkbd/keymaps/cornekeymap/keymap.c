@@ -138,16 +138,16 @@ uint16_t alt_tab_timer = 0;
 static bool shift_active = false;
 
 //for doubles key
-bool f_pressed = false;
-bool b_pressed = false;
+
+
 bool n_pressed = false;
 
 
 uint16_t b_timer = 0;
 uint16_t n_timer = 0;
 
-bool f_sent = false;
-bool b_sent = false;
+
+
 bool n_sent = false;
 
 //vars
@@ -183,9 +183,6 @@ uint16_t shift_toggle_timer = 0;
 bool ms_acl0_active = false;
 
 
-static uint16_t guie_timer = 0;
-static bool guie_pressed = false;
-static bool guie_is_hold = false;
 
 bool para_up_pressed = false;
 bool para_up_sent = false;
@@ -462,20 +459,20 @@ case  LT(2,EXC_DLR):
                 return true;
 
 
-            case GUI_E:
-                if (record->event.pressed) {
-                    guie_pressed = true;
-                    guie_is_hold = false;
-                    guie_timer = timer_read();
-                } else {
-                    if (!guie_is_hold) {
-                        // TAP → enviar E
+
+
+            case  LT(2,GUI_E):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code(KC_LGUI);
+                       return false;
+                    }else {
                         tap_code(KC_E);
-                    }
-                    guie_pressed = false;
-                    guie_is_hold = false;
-                }
-                return false; // evitamos el comportamiento por defecto
+                       return false;
+                         }
+                     }
+                       return false;
+
 
 
             case  LT(2,EQUAL_DBL):
@@ -1001,31 +998,33 @@ case  LT(2,EXC_DLR):
                 }
                 return false;
 
-            case B_V:
-                if (record->event.pressed) {
-                    b_pressed = true;
-                    b_sent = false;
-                    b_timer = timer_read();
-                } else {
-                    b_pressed = false;
-                    if (!b_sent) tap_code(KC_B);
-                }
-                return false;
 
-            case F_W:
-                    if (record->event.pressed) {
-                        f_pressed = true;
-                        f_sent = false;
-                        timer_key = timer_read();
-                    } else {
-                        f_pressed = false;
+            case  LT(2,B_V):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code(KC_V);
+                       return false;
+                    }else {
+                        tap_code(KC_B);
+                       return false;
+                         }
+                     }
+                       return false;
 
-                        if (!f_sent) {
-                            // Tap: enviar Q si no se envió W por hold
-                            tap_code(KC_F);
-                        }
-                    }
-                    return false;  // bloquea el comportamiento estándar
+
+
+            case  LT(2,F_W):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code(KC_W);
+                       return false;
+                    }else {
+                         tap_code(KC_F);
+                       return false;
+                         }
+                     }
+                       return false;
+
 
 
             case OPEN_EXCL: // ¡
@@ -1460,11 +1459,6 @@ void matrix_scan_user(void) {
     }
 
 
-    if (guie_pressed && !guie_is_hold && timer_elapsed(guie_timer) > TAPPING_TERM) {
-        guie_is_hold = true;
-        // HOLD → presionar Windows inmediatamente
-        tap_code(KC_LGUI);
-    }
 
     if (para_up_pressed && !para_up_sent && timer_elapsed(para_up_timer) > TAPPING_TERM) {
         // HOLD para PAGE_PARAGRAPH_UP
@@ -1499,15 +1493,7 @@ void matrix_scan_user(void) {
     }
 
 
-     if (f_pressed && !f_sent && timer_elapsed(timer_key) > 200) {
-        tap_code(KC_W);
-        f_sent = true;
-    }
 
-    if (b_pressed && !b_sent && timer_elapsed(b_timer) > 200) {
-        tap_code(KC_V);
-        b_sent = true;
-    }
 
     if (n_pressed && !n_sent && timer_elapsed(n_timer) > 200) {
         // ñ minúscula
@@ -1636,11 +1622,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //alfa ly
     [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    KC_TRNS, LT(2,KC_Q), GUI_E, KC_R, KC_T, XXXXXXX,                              XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
+    KC_TRNS, LT(2,KC_Q), LT(2,GUI_E), KC_R, KC_T, XXXXXXX,                              XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), KC_D, F_W, KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+    LT(11,KC_A), LT(12,KC_S), KC_D, LT(2,F_W), KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, KC_X, LT(5,KC_C), B_V, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, KC_BSPC, N_ENIE,
+    KC_Z, KC_X, LT(5,KC_C), LT(2,B_V), XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, KC_BSPC, N_ENIE,
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
