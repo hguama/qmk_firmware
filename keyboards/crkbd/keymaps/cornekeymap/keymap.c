@@ -140,7 +140,7 @@ static bool shift_active = false;
 //for doubles key
 
 
-bool n_pressed = false;
+
 
 
 uint16_t b_timer = 0;
@@ -987,16 +987,21 @@ case  LT(2,EXC_DLR):
                    }
                    return false; // Bloquea el comportamiento por defecto
 
-            case N_ENIE:
-                if (record->event.pressed) {
-                    n_pressed = true;
-                    n_sent = false;
-                    n_timer = timer_read();
-                } else {
-                    n_pressed = false;
-                    if (!n_sent) tap_code(KC_N);
-                }
-                return false;
+
+
+            case  LT(2,N_ENIE):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT));
+                       return false;
+                    }else {
+                        tap_code(KC_N);
+                       return false;
+                         }
+                     }
+                       return false;
+
+
 
 
             case  LT(2,B_V):
@@ -1495,11 +1500,6 @@ void matrix_scan_user(void) {
 
 
 
-    if (n_pressed && !n_sent && timer_elapsed(n_timer) > 200) {
-        // ñ minúscula
-        SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT));
-        n_sent = true;
-    }
 
     if (comm_presionado && !comm_hold_enviado && timer_elapsed(comm_timer) >= TAPPING_TERM) {
         // Ejecutar HOLD - comentar bloque
@@ -1626,7 +1626,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
     LT(11,KC_A), LT(12,KC_S), KC_D, LT(2,F_W), KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, KC_X, LT(5,KC_C), LT(2,B_V), XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, CODE_COMPLET, KC_BSPC, N_ENIE,
+    KC_Z, KC_X, LT(5,KC_C), LT(2,B_V), XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, LT(2,CODE_COMPLET), KC_BSPC, LT(2,N_ENIE),
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
                                        LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
                                       //`--------------------------'  `--------------------------'
