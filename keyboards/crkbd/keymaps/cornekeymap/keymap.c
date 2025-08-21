@@ -958,7 +958,8 @@ case  LT(2,EXC_DLR):
                             tap_code16(KC_F14);
                         }else {
                             // HOLD → actions
-                            SEND_STRING(SS_LCTL(SS_LSFT("A")));
+                              tap_code16(C(S(KC_A)));
+
                         }
                     }
                     return false; // Bloquea el comportamiento por defecto
