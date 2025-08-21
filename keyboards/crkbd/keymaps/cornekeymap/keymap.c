@@ -208,9 +208,6 @@ bool ms_acl0_active = false;
 
 
 bool voice_mode = false;
-bool voice_pressed = false;
-uint16_t voice_timer = 0;
-bool voice_hold_sent = false;
 
 
 bool mouse_hold_handled = false;
@@ -579,38 +576,29 @@ case  LT(2,EXC_DLR):
                      }
                        return false;
 
+            case  LT(2,VOICE):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code16(G(KC_SPC)); // Solo cambia idioma a español
+                      return false;
+                    }else {
 
-            case VOICE:
-                if (record->event.pressed) {
-                    voice_pressed = true;
-                    voice_hold_sent = false;
-                    voice_timer = timer_read();
-                } else {
-                    voice_pressed = false;
-                    if (!voice_hold_sent) {
-                        // TAP: Activar/Desactivar dictado y cambiar idioma
+                    // TAP: Activar/Desactivar dictado y cambiar idioma
                         if (!voice_mode) {
-
-//                            wait_ms(100);
-//                            tap_code16(C(KC_L)); //
-                            wait_ms(100);
                             tap_code16(G(KC_SPC));
-                            wait_ms(100);
                             tap_code16(G(KC_H));   // Activar dictado
-                                voice_mode = true;
-                        } else {
-                            wait_ms(100);
-                            tap_code16(C(KC_L)); // Cambiar  IDIOMA
-                            wait_ms(100);
-                            tap_code(KC_ESC);      // Detener dictado
-                            wait_ms(100);
+                            voice_mode = true;
+                        }
+                         else {
                             tap_code16(G(KC_SPC));
+                            tap_code(KC_ESC);      // Detener dictado
                             voice_mode = false;
                         }
-                    }
-                }
-                return false; // Ya lo manejamos
 
+                       return false;
+                         }
+                     }
+                 return false;
 
             case CHATGPT:
               if (record->event.pressed) {
@@ -1360,6 +1348,7 @@ case  LT(2,EXC_DLR):
             case KC_ESC:
                   if (record->event.pressed) {
                     if (shift_active) { unregister_code(KC_LSFT); shift_active = false; }
+                    if (voice_mode) { tap_code16(G(KC_SPC)); voice_mode = false; }
                     clear_all();
                     tap_code(KC_ESC);
                 }
@@ -1508,12 +1497,6 @@ void matrix_scan_user(void) {
             }
         }
 
-        if (voice_pressed && !voice_hold_sent) {
-            if (timer_elapsed(voice_timer) > 500) { // HOLD (>500 ms)
-                voice_hold_sent = true;
-                tap_code16(G(KC_SPC)); // Solo cambia idioma a español
-            }
-        }
 
 
 
@@ -1566,7 +1549,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, ARROW_CTRL_LEFT, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
@@ -1683,7 +1666,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
           XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, LT(2,PAGE_PARAGRAPH_UP), A(KC_UP), LT(2,PAGE_PARAGRAPH_DOWN), KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_LSFT, XXXXXXX, MO(10), VOICE, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, HOME_END,
+          KC_LSFT, XXXXXXX, MO(10), LT(2,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1693,7 +1676,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), VOICE, C(KC_T), XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), XXXXXXX, C(KC_T), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
          XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
