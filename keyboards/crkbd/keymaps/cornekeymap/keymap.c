@@ -184,14 +184,7 @@ bool ms_acl0_active = false;
 
 
 
-bool para_up_pressed = false;
-bool para_up_sent = false;
-uint16_t para_up_timer = 0;
 
-// Variables para PAGE_PARAGRAPH_DOWN
-bool para_down_pressed = false;
-bool para_down_sent = false;
-uint16_t para_down_timer = 0;
 
 
 
@@ -901,33 +894,38 @@ case  LT(2,EXC_DLR):
                     return false; // Bloquea el comportamiento por defecto
 
 
-            case PAGE_PARAGRAPH_UP:
-                if (record->event.pressed) {
-                    para_up_pressed = true;
-                    para_up_sent = false;
-                    para_up_timer = timer_read();
-                } else {
-                    if (!para_up_sent) {
-                        // TAP
-                        tap_code16(A(KC_PGUP));
-                    }
-                    para_up_pressed = false;
-                }
-                return false;
 
-            case PAGE_PARAGRAPH_DOWN:
-                if (record->event.pressed) {
-                    para_down_pressed = true;
-                    para_down_sent = false;
-                    para_down_timer = timer_read();
-                } else {
-                    if (!para_down_sent) {
-                        // TAP
+            case  LT(2,PAGE_PARAGRAPH_UP):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD para PAGE_PARAGRAPH_UP
+                        tap_code16(A(KC_PGUP));
+                        tap_code(KC_DOWN);
+                        tap_code(KC_END);
+                       return false;
+                    }else {
+                        tap_code16(A(KC_PGUP));
+                       return false;
+                         }
+                     }
+                       return false;
+
+
+             case  LT(2,PAGE_PARAGRAPH_DOWN):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD para PAGE_PARAGRAPH_DOWN
                         tap_code16(A(KC_PGDN));
-                    }
-                    para_down_pressed = false;
-                }
-                return false;
+                        tap_code(KC_UP);
+                        tap_code(KC_END);
+                       return false;
+                    }else {
+                        tap_code16(A(KC_PGDN));
+                       return false;
+                         }
+                     }
+                       return false;
+
 
 
             case  LT(0, SEL_WORD_PARAGRAPH):
@@ -1466,21 +1464,7 @@ void matrix_scan_user(void) {
 
 
 
-    if (para_up_pressed && !para_up_sent && timer_elapsed(para_up_timer) > TAPPING_TERM) {
-        // HOLD para PAGE_PARAGRAPH_UP
-        tap_code16(A(KC_PGUP));
-        tap_code(KC_DOWN);
-        tap_code(KC_END);
-        para_up_sent = true;
-    }
 
-    if (para_down_pressed && !para_down_sent && timer_elapsed(para_down_timer) > TAPPING_TERM) {
-        // HOLD para PAGE_PARAGRAPH_DOWN
-        tap_code16(A(KC_PGDN));
-        tap_code(KC_UP);
-        tap_code(KC_END);
-        para_down_sent = true;
-    }
 
 
 
@@ -1697,7 +1681,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, LT(2,PAGE_PARAGRAPH_UP), A(KC_UP), LT(2,PAGE_PARAGRAPH_DOWN), KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_LSFT, XXXXXXX, MO(10), VOICE, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
