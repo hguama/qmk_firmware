@@ -224,9 +224,6 @@ static uint16_t defer_timer_cut = 0;
 
 
 
-bool chatgpt_pressed = false;
-bool chatgpt_hold_executed = false;
-uint16_t chatgpt_timer = 0;
 
 
 // Prototypes quad
@@ -600,24 +597,29 @@ case  LT(2,EXC_DLR):
                      }
                  return false;
 
-            case CHATGPT:
-              if (record->event.pressed) {
-                chatgpt_pressed = true;
-                chatgpt_hold_executed = false;
-                chatgpt_timer = timer_read();  // Inicia temporizador
-            } else {
-                chatgpt_pressed = false;
+            case  LT(2,CHATGPT):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // TAP → 3 TABs + ENTER
+                        tap_code_delay(KC_ENT, 80);
+                        tap_code_delay(KC_TAB, 80);
+                        tap_code_delay(KC_TAB, 80);
+                        tap_code_delay(KC_ENT, 80);
+                       return false;
+                    }
+/*
+                    else {
+                      // HOLD → 2 TABs + ENTER
+                     tap_code_delay(KC_TAB, 80);
+                     tap_code_delay(KC_TAB, 80);
+                     tap_code_delay(KC_ENT, 80);
+                       return false;
+                         }
+*/
 
-                if (!chatgpt_hold_executed) {
-                    // TAP → 3 TABs + ENTER
-                    tap_code_delay(KC_ENT, 30);
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_TAB, 30);
-                    tap_code_delay(KC_ENT, 30);
-                }
-            }
-                return false;
+                     }
+                       return false;
+
 
             case DOUBLE_COLON:
                 if (record->event.pressed) {
@@ -1486,16 +1488,6 @@ void matrix_scan_user(void) {
 
 
 
-        if (chatgpt_pressed && !chatgpt_hold_executed) {
-            if (timer_elapsed(chatgpt_timer) > TAPPING_TERM) {
-                // HOLD → 2 TABs + ENTER
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_TAB, 30);
-                tap_code_delay(KC_ENT, 30);
-
-                chatgpt_hold_executed = true;
-            }
-        }
 
 
 
@@ -1668,9 +1660,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_LSFT, XXXXXXX, MO(10), LT(2,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, LT(0,HOME_END),
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME) , PGDW_CTRLPG, C(KC_END),
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME), PGDW_CTRLPG, C(KC_END),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              CHATGPT, XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
+                                              LT(2,CHATGPT), XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                           //`--------------------------'  `--------------------------'
      ), //LY 10 super close window
 
