@@ -211,9 +211,6 @@ uint16_t para_down_timer = 0;
 
 
 
-bool is_recent_loc_held = false;
-uint16_t recent_loc_timer = 0;
-bool recent_loc_sent = false;
 
 bool voice_a_is_pressing = false;
 uint16_t voice_a_timer = 0;
@@ -1141,19 +1138,21 @@ case  LT(2,EXC_DLR):
                     }
                     return false;
 
-            case RECENT_LOC:
-                if (record->event.pressed) {
-                    recent_loc_timer = timer_read();
-                    is_recent_loc_held = true;
-                    recent_loc_sent = false;
-                } else {
-                    is_recent_loc_held = false;
-                    if (!recent_loc_sent) {
-                        // TAP → Ctrl+E
+
+            case  LT(2,RECENT_LOC):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        SEND_STRING(SS_LCTL(SS_LSFT("e")));
+                       return false;
+                    }else {
                         SEND_STRING(SS_LCTL("e"));
-                    }
-                }
-                return false; // bloquea comportamiento por defecto
+                       return false;
+                         }
+                     }
+                       return false;
+
+
+
 
 
             case USAGES:
@@ -1488,11 +1487,6 @@ void matrix_scan_user(void) {
 
 
 
-    if (is_recent_loc_held && !recent_loc_sent && timer_elapsed(recent_loc_timer) > TAPPING_TERM) {
-        // HOLD → Ctrl+Shift+E
-        SEND_STRING(SS_LCTL(SS_LSFT("e")));
-        recent_loc_sent = true;
-    }
 
 
 
@@ -1638,7 +1632,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, RECENT_LOC, C(KC_F12),
+      A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, LT(2,RECENT_LOC), C(KC_F12),
       //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                  MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,     TO(0),   C(S(KC_U)), EVERYW_ACT
                                           //`--------------------------'  `--------------------------'
