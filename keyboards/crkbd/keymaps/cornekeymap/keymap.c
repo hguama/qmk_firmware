@@ -1680,11 +1680,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, DEL_LINE, DEL_WORD, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, DEL_LINE, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_DOWN)), C(S(KC_DOWN)), XXXXXXX,  XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_DEL, C(S(KC_DOWN)), DEL_WORD,  DEL_LINE,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_BSPC, XXXXXXX, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                                   LT(12,Z_UNDO), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
                                               //`--------------------------'  `--------------------------'
