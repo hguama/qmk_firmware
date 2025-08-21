@@ -212,9 +212,6 @@ uint16_t para_down_timer = 0;
 
 
 
-bool voice_a_is_pressing = false;
-uint16_t voice_a_timer = 0;
-bool voice_a_hold_executed = false;
 
 
 bool voice_mode = false;
@@ -565,23 +562,30 @@ case  LT(2,EXC_DLR):
                return false; // evita que se procese por defecto
 
 
-           case VOICE_A:
-               if (record->event.pressed) {
-                   voice_a_is_pressing = true;
-                   voice_a_timer = timer_read();
-                   voice_a_hold_executed = false;
-               } else {
-                   voice_a_is_pressing = false;
-                   if (!voice_a_hold_executed) {
+
+            case  LT(2,VOICE_A):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: Ctrl + Win + S
+                        register_code(KC_LCTL);
+                        register_code(KC_LGUI);
+                        tap_code(KC_S);
+                        unregister_code(KC_LGUI);
+                        unregister_code(KC_LCTL);
+
+                       return false;
+                    }else {
                        // TAP: Alt + Shift + B
                        register_code(KC_LALT);
                        register_code(KC_LSFT);
                        tap_code(KC_B);
                        unregister_code(KC_LSFT);
                        unregister_code(KC_LALT);
-                   }
-               }
-               return false;
+                       return false;
+                         }
+                     }
+                       return false;
+
 
             case VOICE:
                 if (record->event.pressed) {
@@ -1527,17 +1531,6 @@ void matrix_scan_user(void) {
             }
         }
 
-        if (voice_a_is_pressing && !voice_a_hold_executed) {
-            if (timer_elapsed(voice_a_timer) > 120) {
-                voice_a_hold_executed = true;
-                // HOLD: Ctrl + Win + S
-                register_code(KC_LCTL);
-                register_code(KC_LGUI);
-                tap_code(KC_S);
-                unregister_code(KC_LGUI);
-                unregister_code(KC_LCTL);
-            }
-        }
 
 
    if (mouse_key_pressed && !mouse_hold_handled && timer_elapsed(mouse_hold_timer) > TAPPING_TERM) {
@@ -1704,7 +1697,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, VOICE_A, C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
+          XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, PAGE_PARAGRAPH_UP, A(KC_UP), PAGE_PARAGRAPH_DOWN, KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
           KC_LSFT, XXXXXXX, MO(10), VOICE, XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, HOME_END,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
