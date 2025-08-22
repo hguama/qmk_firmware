@@ -276,6 +276,10 @@ void clear_all(void) {
        unregister_code(KC_TAB);
        is_alt_tab_active = false;
        }
+
+    if (shift_active) { unregister_code(KC_LSFT); shift_active = false; }
+    if (voice_mode) { tap_code16(G(KC_SPC)); voice_mode = false; }
+
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -1310,8 +1314,6 @@ case  LT(2,EXC_DLR):
 
             case KC_ESC:
                   if (record->event.pressed) {
-                    if (shift_active) { unregister_code(KC_LSFT); shift_active = false; }
-                    if (voice_mode) { tap_code16(G(KC_SPC)); voice_mode = false; }
                     clear_all();
                     tap_code(KC_ESC);
                 }
