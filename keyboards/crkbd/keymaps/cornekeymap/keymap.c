@@ -1985,7 +1985,8 @@ void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
                           tap_code(KC_F11);         // Presionar F11
                           unregister_code(KC_LSFT); // Soltar Shift
                           break;
-        case TD_SINGLE_HOLD: SEND_STRING(SS_LALT("2")); break; //show list markers
+        case TD_SINGLE_HOLD: tap_code16(A(KC_2)); break; // show list markers
+
         case TD_DOUBLE_TAP://create marker
                       tap_code(KC_F11);
                       break;
