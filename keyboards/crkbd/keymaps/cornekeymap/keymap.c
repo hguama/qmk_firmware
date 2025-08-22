@@ -148,12 +148,12 @@ static bool shift_active = false;
 
 
 
-uint16_t b_timer = 0;
-uint16_t n_timer = 0;
 
 
 
-bool n_sent = false;
+
+
+
 
 //vars
 
@@ -169,8 +169,8 @@ static bool is_pressed_right = false;
 
 
 
-//static uint16_t space_base_timer = 0;
-//static bool sr_repeat = false;
+
+
 
 static bool space_base_double_tap = false;
 
@@ -179,9 +179,6 @@ static bool space_base_double_tap = false;
 
 
 
-bool shift_toggle_pressed = false;
-bool shift_toggle_is_hold = false;
-uint16_t shift_toggle_timer = 0;
 
 bool ms_acl0_active = false;
 
@@ -1287,30 +1284,17 @@ case  LT(2,EXC_DLR):
 
 
 
-        case SHIFT_TOGGLE://shift tg and alt + shift
-            if (record->event.pressed) {
-                shift_toggle_pressed = true;
-                shift_toggle_is_hold = false;
-                shift_toggle_timer = timer_read();
-            } else {
-                // Tecla soltada
-                if (!shift_toggle_is_hold) {
-                    // TAP → Toggle Shift
+            case SHIFT_TOGGLE: // Toggle Shift solo en TAP
+                if (record->event.pressed) {
+                    // Al presionar → alterna Shift
                     shift_active = !shift_active;
                     if (shift_active) {
-                        register_code(KC_LSFT);
+                        register_code(KC_LSFT);   // Activa Shift
                     } else {
-                        unregister_code(KC_LSFT);
+                        unregister_code(KC_LSFT); // Desactiva Shift
                     }
-                } else {
-                    // HOLD → soltar Shift y Alt
-                    unregister_code(KC_LSFT);
-                    unregister_code(KC_LALT);
                 }
-                shift_toggle_pressed = false;
-                shift_toggle_is_hold = false;
-            }
-            return false;
+                return false; // No procesar más
 
             case TG(2):
                     if (!record->event.pressed) {
@@ -1414,13 +1398,6 @@ void matrix_scan_user(void) {
 
 
 
-    if (shift_toggle_pressed && !shift_toggle_is_hold) {
-        if (timer_elapsed(shift_toggle_timer) > TAPPING_TERM) {
-            shift_toggle_is_hold = true;
-            register_code(KC_LSFT);
-            register_code(KC_LALT);
-        }
-    }
 
 
 
