@@ -208,9 +208,6 @@ bool ms_acl0_active = false;
 bool voice_mode = false;
 
 
-bool mouse_hold_handled = false;
-uint16_t mouse_hold_timer = 0;
-bool mouse_key_pressed = false;
 
 
 static bool defer_copy = false;
@@ -1170,23 +1167,19 @@ case  LT(2,EXC_DLR):
                    return false;
 
 
+            case  LT(2,MOUSE_PRESSED_CLICK):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        tap_code(MS_BTN1);
+                       return false;
+                    }else {
+                        tap_code(MS_BTN1);
+                        register_code(MS_BTN1);
+                       return false;
+                         }
+                     }
+                       return false;
 
-        case MOUSE_PRESSED_CLICK:
-            if (record->event.pressed) {
-                mouse_key_pressed = true;
-                mouse_hold_handled = false;
-                mouse_hold_timer = timer_read();
-            } else {
-                mouse_key_pressed = false;
-
-                if (!mouse_hold_handled) {
-                    // TAP - mouse click
-                    tap_code(MS_BTN1);
-
-                    register_code(MS_BTN1);  // Puedes quitar esto si hace doble clic
-                }
-            }
-            return false;
 
 
 
@@ -1468,11 +1461,6 @@ void matrix_scan_user(void) {
 
 
 
-   if (mouse_key_pressed && !mouse_hold_handled && timer_elapsed(mouse_hold_timer) > TAPPING_TERM) {
-       // HOLD detectado antes de soltar la tecla
-       tap_code(MS_BTN1);
-       mouse_hold_handled = true;  // Solo ejecutar una vez
-   }
 
 
       /*if (shift_active) {
@@ -1517,7 +1505,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), LT(2,MOUSE_PRESSED_CLICK), XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                            LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
                                            //`--------------------------'  `--------------------------'
@@ -1612,7 +1600,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, XXXXXXX , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  MOUSE_PRESSED_CLICK, MS_WHLR, MS_WHLL, XXXXXXX,
+      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  LT(2,MOUSE_PRESSED_CLICK), MS_WHLR, MS_WHLL, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_ENT, XXXXXXX,  _______,     TO(0),   KC_ESC, TG(7)
                                       //`--------------------------'  `--------------------------'
