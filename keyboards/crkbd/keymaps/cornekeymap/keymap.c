@@ -1543,7 +1543,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(2,VOICE),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), LT(12,Z_UNDO), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL, LT(12,TG_6), LT(5,KC_F3), MOUSE_PRESSED_CLICK, XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
       //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -1781,38 +1781,32 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
         case TD_SINGLE_HOLD: //copy 1 line
                 tap_code_delay(KC_HOME, 10);
                 tap_code_delay(KC_HOME, 10);
-                register_code(KC_LSFT);
-                tap_code_delay(KC_END, 10);
-                unregister_code(KC_LSFT);
+
+                // Shift + End para seleccionar
+                tap_code16_delay(S(KC_END), 10);
                 //wait_ms(50);
                 tap_code16_delay(C(KC_C), 10);
 
          break;
 
         case TD_DOUBLE_TAP: //copy 1 word
-
                 // Ctrl + Left
-                register_code(KC_LCTL);
-                tap_code(KC_LEFT);
-                unregister_code(KC_LCTL);
-                wait_ms(10);
+                tap_code16_delay(C(KC_LEFT),10);
 
-               register_code(KC_LCTL);
-               register_code(KC_LSFT);
-               tap_code_delay(KC_RIGHT, 10);
-               unregister_code(KC_LCTL);
-               unregister_code(KC_LSFT);
-               tap_code16_delay(C(KC_C), 10);
+                // Ctrl + Shift + Right
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
+
+                // Ctrl + C para copiar
+                tap_code16_delay(C(KC_C), 10);
+
 
         break;
 
         case TD_DOUBLE_HOLD: //copy 1 paragraph
 
-                tap_code(KC_HOME);
-                register_code(KC_LSFT);
-                tap_code16(LALT(KC_PGDN));
-                unregister_code(KC_LSFT);
-                tap_code16(LCTL(KC_C));
+                tap_code(KC_HOME);                   // Home
+                tap_code16(S(A(KC_PGDN)));           // Shift + Alt + PgDn
+                tap_code16(C(KC_C));                 // Ctrl + C
 
         break;
 
@@ -1830,15 +1824,14 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 
         case TD_SINGLE_HOLD:
 
-//        DESACTIVAR CTRL Y SHIFT
-
                 if (shift_active) {
                     unregister_code(KC_LSFT);
                     shift_active = false;
                 }
 
-                        tap_code16(C(S(KC_V)));
-                        break; // portapapeles
+                tap_code16(C(S(KC_V)));
+
+                break; // portapapeles
 
         case TD_DOUBLE_TAP: //paste 1 word
 
@@ -1938,38 +1931,30 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_SINGLE_HOLD: // Cut 1 line
-            tap_code_delay(KC_HOME, 10);
-            register_code(KC_LSFT);
-            tap_code_delay(KC_END, 10);
-            unregister_code(KC_LSFT);
-            wait_ms(10);
-            tap_code16(C(KC_X));
+                tap_code_delay(KC_HOME, 10);     // Ir al inicio
+                tap_code16_delay(S(KC_END), 10); // Shift + End para seleccionar
+                tap_code16(C(KC_X));             // Ctrl + X para cortar
+
             break;
 
         case TD_DOUBLE_TAP: // Cut 1 word
 
             // Ctrl + Left
-            register_code(KC_LCTL);
-            tap_code(KC_LEFT);
-            unregister_code(KC_LCTL);
-            wait_ms(10);
+            tap_code16_delay(C(KC_LEFT),10);
 
-            register_code(KC_LCTL);
-            register_code(KC_LSFT);
-            tap_code_delay(KC_RIGHT, 10);
-            unregister_code(KC_LSFT);
-            unregister_code(KC_LCTL);
-            wait_ms(10);
+            // Ctrl + Shift + Right
+            tap_code16_delay(C(S(KC_RIGHT)), 10);
+
+            // Ctrl + X para cortar
             tap_code16(C(KC_X));
+
             break;
 
         case TD_DOUBLE_HOLD: //cut 1 paragraph
 
-                 tap_code(KC_HOME);
-                 register_code(KC_LSFT);
-                 tap_code16(LALT(KC_PGDN));
-                 unregister_code(KC_LSFT);
-                 tap_code16(LCTL(KC_X));
+                tap_code(KC_HOME);            // Home
+                tap_code16(S(A(KC_PGDN)));    // Shift + Alt + PgDn
+                tap_code16(C(KC_X));          // Ctrl + X
 
          break;
 
