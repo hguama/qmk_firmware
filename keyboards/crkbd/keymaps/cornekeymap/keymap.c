@@ -371,7 +371,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case WIN_D:
                 if (record->event.pressed) {
-                    SEND_STRING(SS_LGUI("d"));
+                        tap_code16(G(KC_D)); // Win + D
                     }
                     break;
 
