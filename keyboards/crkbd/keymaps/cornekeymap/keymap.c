@@ -171,8 +171,6 @@ static bool space_base_double_tap = false;
 
 
 
-static bool dc_pressed = false;
-static bool dc_hold_executed = false;
 
 
 
@@ -549,29 +547,20 @@ case  LT(2,EXC_DLR):
                return false; // evita que se procese por defecto
 
 
-
-            case  LT(2,VOICE_A):
-                 if (record->event.pressed) {
+            case LT(2, VOICE_A):
+                if (record->event.pressed) {
                     if (!record->tap.count) {
                         // HOLD: Ctrl + Win + S
-                        register_code(KC_LCTL);
-                        register_code(KC_LGUI);
-                        tap_code(KC_S);
-                        unregister_code(KC_LGUI);
-                        unregister_code(KC_LCTL);
+                        tap_code16(C(G(KC_S)));
+                        return false;
+                    } else {
+                        // TAP: Alt + Shift + B
+                        tap_code16(A(S(KC_B)));
+                        return false;
+                    }
+                }
+                return false;
 
-                       return false;
-                    }else {
-                       // TAP: Alt + Shift + B
-                       register_code(KC_LALT);
-                       register_code(KC_LSFT);
-                       tap_code(KC_B);
-                       unregister_code(KC_LSFT);
-                       unregister_code(KC_LALT);
-                       return false;
-                         }
-                     }
-                       return false;
 
             case  LT(2,VOICE):
                  if (record->event.pressed) {
@@ -621,19 +610,21 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-            case DOUBLE_COLON:
-                if (record->event.pressed) {
-                    dc_pressed = true;
-                    dc_hold_executed = false;
-                    timer_key = timer_read();
-                } else {
-                    if (!dc_hold_executed) {
+             case  LT(2,DOUBLE_COLON):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD → "::" inmediatamente
+                        tap_code16(KC_COLN);
+                        tap_code16(KC_COLN);
+                       return false;
+                    }else {
                         // TAP → un solo ":"
                         tap_code16(KC_COLN);
-                    }
-                    dc_pressed = false;
-                }
-                return false;
+                       return false;
+                         }
+                     }
+                       return false;
+
 
 
             case M_ALT_TAB:
@@ -680,11 +671,9 @@ case  LT(2,EXC_DLR):
 
             case DEL_LINE:
                 if (record->event.pressed) {
-                   tap_code_delay(KC_HOME, 10);
-                   register_code(KC_LSFT);
-                   tap_code_delay(KC_END, 10);
-                   tap_code_delay(KC_BSPC, 10);
-                   unregister_code(KC_LSFT);
+                    tap_code_delay(KC_HOME, 10);       // Ir al inicio
+                    tap_code16_delay(S(KC_END), 10);   // Shift + End (seleccionar hasta el final)
+                    tap_code_delay(KC_BSPC, 10);       // Borrar selección
                  }
                  break;
 
@@ -922,19 +911,15 @@ case  LT(2,EXC_DLR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
                         // HOLD → seleccionar párrafo (ejecutar inmediatamente)
-                        tap_code16_delay(KC_END,10);
-                        tap_code16_delay(KC_HOME,10);
-                        tap_code16_delay(KC_HOME,30);
-                        register_code(KC_LSFT);
-                        tap_code16(LALT(KC_PGDN));
-                        unregister_code(KC_LSFT);
+                        tap_code16_delay(KC_END, 10);
+                        tap_code16_delay(KC_HOME, 10);
+                        tap_code16_delay(KC_HOME, 30);
+                        tap_code16(S(A(KC_PGDN))); // Shift + Alt + PgDn
                        return false;
                     }else {
-
                         // TAP → seleccionar palabra
                         tap_code16_delay(C(KC_LEFT), 10);
                         tap_code16_delay(C(S(KC_RIGHT)), 10);
-
                        return false;
                          }
                      }
@@ -1118,15 +1103,10 @@ case  LT(2,EXC_DLR):
                     }else {
                         if (timer_elapsed(timer_key) < TAPPING_TERM) {
                         //tap
-                            register_code(KC_LCTL);
-                            register_code(KC_LSFT);
-                            tap_code_delay(KC_BSPC, 30);
-                            unregister_code(KC_LCTL);
-                            unregister_code(KC_LSFT);
+                        tap_code16_delay(C(S(KC_BSPC)), 30); // Ctrl + Shift + Backspace
                         }else {
                         //hold
                            tap_code(KC_F13);
-
                         }
                     }
                     return false;
@@ -1314,7 +1294,7 @@ case  LT(2,EXC_DLR):
 
 
 
-        case SHIFT_TOGGLE:
+        case SHIFT_TOGGLE://shift tg and alt + shift
             if (record->event.pressed) {
                 shift_toggle_pressed = true;
                 shift_toggle_is_hold = false;
@@ -1439,14 +1419,6 @@ void matrix_scan_user(void) {
 
 
 
-    if (dc_pressed && !dc_hold_executed) {
-        if (timer_elapsed(timer_key) > 200) {  // Tiempo para detectar HOLD
-            // HOLD → "::" inmediatamente
-            tap_code16(KC_COLN);
-            tap_code16(KC_COLN);
-            dc_hold_executed = true;
-        }
-    }
 
 
     if (shift_toggle_pressed && !shift_toggle_is_hold) {
@@ -1575,7 +1547,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
  KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
   //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- S(KC_GRAVE), LT(2,HASH_CIRC) , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  DOUBLE_COLON,
+ S(KC_GRAVE), LT(2,HASH_CIRC) , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  LT(2,DOUBLE_COLON),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
                                       //`--------------------------'  `--------------------------'
@@ -1966,23 +1938,20 @@ void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP: //show list markers floating window
-                          register_code(KC_LSFT);   // Mantener Shift
-                          tap_code(KC_F11);         // Presionar F11
-                          unregister_code(KC_LSFT); // Soltar Shift
-                          break;
-        case TD_SINGLE_HOLD: tap_code16(A(KC_2)); break; // show list markers
+                            tap_code16(S(KC_F11)); // Shift + F11
+                            break;
+
+        case TD_SINGLE_HOLD:
+                            tap_code16(A(KC_2));
+                            break; // show list markers
 
         case TD_DOUBLE_TAP://create marker
-                      tap_code(KC_F11);
-                      break;
+                            tap_code(KC_F11);
+                            break;
 
         case TD_DOUBLE_HOLD: //go to nmotecnic
-                  register_code(KC_LCTL);
-                  register_code(KC_LSFT);
-                  tap_code(KC_F11);
-                  unregister_code(KC_LSFT);
-                  unregister_code(KC_LCTL);
-           break;
+                            tap_code16(C(S(KC_F11))); // Ctrl + Shift + F11
+                            break;
 
         default: break;
     }
@@ -2116,9 +2085,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         return 450;
     }
 
+/*
     if (keycode == LT(1, KC_RIGHT)) {
             return 200;  // prueba 110–130 ms
         }
+*/
 
       return TAPPING_TERM;
   }
