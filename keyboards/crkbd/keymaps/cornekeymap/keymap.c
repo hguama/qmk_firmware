@@ -1824,7 +1824,7 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:  //paste normaL
-                SEND_STRING(SS_LCTL("v"));
+                tap_code16(C(KC_V));      // atajo con el alias C()
 
         break;
 
@@ -1837,31 +1837,45 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
                     shift_active = false;
                 }
 
-
-        SEND_STRING(SS_LCTL(SS_LSFT("v"))); break; //portapapeles
+                        tap_code16(C(S(KC_V)));
+                        break; // portapapeles
 
         case TD_DOUBLE_TAP: //paste 1 word
 
-                        // Ctrl + Left
-                        register_code(KC_LCTL);
-                        tap_code(KC_LEFT);
-                        unregister_code(KC_LCTL);
-                        wait_ms(10);
+        // Ctrl + Left
+        tap_code16(C(KC_LEFT));
+        wait_ms(10);
 
-                        register_code(KC_LCTL);
-                        register_code(KC_LSFT);
-                        tap_code(KC_RIGHT); // Selecciona palabra
-                        unregister_code(KC_LSFT); // Soltás shift antes de pegar
-                        tap_code16_delay(C(KC_V), 10); // Pega normal
-                        unregister_code(KC_LCTL);
+        // Ctrl + Shift + Right
+        tap_code16(C(S(KC_RIGHT)));
+
+        // Ctrl + V con retardo
+        tap_code16_delay(C(KC_V), 80);
+
+
+                        // Ctrl + Left
+//                        register_code(KC_LCTL);
+//                        tap_code(KC_LEFT);
+//                        unregister_code(KC_LCTL);
+//                        wait_ms(10);
+//
+//                        register_code(KC_LCTL);
+//                        register_code(KC_LSFT);
+//                        tap_code(KC_RIGHT); // Selecciona palabra
+//                        unregister_code(KC_LSFT); // Soltás shift antes de pegar
+//                        tap_code16_delay(C(KC_V), 10); // Pega normal
+//                        unregister_code(KC_LCTL);
 
         break;
 
         case TD_DOUBLE_HOLD:
                       //portapapeles win
-                      register_code(KC_LGUI);    // Presiona la tecla Win
+
+                      tap_code16(G(KC_V)); // Win + V
+
+           /*           register_code(KC_LGUI);    // Presiona la tecla Win
                       tap_code(KC_V);            // Toca la tecla V
-                      unregister_code(KC_LGUI);  // Suelta la tecla Win
+                      unregister_code(KC_LGUI);  // Suelta la tecla Win*/
 
                       //paste as plain text - disabled
 //                    register_code(KC_LCTL);
@@ -1875,21 +1889,35 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 
          case TD_TRIPLE_TAP: // paste 1 line
 
-                     // Ir al inicio
-                     tap_code(KC_HOME);
-                     wait_ms(10);
-                     tap_code(KC_HOME);
-                     wait_ms(10);
-                     // Ctrl + Shift + End para seleccionar
-                     register_code(KC_LSFT);
-                     tap_code(KC_END);
-                     unregister_code(KC_LSFT);
-                     wait_ms(10);
+         // Ir al inicio (2 veces)
+         tap_code(KC_HOME);
+         wait_ms(10);
+         tap_code(KC_HOME);
+         wait_ms(10);
 
-                     // Ctrl + V para pegar
-                     register_code(KC_LCTL);
-                     tap_code(KC_V);
-                     unregister_code(KC_LCTL);
+         // Shift + End para seleccionar
+         tap_code16(S(KC_END));
+         wait_ms(10);
+
+         // Ctrl + V para pegar
+         tap_code16(C(KC_V));
+
+
+//                     // Ir al inicio
+//                     tap_code(KC_HOME);
+//                     wait_ms(10);
+//                     tap_code(KC_HOME);
+//                     wait_ms(10);
+//                     // Ctrl + Shift + End para seleccionar
+//                     register_code(KC_LSFT);
+//                     tap_code(KC_END);
+//                     unregister_code(KC_LSFT);
+//                     wait_ms(10);
+//
+//                     // Ctrl + V para pegar
+//                     register_code(KC_LCTL);
+//                     tap_code(KC_V);
+//                     unregister_code(KC_LCTL);
          break;
         default: break;
     }
