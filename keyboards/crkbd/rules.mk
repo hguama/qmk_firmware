@@ -5,7 +5,7 @@ RAW_ENABLE = yes
 RGBLIGHT_ENABLE = yes #yes activa la iluminación RGB
 
 RGB_MATRIX_ENABLE = no  # activa RGB matrix //RGBLIGHT_ENABLE debe estar en NO
-COMBO_ENABLE = no
+COMBO_ENABLE = yes
 REPEAT_KEY_ENABLE = no
 
 

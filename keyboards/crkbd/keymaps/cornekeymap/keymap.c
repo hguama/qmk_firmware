@@ -94,6 +94,7 @@ enum custom_keycodes {
     HIBERNATE,
 
 
+
 };
 
 
@@ -109,6 +110,10 @@ enum {
     TDQ_REPLACE,
     TDQ_OVERRIDE,
 
+};
+
+enum combo_events {
+  CB_CTRL_Z,   // identificador del combo
 };
 
 //Quad enum
@@ -259,11 +264,11 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
-//const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
+const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
 //combo actions
-//combo_t key_combos[] = {
-// [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
- //};
+combo_t key_combos[] = {
+ [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
+ };
 
 void clear_all(void) {
     clear_mods();             // Libera Ctrl, Shift, Alt, etc.
