@@ -475,8 +475,7 @@ case  LT(2,EXC_DLR):
             case TRIPLE_WHLD:
                 if (record->event.pressed) {
                     for (int i = 0; i < 8; i++) {
-                        tap_code16(MS_WHLD);
-                        wait_ms(10);
+                        tap_code16_delay(MS_WHLD,10);
                     }
                     tap_code16(KC_ENT);
                 }
@@ -640,20 +639,16 @@ case  LT(2,EXC_DLR):
 
              case SLEEP:
                   if (record->event.pressed) {
-                     tap_code16(LGUI(KC_X));
-                     wait_ms(400);
-                     tap_code(KC_U);
-                     wait_ms(300);
+                     tap_code16_delay(LGUI(KC_X),10);
+                     tap_code16_delay(KC_U,10);
                      tap_code(KC_S);
                    }
               break;
 
             case HIBERNATE:
                   if (record->event.pressed) {
-                     tap_code16 (LGUI(KC_X));
-                     wait_ms(400);
-                     tap_code(KC_U);
-                     wait_ms(300);
+                     tap_code16_delay(LGUI(KC_X),10);
+                     tap_code16_delay(KC_U,10);
                      tap_code(KC_H);
                   }
               break;
@@ -1796,8 +1791,8 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP: //paste 1 word
 
         // Ctrl + Left
-        tap_code16(C(KC_LEFT));
-        wait_ms(10);
+        tap_code16_delay(C(KC_LEFT),10);
+
 
         // Ctrl + Shift + Right
         tap_code16(C(S(KC_RIGHT)));
@@ -1843,14 +1838,11 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
          case TD_TRIPLE_TAP: // paste 1 line
 
          // Ir al inicio (2 veces)
-         tap_code(KC_HOME);
-         wait_ms(10);
-         tap_code(KC_HOME);
-         wait_ms(10);
+         tap_code_delay(KC_HOME,10);
+         tap_code_delay(KC_HOME,10);
 
          // Shift + End para seleccionar
-         tap_code16(S(KC_END));
-         wait_ms(10);
+         tap_code16_delay(S(KC_END),10);
 
          // Ctrl + V para pegar
          tap_code16(C(KC_V));
