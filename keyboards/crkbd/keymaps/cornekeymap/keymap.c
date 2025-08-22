@@ -40,11 +40,6 @@ enum custom_keycodes {
     DEV_LY_SPACE,
     Z_UNDO,
     TRIPLE_WHLD,
-
-
-
-
-
     HASH_CIRC,
     EQUAL_DBL,
     DOUBLE_PIPE,
@@ -92,29 +87,25 @@ enum custom_keycodes {
     TG_6,
     SLEEP,
     HIBERNATE,
-
-
-
 };
 
+//Combo enum
+enum combo_events {
+  CB_CTRL_Z,   // identificador del combo
+};
 
 //Tap Dance enum
 enum {
     TDQ_COPY,
     TDQ_PASTE,
     TDQ_CUT,
-
     TDQ_BOOKMARK,
     TDQ_GOTO,
     TDQ_FIND,
     TDQ_REPLACE,
     TDQ_OVERRIDE,
-
 };
 
-enum combo_events {
-  CB_CTRL_Z,   // identificador del combo
-};
 
 //Quad enum
 typedef enum {
@@ -134,83 +125,29 @@ typedef struct {//for quad
     td_state_t state;
 } td_tap_t;
 
+//Vars
 static uint16_t timer_key;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
 
-
 static bool shift_active = false;
 
-//for doubles key
-
-
-
-
-
-
-
-
-
-
-
-
-//vars
-
-// Variables para LEFT
+// para LEFT
 static uint16_t timer_key_left;
 static bool is_hold_left = false;
 static bool is_pressed_left = false;
 
-// Variables para RIGHT
+// para RIGHT
 static uint16_t timer_key_right;
 static bool is_hold_right = false;
 static bool is_pressed_right = false;
 
-
-
-
-
-
 static bool space_base_double_tap = false;
-
-
-
-
-
-
 
 bool ms_acl0_active = false;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 bool voice_mode = false;
-
-
-
 
 static bool defer_copy = false;
 static bool defer_cut = false;
@@ -218,13 +155,7 @@ static uint16_t defer_timer_copy = 0;
 static uint16_t defer_timer_cut = 0;
 
 
-
-
-
-
-
 // Prototypes quad
-
 td_state_t cur_dance(tap_dance_state_t *state);
 void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
@@ -261,15 +192,17 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
-const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END}; //base right ly //indice medio
+const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(2,KC_K), COMBO_END};
+
 //combo actions
 combo_t key_combos[] = {
- [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)), //base right
+ [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
  };
 
+//general functions
 void clear_all(void) {
-    clear_mods();             // Libera Ctrl, Shift, Alt, etc.
     clear_keyboard();         // Libera cualquier tecla registrada
+//    clear_mods();             // Libera Ctrl, Shift, Alt, etc.
 
     if (is_alt_tab_active)   {
        unregister_code(KC_LALT);
@@ -277,44 +210,50 @@ void clear_all(void) {
        is_alt_tab_active = false;
        }
 
-    if (shift_active) { unregister_code(KC_LSFT); shift_active = false; }
-    if (voice_mode) { tap_code16(G(KC_SPC)); voice_mode = false; }
+    if (shift_active) {
+       unregister_code(KC_LSFT);
+       shift_active = false;
+       }
+
+    if (voice_mode) {
+       tap_code16(G(KC_SPC));
+       voice_mode = false;
+       }
 
 }
 
+//PR record
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
        switch (keycode) {
 
-
-//PR record
-        case ARROW_CTRL_LEFT:
-            if (record->event.pressed) {
-                timer_key_left = timer_read();
-                is_hold_left = false;
-                is_pressed_left = true;
-            } else {
-                is_pressed_left = false;
-                if (!is_hold_left) {
-                    // TAP → flecha izquierda
-                    tap_code(KC_LEFT);
+            case ARROW_CTRL_LEFT:
+                if (record->event.pressed) {
+                    timer_key_left = timer_read();
+                    is_hold_left = false;
+                    is_pressed_left = true;
+                } else {
+                    is_pressed_left = false;
+                    if (!is_hold_left) {
+                        // TAP → flecha izquierda
+                        tap_code(KC_LEFT);
+                    }
                 }
-            }
-            return false;
+                return false;
 
-        case ARROW_CTRL_RIGHT:
-            if (record->event.pressed) {
-                timer_key_right = timer_read();
-                is_hold_right = false;
-                is_pressed_right = true;
-            } else {
-                is_pressed_right = false;
-                if (!is_hold_right) {
-                    // TAP → flecha derecha
-                    tap_code(KC_RGHT);
+            case ARROW_CTRL_RIGHT:
+                if (record->event.pressed) {
+                    timer_key_right = timer_read();
+                    is_hold_right = false;
+                    is_pressed_right = true;
+                } else {
+                    is_pressed_right = false;
+                    if (!is_hold_right) {
+                        // TAP → flecha derecha
+                        tap_code(KC_RGHT);
+                    }
                 }
-            }
-            return false;
+                return false;
 
 
 
@@ -330,7 +269,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                return true;
 
             case LT(2,SPACE_BASE):
-
                 if (record->event.pressed) {
                     if (record->tap.count == 2) {
                         // DOBLE TAP → activar espacio sostenido
@@ -376,32 +314,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     break;
 
-case  LT(2,EXC_DLR):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-        tap_code16(KC_DLR); // $
-
+            case  LT(2,EXC_DLR):
+                    if (record->event.pressed) {
+                       if (!record->tap.count) {
+                          tap_code16(KC_DLR); // $
                        return false;
-                    }else {
-                        tap_code16(KC_EXLM); // !
-
-                       return false;
-                         }
-                     }
-                       return false;
+                       }else {
+                            tap_code16(KC_EXLM); // !
+                        return false;
+                       }
+                    }
+                    return false;
 
 
             case MS_ACL0_TOGGLE:
-            if (record->event.pressed) {
-                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
+                    if (record->event.pressed) {
+                         ms_acl0_active = !ms_acl0_active; // Cambia el estado
 
-                if (ms_acl0_active) {
-                    register_code(KC_MS_ACCEL0);   // Activa y mantiene
-                } else {
-                    unregister_code(KC_MS_ACCEL0); // Desactiva
-                }
-            }
-            return false; // Ya manejamos la tecla
+                        if (ms_acl0_active) {
+                            register_code(KC_MS_ACCEL0);   // Activa y mantiene
+                        } else {
+                            unregister_code(KC_MS_ACCEL0); // Desactiva
+                        }
+                    }
+                    return false; // Ya manejamos la tecla
 
             case LT(3, KC_SPACE):
                 if (record->event.pressed) {
@@ -452,17 +388,17 @@ case  LT(2,EXC_DLR):
 
 
             case  LT(2,EQUAL_DBL):
-                             if (record->event.pressed) {
-                                if (!record->tap.count) {
-                                    tap_code16(KC_EQUAL);  // hold ==
-                                    tap_code16(KC_EQUAL);
-                                   return false;
-                                }else {
-                                    tap_code16(KC_EQUAL);  // TAP: =
-                                   return false;
-                                     }
-                                 }
-                                   return false;
+                     if (record->event.pressed) {
+                        if (!record->tap.count) {
+                            tap_code16(KC_EQUAL);  // hold ==
+                            tap_code16(KC_EQUAL);
+                           return false;
+                        }else {
+                            tap_code16(KC_EQUAL);  // TAP: =
+                           return false;
+                             }
+                         }
+                           return false;
 
 
             case  LT(12,Z_UNDO):
@@ -487,42 +423,34 @@ case  LT(2,EXC_DLR):
                 }
                 return false;
 
-
-
-
-/*
-      case LT(1, KC_RIGHT):
-            if (record->event.pressed) {
-                if (record->tap.count == 2) {
-                    // DOBLE TAP + (mantener) → repetir en ciclos de 5
-                    sr_repeat = true;
-                    timer_key  = timer_read();
-                    return false;
-                }
-                if (record->tap.count == 0) {
-                    // HOLD → 10 flechas inmediatas
-                    for (int i = 0; i < 40; i++) {
-                        tap_code(KC_RGHT);
+        /*
+              case LT(1, KC_RIGHT):
+                    if (record->event.pressed) {
+                        if (record->tap.count == 2) {
+                            // DOBLE TAP + (mantener) → repetir en ciclos de 5
+                            sr_repeat = true;
+                            timer_key  = timer_read();
+                            return false;
+                        }
+                        if (record->tap.count == 0) {
+                            // HOLD → 10 flechas inmediatas
+                            for (int i = 0; i < 40; i++) {
+                                tap_code(KC_RGHT);
+                            }
+                            return false;
+                        }
+                        if (record->tap.count == 1) {
+                            // TAP simple → 1 flecha
+                            tap_code(KC_RGHT);
+                            return false;
+                        }
+                    } else {
+                        // Al soltar, detener el ciclo (si estaba activo)
+                        if (sr_repeat) {
+                            sr_repeat = false;
+                        }
                     }
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple → 1 flecha
-                    tap_code(KC_RGHT);
-                    return false;
-                }
-            } else {
-                // Al soltar, detener el ciclo (si estaba activo)
-                if (sr_repeat) {
-                    sr_repeat = false;
-                }
-            }
-            return true;*/
-
-
-
-
-
+                    return true;*/
 
             case  LT(2,HASH_CIRC):
                  if (record->event.pressed) {
@@ -535,10 +463,6 @@ case  LT(2,EXC_DLR):
                          }
                      }
                        return false;
-
-
-
-
 
 
            case DOUBLE_PIPE:
@@ -628,7 +552,6 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-
             case M_ALT_TAB:
                   if (record->event.pressed) {
                     if (!is_alt_tab_active) {
@@ -643,13 +566,15 @@ case  LT(2,EXC_DLR):
                   }
               break;
 
-             case SLEEP:
+
+           case SLEEP:
                   if (record->event.pressed) {
                      tap_code16_delay(LGUI(KC_X),10);
                      tap_code16_delay(KC_U,10);
                      tap_code(KC_S);
                    }
-              break;
+            break;
+
 
             case HIBERNATE:
                   if (record->event.pressed) {
@@ -659,21 +584,23 @@ case  LT(2,EXC_DLR):
                   }
               break;
 
+
             case DEL_WORD:
                 if (record->event.pressed) {
-                  tap_code16_delay(C(KC_LEFT), 10);
-                  tap_code16_delay(C(S(KC_RIGHT)), 10);
-                  tap_code(KC_BSPC);
+                      tap_code16_delay(C(KC_LEFT), 10);
+                      tap_code16_delay(C(S(KC_RIGHT)), 10);
+                      tap_code(KC_BSPC);
                  }
                  break;
 
+
             case DEL_LINE:
-                if (record->event.pressed) {
-                    tap_code_delay(KC_HOME, 10);       // Ir al inicio
-                    tap_code16_delay(S(KC_END), 10);   // Shift + End (seleccionar hasta el final)
-                    tap_code_delay(KC_BSPC, 10);       // Borrar selección
-                 }
-                 break;
+                    if (record->event.pressed) {
+                        tap_code_delay(KC_HOME, 10);       // Ir al inicio
+                        tap_code16_delay(S(KC_END), 10);   // Shift + End (seleccionar hasta el final)
+                        tap_code_delay(KC_BSPC, 10);       // Borrar selección
+                     }
+                     break;
 
 
             case LT(0,KC_DOWN):
@@ -817,29 +744,23 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-
             case  LT(3,KC_ENT):
                    if (record->event.pressed) {
                       clear_all();
                        }
-
                     return true;
 
             case  LT(0,HOME_END):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-
-                         tap_code(KC_HOME);//HOLD
-
-                       return false;
-                    }else {
-
-                        tap_code(KC_END);//TAP
-
-                       return false;
+                     if (record->event.pressed) {
+                        if (!record->tap.count) {
+                             tap_code(KC_HOME);//HOLD
+                           return false;
+                        }else {
+                            tap_code(KC_END);//TAP
+                           return false;
+                             }
                          }
-                     }
-                       return false;
+                     return false;
 
 
             case PGUP_CTRLPG:
@@ -969,8 +890,6 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-
-
             case  LT(2,B_V):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
@@ -984,7 +903,6 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-
             case  LT(2,F_W):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
@@ -996,7 +914,6 @@ case  LT(2,EXC_DLR):
                          }
                      }
                        return false;
-
 
 
             case OPEN_EXCL: // ¡
@@ -1095,6 +1012,7 @@ case  LT(2,EXC_DLR):
                     }
                     return false; // Bloquea el comportamiento por defecto
 
+
             case LAST_EDIT:
                     if (record->event.pressed) {
                         timer_key = timer_read(); // Inicia el temporizador
@@ -1113,20 +1031,14 @@ case  LT(2,EXC_DLR):
             case  LT(2,RECENT_LOC):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-//                        SEND_STRING(SS_LCTL(SS_LSFT("e")));
                           tap_code16(C(S(KC_E)));
-
                        return false;
                     }else {
-//                        SEND_STRING(SS_LCTL("e"));
                           tap_code16(C(KC_E));
-
                        return false;
                          }
                      }
                        return false;
-
-
 
 
 
@@ -1145,27 +1057,28 @@ case  LT(2,EXC_DLR):
                     }
                     return false;
 
-         case  LT(2,COMM):
-             if (record->event.pressed) {
-                if (!record->tap.count) {
-                   if (shift_active) {
-                         unregister_code(KC_LSFT);
-                         shift_active = false;
-                           }
 
-                        tap_code16(LCTL(LSFT(KC_SLSH)));
-                   return false;
-                }else {
-                    if (shift_active) {
-                          unregister_code(KC_LSFT);
-                          shift_active = false;
-                        }
+            case  LT(2,COMM):
+                 if (record->event.pressed) {
+                    if (!record->tap.count) {
+                       if (shift_active) {
+                             unregister_code(KC_LSFT);
+                             shift_active = false;
+                               }
 
-                        tap_code16(LCTL(KC_SLSH));
-                   return false;
+                            tap_code16(LCTL(LSFT(KC_SLSH)));
+                       return false;
+                    }else {
+                        if (shift_active) {
+                              unregister_code(KC_LSFT);
+                              shift_active = false;
+                            }
+
+                            tap_code16(LCTL(KC_SLSH));
+                       return false;
+                         }
                      }
-                 }
-                   return false;
+                       return false;
 
 
             case  LT(2,MOUSE_PRESSED_CLICK):
@@ -1182,8 +1095,6 @@ case  LT(2,EXC_DLR):
                        return false;
 
 
-
-
             case  LT(2, SHOW_QUICK_ENT):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
@@ -1193,11 +1104,9 @@ case  LT(2,EXC_DLR):
                        // TAP: ALT + ENTER (si no fue HOLD)
                         tap_code16(LALT(KC_ENT));
                        return false;
-                         }
                      }
+                         }
                        return false;
-
-
 
 
             case  LT(2,CODE_COMPLET):
@@ -1230,6 +1139,7 @@ case  LT(2,EXC_DLR):
                     }
                     return false; // Bloquea el comportamiento por defecto
 
+
             case FOLDING:
                     if (record->event.pressed) {
                         timer_key = timer_read(); // Inicia el temporizador
@@ -1244,6 +1154,7 @@ case  LT(2,EXC_DLR):
                         }
                     }
                     return false; // Bloquea el comportamiento por defecto
+
 
             case MULTICURSOR:
                     if (record->event.pressed) {
@@ -1299,6 +1210,7 @@ case  LT(2,EXC_DLR):
                     }
                 }
                 return false; // No procesar más
+
 
             case TG(2):
                     if (!record->event.pressed) {
@@ -1359,8 +1271,7 @@ case  LT(2,EXC_DLR):
 //timer for  macro
 void matrix_scan_user(void) {
 
-//matrix
-//    static uint16_t rpt_timer;
+//static uint16_t rpt_timer;
 
     // LEFT
     if (is_pressed_left) {
@@ -1386,6 +1297,20 @@ void matrix_scan_user(void) {
         }
     }
 
+
+    if (defer_copy && timer_elapsed(defer_timer_copy) > 2) {
+        defer_copy = false;
+        clear_mods();  // elimina cualquier modificador que haya sobrevivido
+        tap_code16(C(KC_C));
+     }
+
+    if (defer_cut && timer_elapsed(defer_timer_cut) > 50) {
+        defer_cut = false;
+        clear_mods();  // elimina cualquier modificador que haya sobrevivido
+        tap_code16(C(KC_X));
+     }
+
+
 /*
     if (sr_repeat) {
         if (timer_elapsed(timer_key) > 130) {
@@ -1397,51 +1322,6 @@ void matrix_scan_user(void) {
     }*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        if (defer_copy && timer_elapsed(defer_timer_copy) > 2) {
-            defer_copy = false;
-            clear_mods();  // elimina cualquier modificador que haya sobrevivido
-            tap_code16(C(KC_C));
-         }
-
-        if (defer_cut && timer_elapsed(defer_timer_cut) > 50) {
-            defer_cut = false;
-            clear_mods();  // elimina cualquier modificador que haya sobrevivido
-            tap_code16(C(KC_X));
-         }
-
-
-
-
-
-
-
-
-
-
       /*if (shift_active) {
         if (timer_elapsed(shift_toggle_timer) > 30000) {
             unregister_code(KC_LSFT);
@@ -1450,13 +1330,7 @@ void matrix_scan_user(void) {
     }
 */
 
-
-
-
-     }
-
-
-
+ }
 
 
 //Quad actions
@@ -1475,175 +1349,179 @@ tap_dance_action_t tap_dance_actions[] = {
 
 
  //KEY MAP
-  //LY 0
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
+    //Base
     [0] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,          QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(2,VOICE),
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),        SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL, LT(12,TG_6), LT(5,KC_F3), LT(2,MOUSE_PRESSED_CLICK), XXXXXXX, WIN_D,     HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
-      //| ------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,     TO(0), XXXXXXX, LT(3,KC_ENT)
-                                           //`--------------------------'  `--------------------------'
+  //,-----------------------------------------------------.                             ,-----------------------------------------------------.
+  KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(2,VOICE),
+  //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+  LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+  //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+  KC_LCTL, LT(12,TG_6), LT(5,KC_F3), LT(2,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,      HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+  //| ------+--------+--------+--------+--------+--------+--------|                     |--------+--------+--------+--------+--------+--------+--------|
+                           LT(3,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(0), XXXXXXX, LT(3,KC_ENT)
+                           //`--------------------------------'                             `--------------------------'
       ),
 
 
-     //alfa ly
+    //Alfa ly1
     [1] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    KC_TRNS, LT(2,KC_Q), LT(2,GUI_E), KC_R, KC_T, XXXXXXX,                              XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
-  //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_A), LT(12,KC_S), KC_D, LT(2,F_W), KC_G , C(KC_S),                          SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
-  //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-    KC_Z, KC_X, LT(5,KC_C), LT(2,B_V), XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX,  KC_M, LT(2,CODE_COMPLET), KC_BSPC, LT(2,N_ENIE),
-  //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,     TO(0),  TG(5),  RSFT_T(KC_ENT)
-                                      //`--------------------------'  `--------------------------'
-
+      //,-----------------------------------------------------.                       ,-----------------------------------------------------.
+        KC_TRNS, LT(2,KC_Q), LT(2,GUI_E), KC_R, KC_T, XXXXXXX,                         XXXXXXX, KC_Y, KC_U, KC_I, LT(2,KC_O), KC_TRNS,
+      //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
+        LT(11,KC_A), LT(12,KC_S), KC_D, LT(2,F_W), KC_G , C(KC_S),                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+      //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
+        KC_Z, KC_X, LT(5,KC_C), LT(2,B_V), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_M, LT(2,CODE_COMPLET), KC_BSPC, LT(2,N_ENIE),
+      //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
+                           LT(2,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                      TO(0),  TG(5),  RSFT_T(KC_ENT)
+                          //`--------------------------'                                    `--------------------------'
 
   ),
 
-//symbols ly 1
-
+    //Symbols ly2
     [2] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                           ,-----------------------------------------------------.
- KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,               XXXXXXX, OPEN_QUEST, LT(2,KC_AT), LT(2,EQUAL_DBL),  LT(2,KC_DQT), KC_QUOT,
-  //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,               XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
-  //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
- S(KC_GRAVE), LT(2,HASH_CIRC) , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  LT(2,DOUBLE_COLON),
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          C(S(KC_ENT)), XXXXXXX,  XXXXXXX,     TO(0), XXXXXXX, TRIPLE_WHLD
-                                      //`--------------------------'  `--------------------------'
+      //,-----------------------------------------------------.                           ,-----------------------------------------------------.
+     KC_PERC, KC_PLUS, LT(2,KC_MINS), LT(2,KC_SLSH),  OPEN_EXCL, XXXXXXX,                 XXXXXXX, OPEN_QUEST, LT(2,KC_AT), LT(2,EQUAL_DBL),  LT(2,KC_DQT), KC_QUOT,
+      //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
+     KC_ASTR, LT(2,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,                      XXXXXXX, AMP_DOUBLE, KC_DOT, LT(2,KC_LPRN), LT(2,KC_LCBR), LT(2,LBRC2),
+      //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
+     S(KC_GRAVE), LT(2,HASH_CIRC) , LT(2,KC_LABK), LT(2,KC_RABK), XXXXXXX, QK_BOOT,       QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  LT(2,DOUBLE_COLON),
+      //|--------+--------+--------+--------+--------+--------+--------|                  |--------+--------+--------+--------+--------+--------+--------|
+                                     C(S(KC_ENT)), XXXXXXX,  XXXXXXX,                       TO(0), XXXXXXX, TRIPLE_WHLD
+                                     //`--------------------------'                         `--------------------------'
  ),
 
 
-  //dev ly 3
+    //Dev ly3
     [3] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,               XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,               XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,              QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, LT(2,RECENT_LOC), C(KC_F12),
-      //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,     TO(0),   C(S(KC_U)), EVERYW_ACT
-                                          //`--------------------------'  `--------------------------'
+  //,-----------------------------------------------------.                         ,-----------------------------------------------------.
+  FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,                    XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
+  //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
+  C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,      XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+  //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
+  A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,             QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, LT(2,RECENT_LOC), C(KC_F12),
+  //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
+                                MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,                    TO(0),   C(S(KC_U)), EVERYW_ACT
+                               //`--------------------------'                           `--------------------------'
    ),
-   //bookmark ly 4
 
+    //Bookmark ly4
     [4] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     C(KC_F20), C(KC_F19), MO(8), C(S(KC_F21)), C(KC_F22), XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
+     C(KC_F20), C(KC_F19), MO(8), C(S(KC_F21)), C(KC_F22), XXXXXXX,              XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, MO(8), C(KC_F17), C(KC_F18), XXXXXXX,                    XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
+    XXXXXXX, XXXXXXX, MO(8), C(KC_F17), C(KC_F18), XXXXXXX,                      XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
     //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
     XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                      MO(8), XXXXXXX,  XXXXXXX,     TO(0),   XXXXXXX, MO(8)
-                       //`--------------------------'  `--------------------------'
+    //|--------+--------+--------+--------+--------+--------+-----|              |--------+--------+--------+--------+--------+--------+--------|
+                                    MO(8), XXXXXXX,  XXXXXXX,                           TO(0),   XXXXXXX, MO(8)
+                                    //`--------------------------'                       `--------------------------'
 ),
- //numbers ly 5
 
+    //Numbers ly5
     [5] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-    XXXXXXX, LT(2,KC_PERC), LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,      XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    LT(11,KC_ASTR), KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, KC_CIRC, XXXXXXX, KC_LALT, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                KC_ENT, XXXXXXX, XXXXXXX,   TO(0),  TG(5), TRIPLE_WHLD
-                                 //`--------------------------'  `--------------------------'
+    //,-----------------------------------------------------.                       ,-----------------------------------------------------.
+    XXXXXXX, LT(2,KC_PERC), LT(2,KC_MINS), LT(2,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
+    //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
+    LT(11,KC_ASTR), KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                    XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+    //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
+    XXXXXXX, KC_CIRC, XXXXXXX, KC_LALT, XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, KC_1, KC_2, LT(9,KC_3), XXXXXXX,
+    //|--------+--------+--------+--------+--------+--------+--------|              |--------+--------+--------+--------+--------+--------+--------|
+                           KC_ENT, XXXXXXX, XXXXXXX,   TO(0),                           TG(5), TRIPLE_WHLD
+                           //`--------------------------'                               `--------------------------'
 ),
 
-//mouse ly 6 MS_ACL0_TOGGLE MS_ACL2 MS_WHLU MS_WHLD MS_WHLR MS_WHLL
+    //Mouse ly6        MS_ACL0_TOGGLE MS_ACL2
     [6] = LAYOUT_split_3x6_3(
-   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-   XXXXXXX, C(A(KC_R)), C(KC_Z), XXXXXXX, XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
-   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-   MS_WHLL, MS_WHLR, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),            SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
-   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, C(A(KC_R)), S(KC_F7), KC_F7, XXXXXXX , WIN_D,    HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
-   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         TG(6),  XXXXXXX,     XXXXXXX,     TO(0), XXXXXXX, XXXXXXX
-                                       //`--------------------------'  `--------------------------'
-  ), // mouse2 ly7 - single mouse hand left
+       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+       XXXXXXX, C(A(KC_R)), C(KC_Z), XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
+       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       MS_WHLL, MS_WHLR, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                         SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       XXXXXXX, C(A(KC_R)), S(KC_F7), KC_F7, XXXXXXX , WIN_D,                       HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                TG(6),  XXXXXXX,     XXXXXXX,                           TO(0), XXXXXXX, XXXXXXX
+                                //`--------------------------'                          `--------------------------'
+  ),
 
+    //Mouse2 ly7 - hand left
     [7] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, MS_WHLU, XXXXXXX, MS_WHLD, MS_ACL2,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, XXXXXXX , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  LT(2,MOUSE_PRESSED_CLICK), MS_WHLR, MS_WHLL, XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_ENT, XXXXXXX,  _______,     TO(0),   KC_ESC, TG(7)
-                                      //`--------------------------'  `--------------------------'
- ), // layer 8 super bookmark2
+      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, MS_WHLU, XXXXXXX, MS_WHLD, MS_ACL2,
+      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, XXXXXXX , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
+      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+          XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  LT(2,MOUSE_PRESSED_CLICK), MS_WHLR, MS_WHLL, XXXXXXX,
+      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                KC_ENT, XXXXXXX,  _______,                              TO(0),   KC_ESC, TG(7)
+                                //`--------------------------'                          `--------------------------'
+ ),
 
+    //Super bookmark ly8
     [8] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        XXXXXXX, A(KC_G), A(KC_H), A(KC_I), A(KC_K), XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_7)), C(S(KC_8)), C(S(KC_9)), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX ,XXXXXXX , C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, A(KC_A), A(KC_B), A(KC_C), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            XXXXXXX, XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
-                                        //`--------------------------'  `--------------------------'
-   ), // super move ly
+        //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+            XXXXXXX, A(KC_G), A(KC_H), A(KC_I), A(KC_K), XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_7)), C(S(KC_8)), C(S(KC_9)), XXXXXXX,
+        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+            XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX ,XXXXXXX , C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
+        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+            XXXXXXX, A(KC_A), A(KC_B), A(KC_C), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), XXXXXXX,
+        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                 XXXXXXX, XXXXXXX,  _______,                            TO(0),   XXXXXXX, XXXXXXX
+                                            //`------------------'                      `--------------------------'
+   ),
 
+    //Super move ly9
     [9] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,                  XXXXXXX, KC_F6, LT(2,PAGE_PARAGRAPH_UP), A(KC_UP), LT(2,PAGE_PARAGRAPH_DOWN), KC_F2,
+       XXXXXXX, XXXXXXX, LT(2,VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,              XXXXXXX, KC_F6, LT(2,PAGE_PARAGRAPH_UP), A(KC_UP), LT(2,PAGE_PARAGRAPH_DOWN), KC_F2,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          KC_LSFT, XXXXXXX, MO(10), LT(2,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, LT(0,HOME_END),
+       KC_LSFT, XXXXXXX, MO(10), LT(2,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, LT(0,HOME_END),
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME), PGDW_CTRLPG, C(KC_END),
-      //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                              LT(2,CHATGPT), XXXXXXX,  _______,     TO(0),   XXXXXXX, XXXXXXX
-                                          //`--------------------------'  `--------------------------'
-     ), //LY 10 super close window
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME), PGDW_CTRLPG, C(KC_END),
+      //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
+                                 LT(2,CHATGPT), XXXXXXX, _______,                       TO(0), XXXXXXX, XXXXXXX
+                                 //`--------------------------'                         `--------------------------'
+     ),
 
+     //Super close window ly10
     [10] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                       XXXXXXX, KC_F5, C(KC_L), XXXXXXX, C(KC_T), XXXXXXX,
+         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                      XXXXXXX, KC_F5, C(KC_L), XXXXXXX, C(KC_T), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
+         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
-        //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                 XXXXXXX, _______,  _______,     TO(0),   XXXXXXX, C(KC_F4)
-                                            //`--------------------------'  `--------------------------'
-        ), //LY 11 super DEL
+         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
+        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                 XXXXXXX, _______,  _______,                            TO(0), XXXXXXX, C(KC_F4)
+                                 //`--------------------------'                         `--------------------------'
+        ),
 
+
+    //Super DEL ly11
     [11] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_DEL, C(S(KC_DOWN)), DEL_WORD,  DEL_LINE,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_DEL, C(S(KC_DOWN)), DEL_WORD,  DEL_LINE,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_BSPC, XXXXXXX, XXXXXXX, XXXXXXX,
-          //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                  LT(12,Z_UNDO), _______,  _______,     TO(0),   XXXXXXX, XXXXXXX
-                                              //`--------------------------'  `--------------------------'
-         ), // LY12 super move 3
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_BSPC, XXXXXXX, XXXXXXX, XXXXXXX,
+          //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                             LT(12,Z_UNDO), _______,  _______,                              TO(0),   XXXXXXX, XXXXXXX
+                             //`--------------------------'                                 `--------------------------'
+         ),
 
-//run debug
+     //Run debug ly12
     [12] = LAYOUT_split_3x6_3(
            //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                 XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, KC_DOT, LSFT(KC_MINS), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, XXXXXXX, KC_UP, XXXXXXX, XXXXXXX,
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_F10)), S(KC_F10), A(S(KC_F10)), C(KC_F5),
+            RM_TOGG, XXXXXXX, TO(0), RM_VALU, UG_TOGG, XXXXXXX,                         XXXXXXX, XXXXXXX, C(S(KC_F10)), S(KC_F10), A(S(KC_F10)), C(KC_F5),
            //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             RM_NEXT, RM_HUED, RM_SATD, RM_VALD, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                                   KC_SPC, _______,  _______,     TO(0),   XXXXXXX, C(KC_F2)
-                                               //`--------------------------'  `--------------------------'
+           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                    KC_SPC, _______,  _______,                              TO(0),   XXXXXXX, C(KC_F2)
+                                    //`--------------------------'                          `--------------------------'
           )
 
 
