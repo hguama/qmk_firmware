@@ -631,7 +631,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case NOT_EQUAL:
                 if (record->event.pressed) {
-                    send_string("!="); // Envía  !=
+                      tap_code16(S(KC_1));  // Envía "!"
+                      tap_code(KC_EQL);     // Envía "="
                 }
                 return false;
 
