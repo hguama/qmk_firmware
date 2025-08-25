@@ -259,11 +259,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case LT(4, CTRLW_L4):
                if (record->event.pressed) {
-                   if (!record->tap.count) {
-                       return true; // HOLD: QMK activa capa 4
-                   } else {
+                   if (record->tap.count) {
                           tap_code16(C(KC_W));  // TAP → Ctrl+W
-                       return false; // No enviar el KC original
+
                    }
                }
                return true;
@@ -613,7 +611,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case LT(2,KC_SLSH):
                 if (!record->tap.count && record->event.pressed) {
-                   SEND_STRING("\\"); // hold
+                   tap_code16(KC_BSLS); // hold
                     return false;
                 }
                 return true;
