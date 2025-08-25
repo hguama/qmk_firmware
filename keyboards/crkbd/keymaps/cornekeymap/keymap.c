@@ -640,9 +640,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_LABK):
                   if (record->event.pressed) {
                      if (!record->tap.count) {//hold
-                            tap_code16(S(KC_COMM));  // Envía "<"
-                            tap_code(KC_EQL);        // Envía "="
-
+                        SEND_STRING("<=");
                         return false;
                      }
                      else {
@@ -655,9 +653,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_RABK):
                       if (record->event.pressed) {
                         if (!record->tap.count) {
-                            tap_code16(S(KC_DOT));  // Envía ">"
-                            tap_code(KC_EQL);       // Envía "="
-
+                           SEND_STRING(">=");
                              return false;
                         }else {
                             tap_code16(KC_GT);
@@ -700,15 +696,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case  LLAMBDA:
                    if (record->event.pressed) {
-                        tap_code16(S(KC_COMM));  // Envía "<"
-                        tap_code(KC_MINS);       // Envía "-"
+                     SEND_STRING("<-"); // hold
                    }
                    break;
 
             case  RLAMBDA:
                    if (record->event.pressed) {
-                        tap_code(KC_MINS);       // Envía "-"
-                        tap_code16(S(KC_DOT));   // Envía ">"
+                     SEND_STRING("->"); // hold
                    }
                   break;
 
