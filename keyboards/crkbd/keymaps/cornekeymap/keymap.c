@@ -677,11 +677,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_AT):
                   if (record->event.pressed) {
                     if (!record->tap.count) {
-//                      SEND_STRING("?"); // hold
-                      tap_code16(KC_QUES);
+                      tap_code16(KC_QUES); // ? hold
                        return false;
                     }else {
-                       tap_code16(KC_AT);
+                       tap_code16(KC_AT);  // @ tap
                          return false;
                         }
                     }
