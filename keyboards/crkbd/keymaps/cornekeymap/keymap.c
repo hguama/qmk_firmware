@@ -623,7 +623,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                          tap_code16(KC_GRAVE); // holdO
                           return false;
                       }else{
-                         SEND_STRING("\""); // tap
+                           tap_code16(S(KC_QUOT));  // Envía comillas dobles (")
                          return false;
                           }
                       }
@@ -709,10 +709,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_LPRN):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-                      SEND_STRING(")");
+                            tap_code16(S(KC_0));   // Envía ")"
                        return false;
                       }else {
-                         SEND_STRING("(");
+                         tap_code16(S(KC_9));   // Envía "("
                          return false;
                       }
                     }
@@ -721,10 +721,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,KC_LCBR):
                  if (record->event.pressed) {
                     if (!record->tap.count) {
-                     SEND_STRING("}");
+                     tap_code16(S(KC_RBRC));   // Envía "}"
                        return false;
                     }else {
-                          SEND_STRING("{");
+                        tap_code16(S(KC_LBRC));   // Envía "{"
                           return false;
                           }
                        }
@@ -733,10 +733,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(2,LBRC2):
                  if (record->event.pressed) {
                     if (!record->tap.count) {//hold
-                      SEND_STRING("]");
+                       tap_code(KC_RBRC);   // Envía "]"
                        return false;
                     }else {//tap
-                       SEND_STRING("[");
+                        tap_code(KC_LBRC);   // Envía "["
                        return false;
                          }
                      }
