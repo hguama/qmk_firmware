@@ -1589,9 +1589,9 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
 
                 }
 
-            // Aplazar el copiado real
-            defer_copy = true;
-            defer_timer_copy = timer_read();
+                // Aplazar el copiado real
+                defer_copy = true;
+                defer_timer_copy = timer_read();
 
                 break;
 
@@ -1652,40 +1652,28 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 
         case TD_DOUBLE_TAP: //paste 1 word
 
-        // Ctrl + Left
-        tap_code16_delay(C(KC_LEFT),10);
-
-
-        // Ctrl + Shift + Right
-        tap_code16(C(S(KC_RIGHT)));
-
-        // Ctrl + V con retardo
-        tap_code16_delay(C(KC_V), 80);
-
+                tap_code16_delay(C(KC_LEFT),10);
+                tap_code16(C(S(KC_RIGHT)));
+                tap_code16_delay(C(KC_V), 80);
 
                         // Ctrl + Left
-//                        register_code(KC_LCTL);
-//                        tap_code(KC_LEFT);
-//                        unregister_code(KC_LCTL);
-//                        wait_ms(10);
+//                register_code(KC_LCTL);
+//                tap_code(KC_LEFT);
+//                unregister_code(KC_LCTL);
+//                wait_ms(10);
 //
-//                        register_code(KC_LCTL);
-//                        register_code(KC_LSFT);
-//                        tap_code(KC_RIGHT); // Selecciona palabra
-//                        unregister_code(KC_LSFT); // Soltás shift antes de pegar
-//                        tap_code16_delay(C(KC_V), 10); // Pega normal
-//                        unregister_code(KC_LCTL);
+//                register_code(KC_LCTL);
+//                register_code(KC_LSFT);
+//                tap_code(KC_RIGHT); // Selecciona palabra
+//                unregister_code(KC_LSFT); // Soltás shift antes de pegar
+//                tap_code16_delay(C(KC_V), 10); // Pega normal
+//                unregister_code(KC_LCTL);
 
         break;
 
-        case TD_DOUBLE_HOLD:
-                      //portapapeles win
+        case TD_DOUBLE_HOLD: //portapapeles win
 
                       tap_code16(G(KC_V)); // Win + V
-
-           /*           register_code(KC_LGUI);    // Presiona la tecla Win
-                      tap_code(KC_V);            // Toca la tecla V
-                      unregister_code(KC_LGUI);  // Suelta la tecla Win*/
 
                       //paste as plain text - disabled
 //                    register_code(KC_LCTL);
@@ -1699,32 +1687,31 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
 
          case TD_TRIPLE_TAP: // paste 1 line
 
-         // Ir al inicio (2 veces)
-         tap_code_delay(KC_HOME,10);
-         tap_code_delay(KC_HOME,10);
+                 // Ir al inicio (2 veces)
+                 tap_code_delay(KC_HOME,10);
+                 tap_code_delay(KC_HOME,10);
 
-         // Shift + End para seleccionar
-         tap_code16_delay(S(KC_END),10);
+                 // Shift + End para seleccionar
+                 tap_code16_delay(S(KC_END),10);
 
-         // Ctrl + V para pegar
-         tap_code16(C(KC_V));
+                 // Ctrl + V para pegar
+                 tap_code16(C(KC_V));
 
-
-//                     // Ir al inicio
-//                     tap_code(KC_HOME);
-//                     wait_ms(10);
-//                     tap_code(KC_HOME);
-//                     wait_ms(10);
-//                     // Ctrl + Shift + End para seleccionar
-//                     register_code(KC_LSFT);
-//                     tap_code(KC_END);
-//                     unregister_code(KC_LSFT);
-//                     wait_ms(10);
+//                 // Ir al inicio
+//                 tap_code(KC_HOME);
+//                 wait_ms(10);
+//                 tap_code(KC_HOME);
+//                 wait_ms(10);
+//                 // Ctrl + Shift + End para seleccionar
+//                 register_code(KC_LSFT);
+//                 tap_code(KC_END);
+//                 unregister_code(KC_LSFT);
+//                 wait_ms(10);
 //
-//                     // Ctrl + V para pegar
-//                     register_code(KC_LCTL);
-//                     tap_code(KC_V);
-//                     unregister_code(KC_LCTL);
+//                 // Ctrl + V para pegar
+//                 register_code(KC_LCTL);
+//                 tap_code(KC_V);
+//                 unregister_code(KC_LCTL);
          break;
         default: break;
     }
@@ -1753,14 +1740,14 @@ void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
 
         case TD_DOUBLE_TAP: // Cut 1 word
 
-            // Ctrl + Left
-            tap_code16_delay(C(KC_LEFT),10);
+                // Ctrl + Left
+                tap_code16_delay(C(KC_LEFT),10);
 
-            // Ctrl + Shift + Right
-            tap_code16_delay(C(S(KC_RIGHT)), 10);
+                // Ctrl + Shift + Right
+                tap_code16_delay(C(S(KC_RIGHT)), 10);
 
-            // Ctrl + X para cortar
-            tap_code16(C(KC_X));
+                // Ctrl + X para cortar
+                tap_code16(C(KC_X));
 
             break;
 
@@ -1807,7 +1794,7 @@ void tdq_goto_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP:  tap_code16(C(S(KC_B))); break;//Go to Type Declaration
         case TD_DOUBLE_HOLD: tap_code16(C(S(KC_T))); break;//go to test
         case TD_TRIPLE_HOLD: tap_code16(C(KC_U));  break;//Go to Super Method / Class
-//        case TD_TRIPLE_TAP: SEND_STRING("TRIPLE TAP x!!"); break;
+
         default: break;
     }
 }
@@ -2005,10 +1992,10 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
 
 void keyboard_post_init_user(void) {
     // Enable the LED layers
-     debug_enable=true;
-     debug_keyboard=true;
-        rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
-        rgblight_layers = my_rgb_layers;
+//    debug_enable=true;
+//    debug_keyboard=true;
+    rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
+    rgblight_layers = my_rgb_layers;
 }
 
  void send_layer_status(const char* msg) {
@@ -2038,10 +2025,12 @@ uint8_t layer = get_highest_layer(state);
                  rgblight_set_layer_state(1, true); // MOVE LY
                  send_layer_status("LAYER_MOVE");
                 break;
+
             case 5:
                  rgblight_set_layer_state(5, true); // NUMBERS LY
                  send_layer_status("LAYER_NUM");
                 break;
+
             case 6:
                 rgblight_set_layer_state(6, true); // MOUSE LY
                 send_layer_status("LAYER_MOUSE");
