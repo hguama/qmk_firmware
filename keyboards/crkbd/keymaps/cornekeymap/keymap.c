@@ -126,7 +126,6 @@ typedef struct {//for quad
 } td_tap_t;
 
 //Vars
-static uint16_t timer_key;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
@@ -1163,19 +1162,18 @@ case LT(9, MULTICURSOR):   // HOLD → Alt+Shift+G | TAP → Alt+Shift+Insert
     return true;
 
 
-            case EDIT_OCCURR:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP -  Busca ocurrencias, se desplaza de 1 en 1
-                           tap_code16(KC_F3);
-                        }else {
-                            // HOLD -  Selecciona la ocurrencia a buscar
-                             tap_code16(C(KC_F3));
-                        }
+            case LT(9, EDIT_OCCURR):   // HOLD → Ctrl+F3 | TAP → F3
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD → Selecciona la ocurrencia a buscar
+                        tap_code16(C(KC_F3));
+                    } else {
+                        // TAP → Busca ocurrencias, se desplaza de 1 en 1
+                        tap_code16(KC_F3);
                     }
                     return false; // Bloquea el comportamiento por defecto
+                }
+                return true;
 
 
             case  LT(2,REFACTOR):
@@ -1391,7 +1389,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                         ,-----------------------------------------------------.
   LT(9, FOLDING), LT(9, MULTICURSOR), A(KC_J) , S(A(KC_J)), LT(9, INFOPARM), XXXXXXX,                    XXXXXXX, LT(9, NAV_ERROR), A(KC_F12), LT(9, PROJECT_VIEW), LT(9, NEW_FILE), LT(9, SPLIT_WIN),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,      XXXXXXX, XXXXXXX, LT(9, LAST_EDIT), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+  C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), LT(9, EDIT_OCCURR), XXXXXXX,      XXXXXXX, XXXXXXX, LT(9, LAST_EDIT), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
   A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,             QK_BOOT, XXXXXXX, TD(TDQ_GOTO), LT(9, USAGES), LT(2,RECENT_LOC), C(KC_F12),
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
