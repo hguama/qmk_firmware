@@ -761,33 +761,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                      return false;
 
 
-            case PGUP_CTRLPG:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → CTRL PAGE UP
-                            tap_code16(C(KC_PGUP));
-                        }else {
-                            // HOLD → PAGE UP
-                            tap_code(KC_PGUP);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+case LT(9, PGUP_CTRLPG):   // TAP = Ctrl+PgUp | HOLD = PgUp
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → PAGE UP
+            tap_code(KC_PGUP);
+        } else {
+            // TAP → CTRL + PAGE UP
+            tap_code16(C(KC_PGUP));
+        }
+        return false; // Bloquea comportamiento por defecto
+    }
+    return true;
 
-            case PGDW_CTRLPG:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → CTRL PAGE DOWN
-                            tap_code16(C(KC_PGDN));
-                        }else {
-                            // HOLD → PAGE DOWN
-                            tap_code(KC_PGDN);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+case LT(9, PGDW_CTRLPG):   // TAP = Ctrl+PgDn | HOLD = PgDn
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → PAGE DOWN
+            tap_code(KC_PGDN);
+        } else {
+            // TAP → CTRL + PAGE DOWN
+            tap_code16(C(KC_PGDN));
+        }
+        return false;
+    }
+    return true;
+
 
 
 
@@ -843,35 +842,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                        return false;
 
 
-            case EVERYW_ACT:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → search everywhere
-                            tap_code16(KC_F14);
-                        }else {
-                            // HOLD → actions
-                              tap_code16(C(S(KC_A)));
-
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+  case LT(9, EVERYW_ACT):   // HOLD → Ctrl+Shift+A | TAP → F14
+      if (record->event.pressed) {
+          if (!record->tap.count) {
+              // HOLD → Ctrl+Shift+A
+              tap_code16(C(S(KC_A)));
+          } else {
+              // TAP → F14
+              tap_code16(KC_F14);
+          }
+          return false; // Bloquea comportamiento por defecto
+      }
+      return true;
 
 
-            case NAV_ERROR:
-                   if (record->event.pressed) {
-                       timer_key = timer_read(); // Inicia el temporizador
-                   }else {
-                       if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                           // TAP → Navigate to error
-                           tap_code(KC_F2);
-                       }else {
-                           // HOLD → Navigate to error back
-                           tap_code16(S(KC_F2));
-                       }
-                   }
-                   return false; // Bloquea el comportamiento por defecto
+case LT(9, NAV_ERROR):   // HOLD → Shift+F2 | TAP → F2
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → Shift+F2
+            tap_code16(S(KC_F2));
+        } else {
+            // TAP → F2
+            tap_code(KC_F2);
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
 
 
 
@@ -940,90 +937,90 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 break;
 
-            case PROJECT_VIEW:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → PROJECT
-                            tap_code16(A(KC_1));
-                        }else {
-                            // HOLD → PROJECT SELECT IN
-                            tap_code16(A(KC_F1));
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
-
-            case NEW_FILE:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → NEW FILE, CLASS...
-                            tap_code16(A(KC_INS));
-                        }else {
-                            // HOLD → NEW CLASS
-                            tap_code16(KC_F15);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
-
-            case SPLIT_WIN:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → SPLIT RIGHT
-                            tap_code16(KC_F16);
-                        }else {
-                            // HOLD → SPLIT DOWN
-                            tap_code16(KC_F17);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
-
-            case FULL_SCREEN:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP → FULL SCREEN
-                            tap_code16(KC_F18);
-                        }else {
-                            // HOLD → ZEN MODE
-                            tap_code16(KC_F19);
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
-
-            case MAX_MIN_WIN:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP →  MAX WIN
-                            tap_code16(RGUI(KC_UP));
-                        }else {
-                            // HOLD →  MIN WIN
-                            tap_code16(RGUI(KC_DOWN));
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+case LT(9, PROJECT_VIEW):   // HOLD → Alt+F1 | TAP → Alt+1
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → Alt+F1 (PROJECT SELECT IN)
+            tap_code16(A(KC_F1));
+        } else {
+            // TAP → Alt+1 (PROJECT)
+            tap_code16(A(KC_1));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
 
 
-            case LAST_EDIT:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                        //tap
-                        tap_code16_delay(C(S(KC_BSPC)), 30); // Ctrl + Shift + Backspace
-                        }else {
-                        //hold
-                           tap_code(KC_F13);
-                        }
-                    }
-                    return false;
+case LT(9, NEW_FILE):   // HOLD → F15 (NEW CLASS) | TAP → Alt+Insert (NEW FILE)
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → NEW CLASS
+            tap_code16(KC_F15);
+        } else {
+            // TAP → NEW FILE
+            tap_code16(A(KC_INS));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
+
+case LT(9, SPLIT_WIN):   // HOLD → F17 (SPLIT DOWN) | TAP → F16 (SPLIT RIGHT)
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → SPLIT DOWN
+            tap_code16(KC_F17);
+        } else {
+            // TAP → SPLIT RIGHT
+            tap_code16(KC_F16);
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
+
+case LT(9, FULL_SCREEN):   // HOLD → F19 (ZEN MODE) | TAP → F18 (FULL SCREEN)
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → ZEN MODE
+            tap_code16(KC_F19);
+        } else {
+            // TAP → FULL SCREEN
+            tap_code16(KC_F18);
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
+
+case LT(9, MAX_MIN_WIN):   // HOLD → RGUI+Down (MIN WIN) | TAP → RGUI+Up (MAX WIN)
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → MIN WIN
+            tap_code16(RGUI(KC_DOWN));
+        } else {
+            // TAP → MAX WIN
+            tap_code16(RGUI(KC_UP));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
+
+
+case LT(9, LAST_EDIT):   // HOLD → F13 | TAP → Ctrl+Shift+Backspace
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → F13
+            tap_code(KC_F13);
+        } else {
+            // TAP → Ctrl+Shift+Backspace
+            tap_code16_delay(C(S(KC_BSPC)), 30);
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
 
 
             case  LT(2,RECENT_LOC):
@@ -1040,20 +1037,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-            case USAGES:
-                    if (record->event.pressed) {
-                        timer_key = timer_read();
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                        //tap
-                            tap_code16(C(A(KC_F7)));
-                        }else {
-                        //hold
-                              tap_code16(A(KC_F7));
+case LT(9, USAGES):   // HOLD → Alt+F7 | TAP → Ctrl+Alt+F7
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → Alt+F7
+            tap_code16(A(KC_F7));
+        } else {
+            // TAP → Ctrl+Alt+F7
+            tap_code16(C(A(KC_F7)));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
 
-                        }
-                    }
-                    return false;
 
 
             case  LT(2,COMM):
@@ -1123,50 +1119,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                        return false;
 
 
-            case INFOPARM:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - view info parameter
-                            tap_code16(LCTL(KC_P));
-                        }else {
-                            // HOLD - view method context info
-                            tap_code16(A(KC_Q));
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+case LT(9, INFOPARM):   // HOLD → Alt+Q | TAP → Ctrl+P
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → Alt+Q (view method context info)
+            tap_code16(A(KC_Q));
+        } else {
+            // TAP → Ctrl+P (view info parameter)
+            tap_code16(LCTL(KC_P));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
 
 
-            case FOLDING:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - desplegar 1 region
-                            tap_code16(KC_F22);
-                        }else {
-                            // HOLD - contrae o cierra todos
-//                            tap_code16(LCTL(LSFT(KC_KP_MINUS)));
 
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+          case LT(9, FOLDING):   // HOLD → Ctrl+Shift+Keypad- (contrae todos) | TAP → F22 (desplegar 1 región)
+              if (record->event.pressed) {
+                  if (!record->tap.count) {
+                      // HOLD → contrae todos (ejemplo comentado)
+                      // tap_code16(LCTL(LSFT(KC_KP_MINUS)));
+                  } else {
+                      // TAP → desplegar 1 región
+                      tap_code16(KC_F22);
+                  }
+                  return false; // Bloquea el comportamiento por defecto
+              }
+              return true;
 
 
-            case MULTICURSOR:
-                    if (record->event.pressed) {
-                        timer_key = timer_read(); // Inicia el temporizador
-                    }else {
-                        if (timer_elapsed(timer_key) < TAPPING_TERM) {
-                            // TAP - multicursor
-                          tap_code16(LALT(LSFT(KC_INS)));
-                        }else {
-                            // HOLD - multicursor ends of line
-                            tap_code16(LALT(LSFT(KC_G)));
-                        }
-                    }
-                    return false; // Bloquea el comportamiento por defecto
+
+case LT(9, MULTICURSOR):   // HOLD → Alt+Shift+G | TAP → Alt+Shift+Insert
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD → multicursor ends of line
+            tap_code16(LALT(LSFT(KC_G)));
+        } else {
+            // TAP → multicursor
+            tap_code16(LALT(LSFT(KC_INS)));
+        }
+        return false; // Bloquea el comportamiento por defecto
+    }
+    return true;
+
 
             case EDIT_OCCURR:
                     if (record->event.pressed) {
@@ -1394,13 +1389,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Dev ly3
     [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                         ,-----------------------------------------------------.
-  FOLDING, MULTICURSOR, A(KC_J) , S(A(KC_J)), INFOPARM, XXXXXXX,                    XXXXXXX, NAV_ERROR, A(KC_F12), PROJECT_VIEW, NEW_FILE, SPLIT_WIN,
+  LT(9, FOLDING), LT(9, MULTICURSOR), A(KC_J) , S(A(KC_J)), LT(9, INFOPARM), XXXXXXX,                    XXXXXXX, LT(9, NAV_ERROR), A(KC_F12), LT(9, PROJECT_VIEW), LT(9, NEW_FILE), LT(9, SPLIT_WIN),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,      XXXXXXX, XXXXXXX, LAST_EDIT, C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+  C(A(KC_T)), LT(2,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), EDIT_OCCURR, XXXXXXX,      XXXXXXX, XXXXXXX, LT(9, LAST_EDIT), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,             QK_BOOT, XXXXXXX, TD(TDQ_GOTO), USAGES, LT(2,RECENT_LOC), C(KC_F12),
+  A(KC_Q), C(KC_D), LT(2,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,             QK_BOOT, XXXXXXX, TD(TDQ_GOTO), LT(9, USAGES), LT(2,RECENT_LOC), C(KC_F12),
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                MAX_MIN_WIN, FULL_SCREEN, XXXXXXX,                    TO(0),   C(S(KC_U)), EVERYW_ACT
+                                LT(9, MAX_MIN_WIN), LT(9, FULL_SCREEN), XXXXXXX,                    TO(0),   C(S(KC_U)), LT(9, EVERYW_ACT)
                                //`--------------------------'                           `--------------------------'
    ),
 
@@ -1476,7 +1471,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_LSFT, XXXXXXX, MO(10), LT(2,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, LT(0,HOME_END),
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, PGUP_CTRLPG, C(KC_HOME), PGDW_CTRLPG, C(KC_END),
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, LT(9, PGUP_CTRLPG), C(KC_HOME), LT(9, PGDW_CTRLPG), C(KC_END),
       //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
                                  LT(2,CHATGPT), XXXXXXX, _______,                       TO(0), XXXXXXX, XXXXXXX
                                  //`--------------------------'                         `--------------------------'
