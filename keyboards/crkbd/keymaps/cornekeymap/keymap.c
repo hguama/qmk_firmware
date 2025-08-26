@@ -567,8 +567,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
            case SLEEP:
                   if (record->event.pressed) {
-                     tap_code16_delay(LGUI(KC_X),10);
-                     tap_code16_delay(KC_U,10);
+                     tap_code16_delay(LGUI(KC_X),120);
+                     tap_code16_delay(KC_U,120);
+                     wait_ms(300);
                      tap_code(KC_S);
                    }
             break;
@@ -576,8 +577,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             case HIBERNATE:
                   if (record->event.pressed) {
-                     tap_code16_delay(LGUI(KC_X),10);
-                     tap_code16_delay(KC_U,10);
+                     tap_code16_delay(LGUI(KC_X), 120);
+                     tap_code16_delay(KC_U,120);
+                     wait_ms(300);
                      tap_code(KC_H);
                   }
               break;
