@@ -14,6 +14,7 @@ REPEAT_KEY_ENABLE = no
 
 
 #for reduce size firmware
+BOOTMAGIC_ENABLE = yes        # Necesario para las teclas de flasheo
 LINK_TIME_OPTIMIZATION = no
 CONSOLE_ENABLE = no #depuracion
 COMMAND_ENABLE = no #depuracion

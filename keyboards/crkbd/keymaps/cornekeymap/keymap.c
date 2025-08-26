@@ -126,7 +126,7 @@ typedef struct {//for quad
 } td_tap_t;
 
 //Vars
-static uint16_t timer_key;
+//static uint16_t timer_key;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
