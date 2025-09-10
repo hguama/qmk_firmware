@@ -1372,11 +1372,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                             ,-----------------------------------------------------.
   KC_ESC, LT(2,TG_0), M_ALT_TAB, LT(4, ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, KC_F20, LT(4, CTRLW_L4), KC_UP, LT(2,KC_TAB), LT(2,VOICE),
   //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-  LT(11,KC_ENT), LT(9,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+  LT(_S_DEL,KC_ENT), LT(_S_MOVE,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
   //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
   LT(2,VOICE), LT(12,TG_6), LT(5,KC_F3), LT(2,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,      HIBERNATE, XXXXXXX, LT(2, SHOW_QUICK_ENT), LT(2,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
   //| ------+--------+--------+--------+--------+--------+--------|                     |--------+--------+--------+--------+--------+--------+--------|
-                           LT(_DEV,KC_SPACE), KC_LCTL, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                           LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                            //`--------------------------------'                             `--------------------------'
       ),
 
