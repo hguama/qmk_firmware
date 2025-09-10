@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
+#define LAYER_STATE_16BIT
+
 
 //for reduce size firmware
 #define NO_ACTION_MACRO
