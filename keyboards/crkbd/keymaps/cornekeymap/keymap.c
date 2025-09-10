@@ -25,23 +25,24 @@ JKL
 
 //Layer names enum
 enum layer_names {
-    _BASE,
-    _ALFA,
-    _SYMB,
-    _DEV,
-    _BOOK,
-    _NUMB,
-    _MOUSE,
-    _MOUSE2,
-    _BOOK_2,
-    _S_MOVE,
-    _S_CLOSE,
-    _S_DEL,
-    _RUN,
-    _NEW_1,
-    _NEW_2,
-    _NEW_3
+    _BASE    = 0,  // 0
+    _ALFA,         // 1
+    _SYMB,         // 2
+    _DEV,          // 3
+    _BOOK,         // 4
+    _NUMB,         // 5
+    _MOUSE,        // 6
+    _MOUSE2,       // 7
+    _BOOK_2,       // 8
+    _S_MOVE,       // 9
+    _S_CLOSE,      // 10
+    _S_DEL,        // 11
+    _RUN,          // 12
+    _NEW_1,        // 13
+    _NEW_2,        // 14
+    _NEW_3         // 15
 };
+
 
 //Macro enum
 enum custom_keycodes {
