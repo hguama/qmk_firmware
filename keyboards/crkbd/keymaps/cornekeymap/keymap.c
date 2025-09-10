@@ -1249,7 +1249,7 @@ case LT(0, MULTICURSOR):   // HOLD → Alt+Shift+G | TAP → Alt+Shift+Insert
 
             case TO(_BASE): clear_all(); break;
 
-            case LT(0,TG_0):
+            case LT(_SYMB,TG_0):
                   if (record->event.pressed) {
                        if (!record->tap.count) {
                           return true; //hold
