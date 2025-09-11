@@ -1514,14 +1514,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     //Mouse2 ly7 - hand left (posición 11 según enum)
     [_MOVE_L] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, MS_WHLU, XXXXXXX, MS_WHLD, MS_ACL2,
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX,                   SLEEP, XXXXXXX , TD(TDQ_PASTE), TD(TDQ_COPY), TD(TDQ_CUT), MS_ACL0,
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, WIN_D,                      HIBERNATE, XXXXXXX,  LT(0,MOUSE_PRESSED_CLICK), MS_WHLR, MS_WHLL, XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                KC_ENT, XXXXXXX,  _______,                              TO(_BASE),   KC_ESC, TG(_MOVE_L)
+      //,-----------------------------------------------------.                      ,-----------------------------------------------------.
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------|
+      A(S(KC_UP)), C(S(KC_DOWN)), A(S(KC_DOWN)), C(S(KC_UP)), XXXXXXX , XXXXXXX,     XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------|
+      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------+--------|
+                                XXXXXXX, XXXXXXX,  _______,                              TO(_BASE),   XXXXXXX, XXXXXXX
                                 //`--------------------------'                          `--------------------------'
  ),
 
