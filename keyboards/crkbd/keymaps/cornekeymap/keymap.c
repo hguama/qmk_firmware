@@ -989,7 +989,7 @@ case LT(0, NEW_FILE):   // HOLD → F15 (NEW CLASS) | TAP → Alt+Insert (NEW FI
     return true;
 
 
-case LT(0, SPLIT_WIN):   // HOLD → F17 (SPLIT DOWN) | TAP → F16 (SPLIT RIGHT)
+case LT(0,SPLIT_WIN):   // HOLD → F17 (SPLIT DOWN) | TAP → F16 (SPLIT RIGHT)
     if (record->event.pressed) {
         if (!record->tap.count) {
             // HOLD → SPLIT DOWN
@@ -1473,27 +1473,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                             //`------------------'                      `--------------------------'
    ),
 
-    //Super move ly9 (posición 8 según enum)
+    //Super move ly9 (posición 8 según enum) MS_WHLU,  , MS_WHLD
     [_MOVE_H] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       XXXXXXX, XXXXXXX, LT(0, VOICE_A), C(G(KC_S)), XXXXXXX, XXXXXXX,              XXXXXXX, KC_F6, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), KC_F2,
+       XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_LSFT, XXXXXXX, MO(_MOVE_WIN), LT(0,VOICE), XXXXXXX, XXXXXXX,                    XXXXXXX, LCTL(LSFT(KC_M)), XXXXXXX, A(KC_DOWN), XXXXXXX, LT(0,HOME_END),
+       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_RIGHT), XXXXXXX, C(KC_LEFT), XXXXXXX,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, LT(0, PGUP_CTRLPG), C(KC_HOME), LT(0, PGDW_CTRLPG), C(KC_END),
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
       //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_SYMB,CHATGPT), XXXXXXX, _______,                       TO(_BASE), XXXXXXX, XXXXXXX
+                                  XXXXXXX, XXXXXXX, _______,                       TO(_BASE), XXXXXXX, XXXXXXX
                                  //`--------------------------'                         `--------------------------'
      ),
 
     // Layer 13 - new (posición 9 según enum)
     [_MOVE_V] = LAYOUT_split_3x6_3(
            // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), A(KC_DOWN),
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
                                        XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX
                                        // `--------------------------'                          `--------------------------'
