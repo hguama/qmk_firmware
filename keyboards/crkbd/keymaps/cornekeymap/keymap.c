@@ -1411,14 +1411,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Super DEL ly11 (posición 3 según enum)
     [_DEL] = LAYOUT_split_3x6_3(
           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, A(S(KC_UP)), C(S(KC_UP)), XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), , XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_DEL, C(S(KC_DOWN)), DEL_WORD,  DEL_LINE,
+           XXXXXXX, XXXXXXX, TO(_BASE), XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_DEL, KC_BSPC , DEL_WORD,  DEL_LINE,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, KC_BSPC, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                             LT(_RUN,Z_UNDO), _______,  _______,                              TO(_BASE),   XXXXXXX, XXXXXXX
-                             //`--------------------------'                                 `--------------------------'
+                              XXXXXXX, _______,  _______,                              TO(_BASE),   XXXXXXX, XXXXXXX
+                             //`--------------------------'                            `--------------------------'
          ),
 
     //Symbols ly2 (posición 4 según enum)
