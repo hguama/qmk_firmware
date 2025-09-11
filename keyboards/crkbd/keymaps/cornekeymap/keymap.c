@@ -1502,13 +1502,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      //Super close window ly10 (posición 10 según enum)
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, A(KC_F4), XXXXXXX, XXXXXXX,                      XXXXXXX, KC_F5, C(KC_L), XXXXXXX, C(KC_T), XXXXXXX,
+         XXXXXXX, C(KC_T), C(KC_L), XXXXXXX, A(KC_F4), XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F21), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, A(KC_LEFT), C(S(KC_TAB)), A(KC_RIGHT), C(KC_TAB),
+         C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_F21, C(S(KC_T)),  A(KC_LEFT), A(KC_RIGHT),
+         XXXXXXX, C(KC_F21), KC_F21, C(S(KC_T)), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                 XXXXXXX, _______,  _______,                            TO(_BASE), XXXXXXX, C(KC_F4)
+                                 C(KC_F4), _______,  _______,                            TO(_BASE), XXXXXXX,XXXXXXX
                                  //`--------------------------'                         `--------------------------'
         ),
 
