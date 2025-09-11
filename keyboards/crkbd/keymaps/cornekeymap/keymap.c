@@ -1434,40 +1434,40 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      //`--------------------------'                         `--------------------------'
  ),
 
-    //Numbers ly5 (posición 5 según enum)
+    //Numbers ly5 (posición 5 según enum) XXXXXXX LT(0,KC_MINS),
     [_NUMB] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-    XXXXXXX, LT(0,KC_PERC), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
-    //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
-    LT(_DEL,KC_ASTR), KC_DOLLAR, KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                    XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
-    //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, KC_CIRC, XXXXXXX, KC_LALT, XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+--------|              |--------+--------+--------+--------+--------+--------+--------|
-                           KC_ENT, XXXXXXX, XXXXXXX,   TO(_BASE),                           TG(_NUMB), TRIPLE_WHLD
-                           //`--------------------------'                               `--------------------------'
-),
+        //,-----------------------------------------------------.                       ,-----------------------------------------------------.
+        XXXXXXX, XXXXXXX, LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,               XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
+        //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
+        XXXXXXX, LT(_DEL,KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                    XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+        //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
+        XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
+        //|--------+--------+--------+--------+--------+--------+--------|              |--------+--------+--------+--------+--------+--------+--------|
+                               KC_ENT, XXXXXXX, XXXXXXX,   TO(_BASE),                           TG(_NUMB), TRIPLE_WHLD
+                               //`-----------------------------------'                          `--------------------------'
+    ),
 
-    //Bookmark ly4 (posición 6 según enum)
+    //Bookmark ly4 (posición 6 según enum) D Y H FALTAN
     [_BOOK] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     C(KC_F20), C(KC_F19), MO(8), C(S(KC_F21)), C(KC_F22), XXXXXXX,              XXXXXXX, XXXXXXX, C(KC_7), C(KC_8), C(KC_9), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, XXXXXXX, MO(8), C(KC_F17), C(KC_F18), XXXXXXX,                      XXXXXXX, XXXXXXX, TD(TDQ_BOOKMARK), C(KC_4), C(KC_5), C(KC_6),
-    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-    XXXXXXX, C(KC_F13), C(KC_F14), C(KC_F15), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), XXXXXXX,
-    //|--------+--------+--------+--------+--------+--------+-----|              |--------+--------+--------+--------+--------+--------+--------|
-                                    MO(_BOOK_2), XXXXXXX,  XXXXXXX,                           TO(_BASE),   XXXXXXX, MO(_BOOK_2)
-                                    //`--------------------------'                       `--------------------------'
-),
+        //,-----------------------------------------------------------.              ,-----------------------------------------------------.
+        XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
+        //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
+        C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), C(KC_4),
+        //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
+        XXXXXXX, C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+        //|--------+--------+--------+--------+--------+--------+-----|              |--------+--------+--------+--------+--------+--------+--------|
+                                        MO(_BOOK_2), XXXXXXX,  XXXXXXX,              TO(_BASE),   XXXXXXX, MO(_BOOK_2)
+                                        //`--------------------------'               `--------------------------'
+    ),
 
     //Super bookmark ly8 (posición 7 según enum)
     [_BOOK_2] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, A(KC_G), A(KC_H), A(KC_I), A(KC_K), XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_7)), C(S(KC_8)), C(S(KC_9)), XXXXXXX,
+         XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                      XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, A(KC_D), A(KC_E), A(KC_F), XXXXXXX,                    XXXXXXX,XXXXXXX ,XXXXXXX , C(S(KC_4)), C(S(KC_5)), C(S(KC_6)),
+         A(KC_A), A(KC_B), A(KC_C), A(KC_D), XXXXXXX , XXXXXXX,                      XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), C(S(KC_4)) ,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, A(KC_A), A(KC_B), A(KC_C), XXXXXXX, XXXXXXX,                    XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), XXXXXXX,
+         XXXXXXX, A(KC_H), A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
         //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
                                  XXXXXXX, XXXXXXX,  _______,                            TO(_BASE),   XXXXXXX, XXXXXXX
                                             //`------------------'                      `--------------------------'
