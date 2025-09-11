@@ -1554,13 +1554,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Mouse ly6 (posición 14 según enum)        MS_ACL0_TOGGLE MS_ACL21
     [_COMMIT] = LAYOUT_split_3x6_3(
        //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       XXXXXXX, C(A(KC_R)), C(KC_Z), XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, MS_WHLU, MS_UP, MS_WHLD, KC_ESC,
+       XXXXXXX, KC_ESC, C(KC_K), A(KC_0), XXXXXXX, XXXXXXX,                         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Z), XXXXXXX, XXXXXXX,
        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       MS_WHLL, MS_WHLR, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                         SLEEP, XXXXXXX, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+       MS_ACL2, MS_ACL1, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                         SLEEP, XXXXXXX, MS_WHLL, MS_WHLD, MS_WHLR, MS_WHLU,
        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, C(A(KC_R)), S(KC_F7), KC_F7, XXXXXXX , WIN_D,                       HIBERNATE, XXXXXXX, MS_WHLL, XXXXXXX, MS_WHLR, XXXXXXX,
+       XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, WIN_D,                         HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                TG(_COMMIT),  XXXXXXX,     XXXXXXX,                           TO(_BASE), XXXXXXX, XXXXXXX
+                                C(A(KC_R)),  XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, TO(_BASE)
                                 //`--------------------------'                          `--------------------------'
   ),
 
