@@ -1422,15 +1422,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
          ),
 
     //Symbols ly2 (posición 4 según enum)
+
+//para eliminar
+// LT(0,HASH_CIRC)
+// LT(0,KC_AT)
+//rlambda
+// OPEN_EXCL
+// tap_code16(KC_CIRC);  // HOLD: ^
+// tap_code16(KC_HASH);  // TAP: #
+// KC_QUOT '
+
+
+//para agregar
+//kc_plus astrisk_plus * +
+//OPEN_QUEST ? ¿
+// LT(0,KC_DQT)  " '
+// pipe_m |>
+//LLAMBDA <- ->
+
+//LT(0,EXC_DLR) $ #
+//NOT_EQUAL != ¡
+//KC_EXLM excl_grave !  ^
+
     [_SYMB] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                           ,-----------------------------------------------------.
-     KC_PERC, KC_PLUS, LT(0, KC_MINS), LT(0,KC_SLSH),  OPEN_EXCL, XXXXXXX,                 XXXXXXX, OPEN_QUEST, LT(0,KC_AT), LT(0,EQUAL_DBL),  LT(0,KC_DQT), KC_QUOT,
+      XXXXXXX, KC_PLUS, LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,              XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-     KC_ASTR, LT(0,EXC_DLR), LLAMBDA, RLAMBDA, DOUBLE_PIPE, XXXXXXX,                      XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,KC_LPRN), LT(0,KC_LCBR), LT(0,LBRC2),
+      OPEN_QUEST, LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,              XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-     S(KC_GRAVE), LT(0,HASH_CIRC) , LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,       QK_BOOT, XXXXXXX, KC_COMM, KC_SCLN, NOT_EQUAL,  LT(0,DOUBLE_COLON),
+      XXXXXXX, LLAMBDA, LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, NOT_EQUAL, KC_EXLM,
       //|--------+--------+--------+--------+--------+--------+--------|                  |--------+--------+--------+--------+--------+--------+--------|
-                                     C(S(KC_ENT)), XXXXXXX,  XXXXXXX,                       TO(_BASE), XXXXXXX, TRIPLE_WHLD
+                                     XXXXXXX, XXXXXXX,  XXXXXXX,                          TO(_BASE), XXXXXXX, TRIPLE_WHLD
                                      //`--------------------------'                         `--------------------------'
  ),
 
