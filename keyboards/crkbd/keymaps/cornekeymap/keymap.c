@@ -117,6 +117,11 @@ enum custom_keycodes {
     PGDN_PGUP,
     QUESTION,
     EXCL_GRAVE,
+    CRIGHT_5,
+    CLEFT_5,
+    DOWN_10,
+    UP_10,
+    PIPE_M,
 };
 
 //Combo enum
@@ -650,6 +655,50 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         tap_code16(KC_EXLM);
                         return false;
                     }
+                }
+                return false;
+
+            case CRIGHT_5:
+                if (record->event.pressed) {
+                    // KC_RIGHT 5 veces
+                    for (int i = 0; i < 5; i++) {
+                        tap_code(KC_RIGHT);
+                    }
+                }
+                return false;
+
+            case CLEFT_5:
+                if (record->event.pressed) {
+                    // KC_LEFT 5 veces
+                    for (int i = 0; i < 5; i++) {
+                        tap_code(KC_LEFT);
+                    }
+                }
+                return false;
+
+            case DOWN_10:
+                if (record->event.pressed) {
+                    // KC_DOWN 10 veces
+                    for (int i = 0; i < 10; i++) {
+                        tap_code(KC_DOWN);
+                    }
+                }
+                return false;
+
+            case UP_10:
+                if (record->event.pressed) {
+                    // KC_UP 10 veces
+                    for (int i = 0; i < 10; i++) {
+                        tap_code(KC_UP);
+                    }
+                }
+                return false;
+
+            case PIPE_M:
+                if (record->event.pressed) {
+                    // |>
+                    tap_code16(KC_PIPE);
+                    tap_code16(KC_GT);
                 }
                 return false;
 
@@ -1614,7 +1663,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
       LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,              XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
+      PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
       //|--------+--------+--------+--------+--------+--------+--------|                  |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, XXXXXXX,  XXXXXXX,                          TO(_BASE), XXXXXXX, TRIPLE_WHLD
                                      //`--------------------------'                         `--------------------------'
@@ -1678,7 +1727,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), XXXXXXX, LT(0, CLEFT_10), XXXXXXX,
+       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), CRIGHT_5, LT(0, CLEFT_10), CLEFT_5,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
       //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
@@ -1696,7 +1745,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //UP_10     KC_UP 10 VECES
     [_MOVE_V] = LAYOUT_split_3x6_3(
            // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, DOWN_10, UP_10, XXXXXXX,
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), A(KC_DOWN),
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
