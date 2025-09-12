@@ -1395,16 +1395,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   ),
 
-    //Dev ly3 (posición 2 según enum)
+    //Dev ly3 (posición 2 según enum) LT(0, MAX_MIN_WIN)
     [_DEV] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                         ,-----------------------------------------------------.
-  LT(0, FOLDING), LT(0, MULTICURSOR), A(KC_J) , S(A(KC_J)), LT(0, INFOPARM), XXXXXXX,                    XXXXXXX, LT(0, NAV_ERROR), A(KC_F12), LT(0, PROJECT_VIEW), LT(0, NEW_FILE), LT(0, SPLIT_WIN),
+  XXXXXXX, LT(0,MULTICURSOR), A(KC_J), S(A(KC_J)), LT(0,FOLDING), XXXXXXX,          XXXXXXX, C(S(KC_U)), A(KC_F12), LT(0,PROJECT_VIEW), LT(0,NEW_FILE), XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  C(A(KC_T)), LT(0,COMM), TD(TDQ_FIND), TD(TDQ_REPLACE), LT(0, EDIT_OCCURR), XXXXXXX,      XXXXXXX, XXXXXXX, LT(0, LAST_EDIT), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+  C(KC_D), LT(0,COMM), TD(TDQ_FIND), LT(0,REFACTOR), LT(0,INFOPARM), XXXXXXX,       XXXXXXX, LT(0,NAV_ERROR), TD(TDQ_GOTO), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
   //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  A(KC_Q), C(KC_D), LT(0,REFACTOR), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,             QK_BOOT, XXXXXXX, TD(TDQ_GOTO), LT(0, USAGES), LT(0,RECENT_LOC), C(KC_F12),
+  A(KC_Q), C(A(KC_T)), TD(TDQ_REPLACE), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,         QK_BOOT, XXXXXXX, LT(0,USAGES), LT(0,LAST_EDIT), C(KC_F12), LT(0,RECENT_LOC),
   //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                LT(0, MAX_MIN_WIN), LT(0, FULL_SCREEN), XXXXXXX,                    TO(_BASE),   C(S(KC_U)), LT(0, EVERYW_ACT)
+                                LT(0,FULL_SCREEN), XXXXXXX, XXXXXXX,                    TO(_BASE), XXXXXXX, LT(0,EVERYW_ACT)
                                //`--------------------------'                           `--------------------------'
    ),
 
