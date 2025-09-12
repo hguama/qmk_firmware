@@ -108,6 +108,15 @@ enum custom_keycodes {
     TG_6,
     SLEEP,
     HIBERNATE,
+    ASTRISK_PLUS,
+    MARKER_B,
+    MARKER_3,
+    CRIGHT_10,
+    CLEFT_10,
+    C_END_HOME,
+    PGDN_PGUP,
+    QUESTION,
+    EXCL_GRAVE,
 };
 
 //Combo enum
@@ -336,10 +345,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(0,EXC_DLR):
                     if (record->event.pressed) {
                        if (!record->tap.count) {
-                          tap_code16(KC_DLR); // $
+                          // HOLD: #
+                          tap_code16(KC_HASH);
                        return false;
                        }else {
-                            tap_code16(KC_EXLM); // !
+                            // TAP: $
+                            tap_code16(KC_DLR);
                         return false;
                        }
                     }
@@ -507,6 +518,140 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 return false;
 
+            case LT(0, ASTRISK_PLUS):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: +
+                        tap_code16(KC_PLUS);
+                        return false;
+                    } else {
+                        // TAP: *
+                        tap_code16(KC_ASTR);
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(_BOOK_2, MARKER_B):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: MO(_BOOK_2)
+                        return true; // Permite que QMK maneje el layer tap
+                    } else {
+                        // TAP: C(KC_F14)
+                        tap_code16(C(KC_F14));
+                        return false;
+                    }
+                }
+                return true;
+
+            case LT(_BOOK_2, MARKER_3):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: MO(_BOOK_2)
+                        return true; // Permite que QMK maneje el layer tap
+                    } else {
+                        // TAP: C(KC_3)
+                        tap_code16(C(KC_3));
+                        return false;
+                    }
+                }
+                return true;
+
+            case LT(0, CRIGHT_10):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: KC_RIGHT x10
+                        for (int i = 0; i < 10; i++) {
+                            tap_code(KC_RIGHT);
+                        }
+                        return false;
+                    } else {
+                        // TAP: KC_RIGHT
+                        tap_code(KC_RIGHT);
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(0, CLEFT_10):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: KC_LEFT x10
+                        for (int i = 0; i < 10; i++) {
+                            tap_code(KC_LEFT);
+                        }
+                        return false;
+                    } else {
+                        // TAP: KC_LEFT
+                        tap_code(KC_LEFT);
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(0, C_END_HOME):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: C(KC_HOME)
+                        tap_code16(C(KC_HOME));
+                        return false;
+                    } else {
+                        // TAP: C(KC_END)
+                        tap_code16(C(KC_END));
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(0, PGDN_PGUP):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: KC_PGUP
+                        tap_code(KC_PGUP);
+                        return false;
+                    } else {
+                        // TAP: KC_PGDN
+                        tap_code(KC_PGDN);
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(0, QUESTION):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: ¿
+                        SEND_STRING(
+                            SS_DOWN(X_LALT)
+                            SS_TAP(X_KP_0)
+                            SS_TAP(X_KP_1)
+                            SS_TAP(X_KP_9)
+                            SS_TAP(X_KP_1)
+                            SS_UP(X_LALT)
+                        );
+                        return false;
+                    } else {
+                        // TAP: ?
+                        tap_code16(KC_QUES);
+                        return false;
+                    }
+                }
+                return false;
+
+            case LT(0, EXCL_GRAVE):
+                if (record->event.pressed) {
+                    if (!record->tap.count) {
+                        // HOLD: ^
+                        tap_code16(KC_CIRC);
+                        return false;
+                    } else {
+                        // TAP: !
+                        tap_code16(KC_EXLM);
+                        return false;
+                    }
+                }
+                return false;
 
             case  LT(0,VOICE):
                  if (record->event.pressed) {
@@ -643,20 +788,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             case  LT(0,KC_DQT):
                    if (record->event.pressed) {
                       if (!record->tap.count) {
-
-                         tap_code16(KC_GRAVE); // holdO
+                         // HOLD: '
+                         tap_code16(KC_QUOT);
                           return false;
                       }else{
-                           tap_code16(S(KC_QUOT));  // Envía comillas dobles (")
+                           // TAP: "
+                           tap_code16(S(KC_QUOT));
                          return false;
                           }
                       }
                       return true;
 
-            case NOT_EQUAL:
+            case LT(0, NOT_EQUAL):
                 if (record->event.pressed) {
-                      tap_code16(S(KC_1));  // Envía "!"
-                      tap_code(KC_EQL);     // Envía "="
+                    if (!record->tap.count) {
+                        // HOLD: ¡
+                        SEND_STRING(
+                            SS_DOWN(X_LALT)
+                            SS_TAP(X_KP_0)
+                            SS_TAP(X_KP_1)
+                            SS_TAP(X_KP_6)
+                            SS_TAP(X_KP_1)
+                            SS_UP(X_LALT)
+                        );
+                        return false;
+                    } else {
+                        // TAP: !=
+                        tap_code16(S(KC_1));  // Envía "!"
+                        tap_code(KC_EQL);     // Envía "="
+                        return false;
+                    }
                 }
                 return false;
 
@@ -717,17 +878,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     }
                     return false; // no procesar más
 
-            case  LLAMBDA:
+            case  LT(0,LLAMBDA):
                    if (record->event.pressed) {
-                     SEND_STRING("<-"); // hold
+                      if (!record->tap.count) {
+                         // HOLD: <-
+                         SEND_STRING("<-");
+                         return false;
+                      } else {
+                         // TAP: ->
+                         SEND_STRING("->");
+                         return false;
+                      }
                    }
-                   break;
+                   return false;
 
-            case  RLAMBDA:
-                   if (record->event.pressed) {
-                     SEND_STRING("->"); // hold
-                   }
-                  break;
 
             case  LT(0,KC_LPRN):
                  if (record->event.pressed) {
@@ -1441,15 +1605,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // LT(0,EXC_DLR) $ #
 // LT(0,NOT_EQUAL)  != ¡
 // LT(0,excl_grave) !  ^ KC_EXLM
+
 // pipe_m |>
 
     [_SYMB] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                           ,-----------------------------------------------------.
-      XXXXXXX, KC_PLUS, LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,              XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
+      XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,              XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-      OPEN_QUEST, LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,              XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
+      LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,              XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
       //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, LLAMBDA, LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, NOT_EQUAL, KC_EXLM,
+      XXXXXXX, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
       //|--------+--------+--------+--------+--------+--------+--------|                  |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, XXXXXXX,  XXXXXXX,                          TO(_BASE), XXXXXXX, TRIPLE_WHLD
                                      //`--------------------------'                         `--------------------------'
@@ -1459,7 +1624,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  LT(0,astrisk_plus) * +
     [_NUMB] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-        XXXXXXX, XXXXXXX, LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,               XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
+        XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,               XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
         //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
         XXXXXXX, LT(_DEL,KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                    XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
         //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
@@ -1478,7 +1643,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //,-----------------------------------------------------------.              ,-----------------------------------------------------.
         XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
-        C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), C(KC_3), C(KC_4),
+        C(KC_F13), LT(_BOOK_2,MARKER_B), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
         //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
         XXXXXXX, C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         //|--------+--------+--------+--------+--------+--------+-----|              |--------+--------+--------+--------+--------+--------+--------|
@@ -1504,6 +1669,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // LT(0, CRIGHT_10) C(KC_RIGHT) KC_RIGHT 10 VECES
 // LT(0, CLEFT_10)  C(KC_LEFT)  KC_LEFT 10 VECES
 // LT(0,C_END_HOME)  C(KC_END) C(KC_HOME)
+
 // CRIGHT_5   KC_RIGHT 5 VECES
 // CLEFT_5    KC_LEFT 5 VECES
 
@@ -1512,11 +1678,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_RIGHT), XXXXXXX, C(KC_LEFT), XXXXXXX,
+       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), XXXXXXX, LT(0, CLEFT_10), XXXXXXX,
       //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
       //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
-                                  XXXXXXX, XXXXXXX, _______,                       TO(_BASE), XXXXXXX, XXXXXXX
+                                  XXXXXXX, XXXXXXX, _______,                       TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                  //`--------------------------'                         `--------------------------'
      ),
 
@@ -1525,6 +1691,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //LT TAP HOLD
     //[_MOVE_V]
     //LT(0, PGDN_PGUP) KC_PGDN KC_PGUP
+
     //DOWN_10   KC_DOWN 10 VECES
     //UP_10     KC_UP 10 VECES
     [_MOVE_V] = LAYOUT_split_3x6_3(
@@ -1535,7 +1702,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
            // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX
+                                       XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
                                        // `--------------------------'                          `--------------------------'
     ),
 
