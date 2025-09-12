@@ -1369,28 +1369,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     //Base
     [_BASE] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                             ,-----------------------------------------------------.
-  KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_BOOK, ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, KC_F20, LT(_BOOK, CTRLW_L4), KC_UP, LT(_SYMB,KC_TAB), LT(0,VOICE),
-  //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-  LT(_DEL,KC_ENT), LT(_MOVE_H,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
-  //|--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-  LT(0,VOICE), LT(0,TG_6), LT(_NUMB,KC_F3), LT(0,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,      HIBERNATE, XXXXXXX, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
-  //| ------+--------+--------+--------+--------+--------+--------|                     |--------+--------+--------+--------+--------+--------+--------|
-                           LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+ //,-----------------------------------------------------.                                 ,-----------------------------------------------------.
+ KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_BOOK, ALT_TAB), TD(TDQ_CUT), QK_BOOT,              QK_BOOT, KC_F20, LT(_BOOK, CTRLW_L4), KC_UP, LT(_SYMB,KC_TAB), LT(0,VOICE),
+ //|--------+--------+--------+--------+--------+--------|                                 |--------+--------+--------+--------+--------+--------|
+ LT(_DEL,KC_ENT), LT(_MOVE_H,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),       SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+ //|--------+--------+--------+--------+--------+--------|                                 |--------+--------+--------+--------+--------+--------|
+ LT(0,VOICE), LT(0,TG_6), LT(_NUMB,KC_F3), LT(0,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,   HIBERNATE, XXXXXXX, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+ //| ------+--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------+--------|
+                           LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                       TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                            //`--------------------------------'                             `--------------------------'
       ),
 
 
     //Alfa ly1
     [_ALFA] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-        KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                         XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
-      //|--------+--------+--------+--------+--------+--------|                        |--------+--------+--------+--------+--------+--------|
-        LT(_DEL,KC_A), KC_S, KC_D, LT(0,F_W), KC_G , C(KC_S),                     SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+      //,-----------------------------------------------------.                        ,-----------------------------------------------------.
+        KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                      XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
       //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-        KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
+        LT(_DEL,KC_A), KC_S, KC_D, LT(0,F_W), KC_G , C(KC_S),                           SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+      //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
+        KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                          HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
       //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                           LT(0,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                      TO(_BASE),  TG(_NUMB),  RSFT_T(KC_ENT)
+                           LT(0,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                   TO(_BASE),  TG(_NUMB),  RSFT_T(KC_ENT)
                           //`--------------------------'                                    `--------------------------'
 
   ),
