@@ -1433,16 +1433,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // KC_QUOT '
 
 
-//para agregar
-//kc_plus astrisk_plus * +
-//OPEN_QUEST ? ¿
+// [_SYMB]
+// LT(0,astrisk_plus) * + kc_plus
+// LT(0, QUESTION) ? ¿ OPEN_QUEST
 // LT(0,KC_DQT)  " '
+// LT(0,LLAMBDA)   ->  <-
+// LT(0,EXC_DLR) $ #
+// LT(0,NOT_EQUAL)  != ¡
+// LT(0,excl_grave) !  ^ KC_EXLM
 // pipe_m |>
-//LLAMBDA <- ->
-
-//LT(0,EXC_DLR) $ #
-//NOT_EQUAL != ¡
-//KC_EXLM excl_grave !  ^
 
     [_SYMB] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                           ,-----------------------------------------------------.
@@ -1457,6 +1456,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  ),
 
     //Numbers ly5 (posición 5 según enum) XXXXXXX LT(0,KC_MINS),
+//  LT(0,astrisk_plus) * +
     [_NUMB] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------.                       ,-----------------------------------------------------.
         XXXXXXX, XXXXXXX, LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,               XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
@@ -1470,6 +1470,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     //Bookmark ly4 (posición 6 según enum) D Y H FALTAN
+
+//LT HOLD TAP
+//LT(_BOOK_2,MARKER_B)    C(KC_F14)  MO(_BOOK_2)
+//LT(_BOOK_2,MARKER_3)    C(KC_3)    MO(_BOOK_2)
     [_BOOK] = LAYOUT_split_3x6_3(
         //,-----------------------------------------------------------.              ,-----------------------------------------------------.
         XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
@@ -1496,6 +1500,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    ),
 
     //Super move ly9 (posición 8 según enum) MS_WHLU,  , MS_WHLD
+// LT TAP HOLD
+// LT(0, CRIGHT_10) C(KC_RIGHT) KC_RIGHT 10 VECES
+// LT(0, CLEFT_10)  C(KC_LEFT)  KC_LEFT 10 VECES
+// LT(0,C_END_HOME)  C(KC_END) C(KC_HOME)
+// CRIGHT_5   KC_RIGHT 5 VECES
+// CLEFT_5    KC_LEFT 5 VECES
+
+
     [_MOVE_H] = LAYOUT_split_3x6_3(
       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
@@ -1509,6 +1521,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      ),
 
     // Layer 13 - new (posición 9 según enum)
+
+    //LT TAP HOLD
+    //[_MOVE_V]
+    //LT(0, PGDN_PGUP) KC_PGDN KC_PGUP
+    //DOWN_10   KC_DOWN 10 VECES
+    //UP_10     KC_UP 10 VECES
     [_MOVE_V] = LAYOUT_split_3x6_3(
            // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
