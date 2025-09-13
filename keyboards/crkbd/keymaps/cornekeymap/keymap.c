@@ -595,54 +595,54 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            case LT(0, PGDN_PGUP):
-                if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        // HOLD: KC_PGUP
-                        tap_code(KC_PGUP);
-                        return false;
-                    } else {
-                        // TAP: KC_PGDN
-                        tap_code(KC_PGDN);
-                        return false;
-                    }
+        case LT(0, PGDN_PGUP):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: KC_PGUP
+                    tap_code(KC_PGUP);
+                    return false;
+                } else {
+                    // TAP: KC_PGDN
+                    tap_code(KC_PGDN);
+                    return false;
                 }
-                return false;
+            }
+            return false;
 
-            case LT(0, QUESTION):
-                if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        // HOLD: ¿
-                        SEND_STRING(
-                            SS_DOWN(X_LALT)
-                            SS_TAP(X_KP_0)
-                            SS_TAP(X_KP_1)
-                            SS_TAP(X_KP_9)
-                            SS_TAP(X_KP_1)
-                            SS_UP(X_LALT)
-                        );
-                        return false;
-                    } else {
-                        // TAP: ?
-                        tap_code16(KC_QUES);
-                        return false;
-                    }
+        case LT(0, QUESTION):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: ¿
+                    SEND_STRING(
+                        SS_DOWN(X_LALT)
+                        SS_TAP(X_KP_0)
+                        SS_TAP(X_KP_1)
+                        SS_TAP(X_KP_9)
+                        SS_TAP(X_KP_1)
+                        SS_UP(X_LALT)
+                    );
+                    return false;
+                } else {
+                    // TAP: ?
+                    tap_code16(KC_QUES);
+                    return false;
                 }
-                return false;
+            }
+            return false;
 
-            case LT(0, EXCL_GRAVE):
-                if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        // HOLD: ^
-                        tap_code16(KC_CIRC);
-                        return false;
-                    } else {
-                        // TAP: !
-                        tap_code16(KC_EXLM);
-                        return false;
-                    }
+        case LT(0, EXCL_GRAVE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: ^
+                    tap_code16(KC_CIRC);
+                    return false;
+                } else {
+                    // TAP: !
+                    tap_code16(KC_EXLM);
+                    return false;
                 }
-                return false;
+            }
+            return false;
 
         case CRIGHT_5:
             if (record->event.pressed) {
@@ -688,68 +688,64 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            case  LT(0,VOICE):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        tap_code16(G(KC_SPC)); // Solo cambia idioma a español
-                      return false;
-                    }else {
-
+        case LT(0,VOICE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code16(G(KC_SPC)); // Solo cambia idioma a español
+                    return false;
+                } else {
                     // TAP: Activar/Desactivar dictado y cambiar idioma
-                        if (!voice_mode) {
-                            tap_code16(G(KC_SPC));
-                            tap_code16(G(KC_H));   // Activar dictado
-                            voice_mode = true;
-                        }
-                         else {
-                            tap_code16(G(KC_SPC));
-                            tap_code(KC_ESC);      // Detener dictado
-                            voice_mode = false;
-                        }
-
-                       return false;
-                         }
-                     }
-                 return false;
-
-            case  LT(0,CHATGPT):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        // TAP → 3 TABs + ENTER
-                        tap_code_delay(KC_ENT, 80);
-                        tap_code_delay(KC_TAB, 80);
-                        tap_code_delay(KC_TAB, 80);
-                        tap_code_delay(KC_ENT, 80);
-                       return false;
+                    if (!voice_mode) {
+                        tap_code16(G(KC_SPC));
+                        tap_code16(G(KC_H));   // Activar dictado
+                        voice_mode = true;
+                    } else {
+                        tap_code16(G(KC_SPC));
+                        tap_code(KC_ESC);      // Detener dictado
+                        voice_mode = false;
                     }
-/*
-                    else {
-                      // HOLD → 2 TABs + ENTER
-                     tap_code_delay(KC_TAB, 80);
-                     tap_code_delay(KC_TAB, 80);
-                     tap_code_delay(KC_ENT, 80);
-                       return false;
-                         }
-*/
+                    return false;
+                }
+            }
+            return false;
 
-                     }
-                       return false;
+        case LT(0,CHATGPT):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // TAP: 3 TABs + ENTER
+                    tap_code_delay(KC_ENT, 80);
+                    tap_code_delay(KC_TAB, 80);
+                    tap_code_delay(KC_TAB, 80);
+                    tap_code_delay(KC_ENT, 80);
+                    return false;
+                }
+                /*
+                else {
+                    // HOLD: 2 TABs + ENTER
+                    tap_code_delay(KC_TAB, 80);
+                    tap_code_delay(KC_TAB, 80);
+                    tap_code_delay(KC_ENT, 80);
+                    return false;
+                }
+                */
+            }
+            return false;
 
 
-             case  LT(0,DOUBLE_COLON):
-                 if (record->event.pressed) {
-                    if (!record->tap.count) {
-                        // HOLD → "::" inmediatamente
-                        tap_code16(KC_COLN);
-                        tap_code16(KC_COLN);
-                       return false;
-                    }else {
-                        // TAP → un solo ":"
-                        tap_code16(KC_COLN);
-                       return false;
-                         }
-                     }
-                       return false;
+        case LT(0,DOUBLE_COLON):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: "::" inmediatamente
+                    tap_code16(KC_COLN);
+                    tap_code16(KC_COLN);
+                    return false;
+                } else {
+                    // TAP: un solo ":"
+                    tap_code16(KC_COLN);
+                    return false;
+                }
+            }
+            return false;
 
 
         case M_ALT_TAB:
