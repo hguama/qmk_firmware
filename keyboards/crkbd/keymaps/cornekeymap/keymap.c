@@ -1580,59 +1580,58 @@ tap_dance_action_t tap_dance_actions[] = {
  //KEY MAP
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    //Base
+    // Base Layer
     [_BASE] = LAYOUT_split_3x6_3(
- //,-----------------------------------------------------.                                 ,-----------------------------------------------------.
- KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_BOOK, ALT_TAB), TD(TDQ_CUT), QK_BOOT,              QK_BOOT, KC_F20, LT(_BOOK, CTRLW_L4), KC_UP, LT(_SYMB,KC_TAB), LT(0,VOICE),
- //|--------+--------+--------+--------+--------+--------|                                 |--------+--------+--------+--------+--------+--------|
- LT(_DEL,KC_ENT), LT(_MOVE_H,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),       SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
- //|--------+--------+--------+--------+--------+--------|                                 |--------+--------+--------+--------+--------+--------|
- LT(0,VOICE), LT(0,TG_6), LT(_NUMB,KC_F3), LT(0,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,   HIBERNATE, XXXXXXX, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
- //| ------+--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------+--------|
-                           LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                       TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
-                           //`--------------------------------'                             `--------------------------'
-      ),
+        // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
+           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_BOOK, ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, KC_F20, LT(_BOOK, CTRLW_L4), KC_UP, LT(_SYMB,KC_TAB), LT(0,VOICE),
+        // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
+           LT(_DEL,KC_ENT), LT(_MOVE_H,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+        // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
+           LT(0,VOICE), LT(0,TG_6), LT(_NUMB,KC_F3), LT(0,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,       HIBERNATE, XXXXXXX, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+        // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
+                                     LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                     // `------------------------------------'                          `---------------------------------'
+    ),
 
 
     //Alfa ly1
     [_ALFA] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                        ,-----------------------------------------------------.
-        KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                      XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
-      //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-        LT(_DEL,KC_A), KC_S, KC_D, LT(0,F_W), KC_G , C(KC_S),                           SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
-      //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-        KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                          HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
-      //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                           LT(0,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                   TO(_BASE),  TG(_NUMB),  RSFT_T(KC_ENT)
-                          //`--------------------------'                                    `--------------------------'
+        // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
+           KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
+        // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
+           LT(_DEL,KC_A), KC_S, KC_D, LT(0,F_W), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+        // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
+           KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                                HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
+        // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
+                                 LT(0,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                     TO(_BASE),  TG(_NUMB),  RSFT_T(KC_ENT)
+                                 // `--------------------------------------'                     `--------------------------'
+    ),
 
-  ),
-
-    //Dev ly3 (posición 2 según enum) LT(0, MAX_MIN_WIN)
+    // Dev Layer (posición 2 según enum) LT(0, MAX_MIN_WIN)
     [_DEV] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                         ,-----------------------------------------------------.
-  XXXXXXX, LT(0,MULTICURSOR), A(KC_J), S(A(KC_J)), LT(0,FOLDING), XXXXXXX,          XXXXXXX, C(S(KC_U)), A(KC_F12), LT(0,PROJECT_VIEW), LT(0,NEW_FILE), XXXXXXX,
-  //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  C(KC_D), LT(0,COMM), TD(TDQ_FIND), LT(0,REFACTOR), LT(0,INFOPARM), XXXXXXX,       XXXXXXX, LT(0,NAV_ERROR), TD(TDQ_GOTO), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
-  //|--------+--------+--------+--------+--------+--------|                         |--------+--------+--------+--------+--------+--------|
-  A(KC_Q), C(A(KC_T)), TD(TDQ_REPLACE), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,         QK_BOOT, XXXXXXX, LT(0,USAGES), LT(0,LAST_EDIT), C(KC_F12), LT(0,RECENT_LOC),
-  //|--------+--------+--------+--------+--------+--------+--------|                |--------+--------+--------+--------+--------+--------+--------|
-                                LT(0,FULL_SCREEN), XXXXXXX, XXXXXXX,                    TO(_BASE), XXXXXXX, LT(0,EVERYW_ACT)
-                               //`--------------------------'                           `--------------------------'
-   ),
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, LT(0,MULTICURSOR), A(KC_J), S(A(KC_J)), LT(0,FOLDING), XXXXXXX,             XXXXXXX, C(S(KC_U)), A(KC_F12), LT(0,PROJECT_VIEW), LT(0,NEW_FILE), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           C(KC_D), LT(0,COMM), TD(TDQ_FIND), LT(0,REFACTOR), LT(0,INFOPARM), XXXXXXX,          XXXXXXX, LT(0,NAV_ERROR), TD(TDQ_GOTO), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           A(KC_Q), C(A(KC_T)), TD(TDQ_REPLACE), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,            QK_BOOT, XXXXXXX, LT(0,USAGES), LT(0,LAST_EDIT), C(KC_F12), LT(0,RECENT_LOC),
+        // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
+                                      LT(0,FULL_SCREEN), XXXXXXX, XXXXXXX,                      TO(_BASE), XXXXXXX, LT(0,EVERYW_ACT)
+                                      // `------------------------------'                        `--------------------------'
+    ),
 
-    //Super DEL ly11 (posición 3 según enum)
+    // Super DEL Layer (posición 3 según enum)
     [_DEL] = LAYOUT_split_3x6_3(
-          //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
-          //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, TO(_BASE), XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_DEL, KC_BSPC , DEL_WORD,  DEL_LINE,
-          //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
-          //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                              XXXXXXX, _______,  _______,                              TO(_BASE),   XXXXXXX, XXXXXXX
-                             //`--------------------------'                            `--------------------------'
-         ),
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, TO(_BASE), XXXXXXX, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, KC_DEL, KC_BSPC , DEL_WORD,  DEL_LINE,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                    XXXXXXX, _______,  _______,                                 TO(_BASE),   XXXXXXX, XXXXXXX
+                                    // `----------------------'                                  `--------------------------'
+    ),
 
     //Symbols ly2 (posición 4 según enum)
 
@@ -1657,61 +1656,61 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // pipe_m |>
 
+    // Symbols Layer (posición 4 según enum)
     [_SYMB] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                           ,-----------------------------------------------------.
-      XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,              XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-      LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,              XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
-      //|--------+--------+--------+--------+--------+--------|                           |--------+--------+--------+--------+--------+--------|
-      PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
-      //|--------+--------+--------+--------+--------+--------+--------|                  |--------+--------+--------+--------+--------+--------+--------|
-                                     XXXXXXX, XXXXXXX,  XXXXXXX,                          TO(_BASE), XXXXXXX, TRIPLE_WHLD
-                                     //`--------------------------'                         `--------------------------'
- ),
+        // ,---------------------------------------------------------------------.                ,-----------------------------------------------------.
+           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,       XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
+        // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
+           LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
+        // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
+           PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                  QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
+        // |--------+--------+--------+--------+--------+--------+---------------|                |--------+--------+--------+--------+--------+--------+--------|
+                                         XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, TRIPLE_WHLD
+                                         // `----------------------'                                `--------------------------'
+    ),
 
-    //Numbers ly5 (posición 5 según enum) XXXXXXX LT(0,KC_MINS),
-//  LT(0,astrisk_plus) * +
+    // Numbers Layer (posición 5 según enum) XXXXXXX LT(0,KC_MINS),
+    // LT(0,astrisk_plus) * +
     [_NUMB] = LAYOUT_split_3x6_3(
-        //,-----------------------------------------------------.                       ,-----------------------------------------------------.
-        XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,               XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
-        //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, LT(_DEL,KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                    XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
-        //|--------+--------+--------+--------+--------+--------|                       |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
-        //|--------+--------+--------+--------+--------+--------+--------|              |--------+--------+--------+--------+--------+--------+--------|
-                               KC_ENT, XXXXXXX, XXXXXXX,   TO(_BASE),                           TG(_NUMB), TRIPLE_WHLD
-                               //`-----------------------------------'                          `--------------------------'
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, LT(_DEL,KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                         XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
+        // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+                                     KC_ENT, XXXXXXX, XXXXXXX,   TO(_BASE),                     TG(_NUMB), TRIPLE_WHLD
+                                     // `---------------------------------'                      `--------------------------'
     ),
 
-    //Bookmark ly4 (posición 6 según enum) D Y H FALTAN
-
-//LT HOLD TAP
-//LT(_BOOK_2,MARKER_B)    C(KC_F14)  MO(_BOOK_2)
-//LT(_BOOK_2,MARKER_3)    C(KC_3)    MO(_BOOK_2)
+    // Bookmark Layer (posición 6 según enum) D Y H FALTAN
+    // LT HOLD TAP
+    // LT(_BOOK_2,MARKER_B)    C(KC_F14)  MO(_BOOK_2)
+    // LT(_BOOK_2,MARKER_3)    C(KC_3)    MO(_BOOK_2)
     [_BOOK] = LAYOUT_split_3x6_3(
-        //,-----------------------------------------------------------.              ,-----------------------------------------------------.
-        XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
-        C(KC_F13), LT(_BOOK_2,MARKER_B), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
-        //|--------+--------+--------+--------+--------+--------------|              |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------+-----|              |--------+--------+--------+--------+--------+--------+--------|
-                                        MO(_BOOK_2), XXXXXXX,  XXXXXXX,              TO(_BASE),   XXXXXXX, MO(_BOOK_2)
-                                        //`--------------------------'               `--------------------------'
+        // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
+           XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
+           C(KC_F13), LT(_BOOK_2,MARKER_B), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,          XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
+        // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
+                                           MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
+                                           // `--------------------------'                     `--------------------------'
     ),
 
-    //Super bookmark ly8 (posición 7 según enum)
+    // Super bookmark Layer (posición 7 según enum)
     [_BOOK_2] = LAYOUT_split_3x6_3(
-        //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                      XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         A(KC_A), A(KC_B), A(KC_C), A(KC_D), XXXXXXX , XXXXXXX,                      XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), C(S(KC_4)) ,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, A(KC_H), A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                 XXXXXXX, XXXXXXX,  _______,                            TO(_BASE),   XXXXXXX, XXXXXXX
-                                            //`------------------'                      `--------------------------'
-   ),
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           A(KC_A), A(KC_B), A(KC_C), A(KC_D), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), C(S(KC_4)),
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, A(KC_H), A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     XXXXXXX, XXXXXXX,  _______,                               TO(_BASE),   XXXXXXX, XXXXXXX
+                                     // `------------------------'                              `--------------------------'
+    ),
 
     //Super move ly9 (posición 8 según enum) MS_WHLU,  , MS_WHLD
 // LT TAP HOLD
@@ -1723,17 +1722,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // CLEFT_5    KC_LEFT 5 VECES
 
 
+    // Move Horizontal Layer (posición 8 según enum)
     [_MOVE_H] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), CRIGHT_5, LT(0, CLEFT_10), CLEFT_5,
-      //|--------+--------+--- ----+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
-      //|--------+--------+--------+--------+--------+------------ |               |--------+--------+--------+--------+--------+--------+--------|
-                                  XXXXXXX, XXXXXXX, _______,                       TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
-                                 //`--------------------------'                         `--------------------------'
-     ),
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), CRIGHT_5, LT(0, CLEFT_10), CLEFT_5,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     XXXXXXX, XXXXXXX, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
+                                     // `------------------------'                              `--------------------------'
+    ),
 
     // Layer 13 - new (posición 9 según enum)
 
@@ -1744,93 +1744,93 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //DOWN_10   KC_DOWN 10 VECES
     //UP_10     KC_UP 10 VECES
     [_MOVE_V] = LAYOUT_split_3x6_3(
-           // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, DOWN_10, UP_10, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), A(KC_DOWN),
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
-                                       // `--------------------------'                          `--------------------------'
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, DOWN_10, UP_10, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), A(KC_DOWN),
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                       XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
+                                       // `----------------------'                              `--------------------------'
     ),
 
-     //Super close window ly10 (posición 10 según enum)
+    // Super close window Layer (posición 10 según enum)
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
-         //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-         XXXXXXX, C(KC_T), C(KC_L), XXXXXXX, A(KC_F4), XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-         XXXXXXX, C(KC_F21), KC_F21, C(S(KC_T)), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
-        //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                 C(KC_F4), _______,  _______,                            TO(_BASE), XXXXXXX,XXXXXXX
-                                 //`--------------------------'                         `--------------------------'
-        ),
-
-    //Mouse2 ly7 - hand left (posición 11 según enum)
-    [_MOVE_L] = LAYOUT_split_3x6_3(
-      //,-----------------------------------------------------.                      ,-----------------------------------------------------.
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------|
-      A(S(KC_UP)), C(S(KC_DOWN)), A(S(KC_DOWN)), C(S(KC_UP)), XXXXXXX , XXXXXXX,     XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      //|--------+--------+--------+--------+--------+--------|                      |--------+--------+--------+--------+--------+--------+--------|
-                                XXXXXXX, XXXXXXX,  _______,                              TO(_BASE),   XXXXXXX, XXXXXXX
-                                //`--------------------------'                          `--------------------------'
- ),
-
-     //Run debug ly12 (posición 12 según enum)
-    [_RUN] = LAYOUT_split_3x6_3(
-           //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           A(S(KC_F10)), C(KC_F5), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
-           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                    _______, _______,  _______,                              TO(_BASE), XXXXXXX, XXXXXXX
-                                    //`--------------------------'                          `--------------------------'
-          ),
-
-    // Layer 14 - new (posición 13 según enum)
-    [_MODE] = LAYOUT_split_3x6_3(
-           // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, TG(_COMMIT), TG(_NUMB), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX
-                                       // `--------------------------'                          `--------------------------'
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, C(KC_T), C(KC_L), XXXXXXX, A(KC_F4), XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, C(KC_F21), KC_F21, C(S(KC_T)), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     C(KC_F4), _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
+                                     // `------------------------'                               `--------------------------'
     ),
 
-    //Mouse ly6 (posición 14 según enum)        MS_ACL0_TOGGLE MS_ACL21
-    [_COMMIT] = LAYOUT_split_3x6_3(
-       //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-       XXXXXXX, KC_ESC, C(KC_K), A(KC_0), XXXXXXX, XXXXXXX,                         XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Z), XXXXXXX, XXXXXXX,
-       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       MS_ACL2, MS_ACL1, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                         SLEEP, XXXXXXX, MS_WHLL, MS_WHLD, MS_WHLR, MS_WHLU,
-       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, WIN_D,                         HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-       //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                C(A(KC_R)),  XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, TO(_BASE)
-                                //`--------------------------'                          `--------------------------'
-  ),
+    // Mouse2 Layer - hand left (posición 11 según enum)
+    [_MOVE_L] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           A(S(KC_UP)), C(S(KC_DOWN)), A(S(KC_DOWN)), C(S(KC_UP)), XXXXXXX , XXXXXXX,           XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     XXXXXXX, XXXXXXX,  _______,                                TO(_BASE),   XXXXXXX, XXXXXXX
+                                     // `------------------------'                               `--------------------------'
+    ),
 
-    // Layer 15 - new (posición 15 según enum)
+    // Run debug Layer (posición 12 según enum)
+    [_RUN] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           A(S(KC_F10)), C(KC_F5), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                        _______, _______,  _______,                             TO(_BASE), XXXXXXX, XXXXXXX
+                                        // `----------------------'                              `--------------------------'
+    ),
+
+    // Mode Layer (posición 13 según enum)
+    [_MODE] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, TG(_COMMIT), TG(_NUMB), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                         XXXXXXX, XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, XXXXXXX
+                                         // `---------------------'                             `--------------------------'
+    ),
+
+    // Commit Layer (posición 14 según enum)        MS_ACL0_TOGGLE MS_ACL21
+    [_COMMIT] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, KC_ESC, C(KC_K), A(KC_0), XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Z), XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           MS_ACL2, MS_ACL1, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                                 SLEEP, XXXXXXX, MS_WHLL, MS_WHLD, MS_WHLR, MS_WHLU,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     C(A(KC_R)),  XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, TO(_BASE)
+                                     // `-------------------------'                             `--------------------------'
+    ),
+
+    // AI Layer (posición 15 según enum)
     [_AI] = LAYOUT_split_3x6_3(
-           // ,-----------------------------------------------------.                    ,-----------------------------------------------------.
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-           // |--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX
-                                       // `--------------------------'                          `--------------------------'
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                       XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX
+                                       // `---------------------'                               `--------------------------'
     ),
 
 
