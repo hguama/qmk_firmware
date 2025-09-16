@@ -163,6 +163,7 @@ typedef struct {//for quad
 //Vars
 
 // static uint16_t timer_key;
+static bool tdq_copy_hold_active = false;
 
 // para LT(_DEL, KC_PERC)
 static uint8_t del_prev_layer = _BASE;
@@ -203,6 +204,7 @@ static uint16_t defer_timer_cut = 0;
 td_state_t cur_dance(tap_dance_state_t *state);
 void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
+void tdq_copy_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_copy_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
@@ -554,7 +556,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 } else {
                     // TAP: KC_RIGHT
-                    tap_code(KC_RIGHT);
+                    tap_code16(C(KC_RIGHT));
                     return false;
                 }
             }
@@ -570,7 +572,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 } else {
                     // TAP: KC_LEFT
-                    tap_code(KC_LEFT);
+                    tap_code16(C(KC_LEFT));
                     return false;
                 }
             }
@@ -1524,7 +1526,7 @@ void matrix_scan_user(void) {
 // ============================================================================
 
 tap_dance_action_t tap_dance_actions[] = {
-    [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, x_reset),
+    [TDQ_COPY] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_copy_finished, tdq_copy_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
     [TDQ_CUT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_cut_finished, x_reset),
     [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
@@ -1687,7 +1689,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LT(0, CRIGHT_10), CRIGHT_5, LT(0, CLEFT_10), CLEFT_5,
+           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LT(0, CLEFT_10), CLEFT_5, LT(0, CRIGHT_10), CRIGHT_5,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -1867,14 +1869,16 @@ void tdq_copy_finished(tap_dance_state_t *state, void *user_data) {
 
                 break;
 
-        case TD_SINGLE_HOLD: //copy 1 line
-                tap_code_delay(KC_HOME, 10);
-                tap_code_delay(KC_HOME, 10);
+        case TD_SINGLE_HOLD: //
+                 tdq_copy_hold_active = true;
+                 layer_on(_MOVE_H);
 
+                    //copy 1 line
+                //tap_code_delay(KC_HOME, 10);
+                //tap_code_delay(KC_HOME, 10);
                 // Shift + End para seleccionar
-                tap_code16_delay(S(KC_END), 10);
-                //wait_ms(50);
-                tap_code16_delay(C(KC_C), 10);
+                //tap_code16_delay(S(KC_END), 10);
+                //tap_code16_delay(C(KC_C), 10);
 
          break;
 
@@ -2154,6 +2158,15 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void tdq_copy_reset(tap_dance_state_t *state, void *user_data) {
+    // si la acción hold fue la que activó la capa, al liberar apagamos la capa
+    if (tdq_copy_hold_active) {
+        layer_off(_MOVE_H);
+        tdq_copy_hold_active = false;
+    }
+    // resetea estado común (igual que x_reset)
+    xtap_state.state = TD_NONE;
+}
 
 
 void x_reset(tap_dance_state_t *state, void *user_data) {
