@@ -513,8 +513,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     // HOLD: MO(_BOOK_2)
                     return true; // Permite que QMK maneje el layer tap
                 } else {
-                    // TAP: C(KC_F14)
-                    tap_code16(C(KC_F14));
+                    // TAP: C(KC_F21)
+                    tap_code16(C(S(KC_F21)));
                     return false;
                 }
             }
@@ -1482,11 +1482,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, XXXXXXX, LT(0,SEL_WORD_PARAGRAPH), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,SEL_WORD_PARAGRAPH), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),                 SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,       HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+           LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
                                      LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                      // `------------------------------------'                          `---------------------------------'
@@ -1590,9 +1590,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
            XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           C(KC_F13), LT(_BOOK_2,MARKER_B), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,          XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
+           C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,          XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, C(KC_F20), C(S(KC_F21)), C(KC_F22), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+           XXXXXXX, C(KC_F20), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
