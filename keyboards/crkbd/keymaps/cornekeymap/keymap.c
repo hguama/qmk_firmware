@@ -159,7 +159,12 @@ typedef struct {//for quad
 } td_tap_t;
 
 //Vars
-//static uint16_t timer_key;
+
+// static uint16_t timer_key;
+
+// para LT(_DEL, KC_PERC)
+static uint8_t del_prev_layer = _BASE;
+static bool del_layer_active = false;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
@@ -1385,6 +1390,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
 
 
+		case LT(_DEL, KC_PERC):
+   				 if (record->event.pressed) {
+        			if (record->tap.count == 0) {
+            			// HOLD (sin taps): mover exclusivamente a _DEL
+            			del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
+            			layer_move(_DEL);                       // dejamos _DEL sola (prioridad)
+            			del_layer_active = true;
+            			return false;
+        			}
+				if (record->tap.count == 1) {
+					// TAP simple: enviar %
+					tap_code16(KC_PERC);
+					return false;
+					}
+				} else {
+					// RELEASE: si activamos la capa, restauramos la previa
+					if (del_layer_active) {
+						layer_move(del_prev_layer);
+						del_layer_active = false;
+						}
+				}
+			return true;
+
 
 
         }//END SWITCH
@@ -1484,7 +1512,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
            KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,SEL_WORD_PARAGRAPH), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),                 SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_Z), C(KC_S),                 SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
@@ -1498,7 +1526,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
            KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           LT(_DEL,KC_A), KC_S, KC_D, LT(0,F_W), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+           LT(_DEL,KC_A), LT(_DEL,KC_S), KC_D, LT(0,F_W), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                                HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
@@ -1528,7 +1556,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                    XXXXXXX, _______,  _______,                                 TO(_BASE),   XXXXXXX, XXXXXXX
+                                    C(KC_Z), _______,  _______,                                 TO(_BASE),   XXXXXXX, XXXXXXX
                                     // `----------------------'                                  `--------------------------'
     ),
 
@@ -1574,11 +1602,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, LT(_DEL,KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                         XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                         XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE),                     TG(_NUMB), TRIPLE_WHLD
+                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), TRIPLE_WHLD
                                      // `---------------------------------'                      `--------------------------'
     ),
 
@@ -1650,7 +1678,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
+                                       XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, LT(0, PGDN_PGUP)
                                        // `----------------------'                              `--------------------------'
     ),
 
@@ -1702,7 +1730,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                         XXXXXXX, XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, XXXXXXX
+                                         XXXXXXX, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, XXXXXXX
                                          // `---------------------'                             `--------------------------'
     ),
 
@@ -1715,7 +1743,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     C(A(KC_R)),  XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, TO(_BASE)
+                                     C(A(KC_R)),  XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TO(_BASE)
                                      // `-------------------------'                             `--------------------------'
     ),
 
