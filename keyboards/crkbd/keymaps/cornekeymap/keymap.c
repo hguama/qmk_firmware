@@ -53,7 +53,6 @@ enum custom_keycodes {
     SPACE_BASE,
     ALT_TAB,
     AMP_DOUBLE,
-    EXC_DLR,
     OPEN_EXCL,
     OPEN_QUEST,
     NOT_EQUAL,
@@ -116,7 +115,6 @@ enum custom_keycodes {
     C_END_HOME,
     PGDN_PGUP,
     QUESTION,
-    EXCL_GRAVE,
     CRIGHT_5,
     CLEFT_5,
     DOWN_10,
@@ -325,7 +323,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(4, ALT_TAB):
+        case LT(_NUMB, ALT_TAB):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     return true; // HOLD: QMK activa capa 4
@@ -342,21 +340,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 
-        case LT(0,EXC_DLR):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: #
-                    tap_code16(KC_HASH);
-                    return false;
-                } else {
-                    // TAP: $
-                    tap_code16(KC_DLR);
-                    return false;
-                }
-            }
-            return false;
-
-        case MS_ACL0_TOGGLE:
+         case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
                 if (ms_acl0_active) {
@@ -630,20 +614,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(0, EXCL_GRAVE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: ^
-                    tap_code16(KC_CIRC);
-                    return false;
-                } else {
-                    // TAP: !
-                    tap_code16(KC_EXLM);
-                    return false;
-                }
-            }
-            return false;
-
         case CRIGHT_5:
             if (record->event.pressed) {
                 // KC_RIGHT 5 veces
@@ -765,7 +735,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code16_delay(LGUI(KC_X),120);
                 tap_code16_delay(KC_U,120);
                 wait_ms(300);
-                tap_code(KC_S);
+                tap_code(KC_S);		
             }
             break;
 
@@ -794,13 +764,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code_delay(KC_BSPC, 10);       // Borrar selección
             }
             break;
-
-        case LT(0,KC_DOWN):
-            if (!record->tap.count && record->event.pressed) {
-                tap_code16(KC_RIGHT); // hold
-                return false;
-            }
-            return true; //normal tap
 
         case LT(0,KC_SLSH):
             if (!record->tap.count && record->event.pressed) {
@@ -1397,7 +1360,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             clear_all();
             break;
 
-        case LT(_SYMB,TG_0):
+        case LT(_DEL,TG_0):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     return true; //hold
@@ -1516,14 +1479,14 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    // Base Layer
+    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_BOOK, ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, KC_F20, LT(_BOOK, CTRLW_L4), KC_UP, LT(_SYMB,KC_TAB), LT(0,VOICE),
+           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                  QK_BOOT, XXXXXXX, LT(0,SEL_WORD_PARAGRAPH), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_DEL,KC_ENT), LT(_MOVE_H,KC_TAB), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), ARROW_CTRL_LEFT, KC_DOWN, ARROW_CTRL_RIGHT, LT(0,HOME_END),
+           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_S), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(0,VOICE), LT(0,TG_6), LT(_NUMB,KC_F3), LT(0,MOUSE_PRESSED_CLICK), A(KC_LSFT), WIN_D,       HIBERNATE, XXXXXXX, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_BSPC, LT(0, SEL_WORD_PARAGRAPH),
+           LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,       HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
                                      LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                      // `------------------------------------'                          `---------------------------------'
@@ -1595,11 +1558,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Symbols Layer (posición 4 según enum)
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,---------------------------------------------------------------------.                ,-----------------------------------------------------.
-           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), LT(0,KC_SLSH), S(KC_GRAVE), XXXXXXX,       XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
+           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,       XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
            LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
-           PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                  QK_BOOT, XXXXXXX, LT(0,EXC_DLR), KC_SCLN, LT(0,NOT_EQUAL), LT(0,EXCL_GRAVE),
+           PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                  QK_BOOT, XXXXXXX, KC_DLR, KC_SCLN, LT(0,NOT_EQUAL), KC_CIRC,
         // |--------+--------+--------+--------+--------+--------+---------------|                |--------+--------+--------+--------+--------+--------+--------|
                                          XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, TRIPLE_WHLD
                                          // `----------------------'                                `--------------------------'
@@ -1615,7 +1578,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-                                     KC_ENT, XXXXXXX, XXXXXXX,   TO(_BASE),                     TG(_NUMB), TRIPLE_WHLD
+                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE),                     TG(_NUMB), TRIPLE_WHLD
                                      // `---------------------------------'                      `--------------------------'
     ),
 
@@ -1759,9 +1722,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // AI Layer (posición 15 según enum)
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_LEFT, XXXXXXX, KC_RIGHT, C(A(KC_I)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
