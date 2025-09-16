@@ -120,6 +120,8 @@ enum custom_keycodes {
     DOWN_10,
     UP_10,
     PIPE_M,
+    DEL_LAYER_PERC,  // Tecla personalizada para ir a capa _DEL momentáneamente
+
 };
 
 //Combo enum
@@ -165,6 +167,10 @@ typedef struct {//for quad
 // para LT(_DEL, KC_PERC)
 static uint8_t del_prev_layer = _BASE;
 static bool del_layer_active = false;
+
+// para BASE_LAYER_F
+static uint8_t base_prev_layer = _ALFA;
+static bool base_layer_active = false;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
@@ -1330,17 +1336,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case SHIFT_TOGGLE: // Toggle Shift solo en TAP
+        case LT(_AI,SHIFT_TOGGLE): // TAP: Toggle Shift | HOLD: Capa _AI
             if (record->event.pressed) {
-                // Al presionar: alterna Shift
-                shift_active = !shift_active;
-                if (shift_active) {
-                    register_code(KC_LSFT);   // Activa Shift
+                if (!record->tap.count) {
+                    // HOLD: ir a capa _AI
+                    return true; // QMK maneja el HOLD automáticamente
                 } else {
-                    unregister_code(KC_LSFT); // Desactiva Shift
+                    // TAP: Toggle Shift
+                    shift_active = !shift_active;
+                    if (shift_active) {
+                        register_code(KC_LSFT);   // Activa Shift
+                    } else {
+                        unregister_code(KC_LSFT); // Desactiva Shift
+                    }
+                    return false;
                 }
             }
-            return false; // No procesar más
+            return true;
 
         case TG(2):
             if (!record->event.pressed) {
@@ -1413,7 +1425,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				}
 			return true;
 
-
+        case LT(_DEL,KC_F):
+            if (record->event.pressed) {
+                if (record->tap.count == 0) {
+                    // HOLD (sin taps): mover exclusivamente a _BASE
+                    base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
+                    layer_move(_BASE);                       // dejamos _BASE sola (prioridad)
+                    base_layer_active = true;
+                    return false;
+                }
+                if (record->tap.count == 1) {
+                    // TAP simple: enviar F
+                    tap_code(KC_F);
+                    return false;
+                }
+            } else {
+                // RELEASE: si activamos la capa, restauramos la previa
+                if (base_layer_active) {
+                    layer_move(base_prev_layer);
+                    base_layer_active = false;
+                }
+            }
+            return true;
 
         }//END SWITCH
     return true;
@@ -1512,7 +1545,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
            KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, LT(0,SEL_WORD_PARAGRAPH), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_AI,KC_ENT), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_Z), C(KC_S),                 SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), TD(TDQ_COPY), TD(TDQ_PASTE), C(KC_Z), C(KC_S),                 SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
@@ -1524,9 +1557,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Alfa ly1
     [_ALFA] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
-           KC_TRNS, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
+           KC_W, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           LT(_DEL,KC_A), LT(_DEL,KC_S), KC_D, LT(0,F_W), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+           LT(_DEL,KC_A), LT(_DEL,KC_S), KC_D, LT(_DEL,KC_F), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                                HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
