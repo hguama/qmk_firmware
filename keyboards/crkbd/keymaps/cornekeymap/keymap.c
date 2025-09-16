@@ -121,7 +121,15 @@ enum custom_keycodes {
     UP_10,
     PIPE_M,
     DEL_LAYER_PERC,  // Tecla personalizada para ir a capa _DEL momentáneamente
-
+    BASE_LAYER_F,    // Tecla personalizada para ir a capa _BASE momentáneamente
+    ESC_W,           // Tecla personalizada TAP: ESC | HOLD: W
+    TAB_F,           // Tecla personalizada TAP: TAB | HOLD: F
+    H_J,             // Tecla personalizada TAP: H | HOLD: J
+    D_Q,             // Tecla personalizada TAP: D | HOLD: Q
+    L_K,             // Tecla personalizada TAP: L | HOLD: K
+    G_Z,             // Tecla personalizada TAP: G | HOLD: Z
+    C_X,             // Tecla personalizada TAP: C | HOLD: X
+    P_ENIE,          // Tecla personalizada TAP: P | HOLD: Ñ
 };
 
 //Combo enum
@@ -1451,6 +1459,107 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return true;
+
+        case LT(0,ESC_W):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_W); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_ESC); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,TAB_F):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_F); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_TAB); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,H_J):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_J); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_H); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,D_Q):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_Q); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_D); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,L_K):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_K); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_L); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,G_Z):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_Z); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_G); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,C_X):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_X); //HOLD
+                    return false;
+                } else {
+                    tap_code(KC_C); //TAP
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,P_ENIE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Ñ usando código Alt+164 para teclado inglés
+                    register_code(KC_LALT);
+                    tap_code(KC_KP_1);
+                    tap_code(KC_KP_6);
+                    tap_code(KC_KP_4);
+                    unregister_code(KC_LALT);
+                    return false;
+                } else {
+                    tap_code(KC_P); //TAP
+                    return false;
+                }
+            }
+            return false;
 
         }//END SWITCH
     return true;
