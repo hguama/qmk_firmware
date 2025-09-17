@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #define LAYER_STATE_16BIT
+//#define PERMISSIVE_HOLD
+
 
 
 //for reduce size firmware
@@ -32,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //Tapping term for tap dance
 #define TAPPING_TERM 175
 #define TAPPING_TERM_PER_KEY
+#define TAP_DANCE_DOUBLE_TAP_TERM 450
 //#define TD_QUICK_TAP_TERM 10
 
 //MOUSE MOVE
