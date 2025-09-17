@@ -1670,7 +1670,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Alfa ly1
     [_ALFA] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
-           KC_W, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, XXXXXXX,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
+           KC_ESC, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, KC_W,                            XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            LT(_DEL,KC_A), LT(_DEL,KC_S), KC_D, LT(_DEL,KC_F), KC_G , C(KC_S),                                 SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
@@ -1798,7 +1798,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Move Horizontal Layer (posición 8 según enum)
     [_MOVE_H] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), LT(0,SPLIT_WIN), XXXXXXX,
+           XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), KC_F20, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_ENT)), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LT(0, CLEFT_10), CLEFT_5, LT(0, CRIGHT_10), CRIGHT_5,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
@@ -1831,7 +1831,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Super close window Layer (posición 10 según enum)
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, C(KC_T), C(KC_L), XXXXXXX, A(KC_F4), XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, C(KC_T), C(KC_L), LT(0,SPLIT_WIN), A(KC_F4), XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
