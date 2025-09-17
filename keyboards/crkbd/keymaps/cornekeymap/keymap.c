@@ -172,7 +172,7 @@ typedef struct {//for quad
 
 // static uint16_t timer_key;
 
-static bool tdq_paste_hold_active = false;
+
 
 // para LT(_DEL, KC_PERC)
 static uint8_t del_prev_layer = _BASE;
@@ -214,10 +214,7 @@ td_state_t cur_dance(tap_dance_state_t *state);
 void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
 
-void tdq_paste_reset(tap_dance_state_t *state, void *user_data);
-
 void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
-void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 void tdq_cut_finished(tap_dance_state_t *state, void *user_data);
 
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
@@ -1619,7 +1616,6 @@ void matrix_scan_user(void) {
 
 tap_dance_action_t tap_dance_actions[] = {
     [TDQ_SEL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_sel_finished, x_reset),
-    [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, tdq_paste_reset),
     [TDQ_CUT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_cut_finished, x_reset),
     [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
@@ -1639,7 +1635,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
            KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), TD(TDQ_SEL), TD(TDQ_PASTE), C(KC_Z), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), TD(TDQ_SEL), TD(TDQ_SEL), C(KC_Z), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
@@ -1974,90 +1970,10 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:  //paste normaL
-                tap_code16(C(KC_V));      // atajo con el alias C()
-
-        break;
-
-        case TD_SINGLE_HOLD:
-                tdq_paste_hold_active = true;
-                layer_on(_MOVE_V);
-
-                break;
-
-        case TD_DOUBLE_TAP: //paste 1 word
-
-
-                tap_code16_delay(C(KC_LEFT),10);
-                tap_code16(C(S(KC_RIGHT)));
-                tap_code16_delay(C(KC_V), 80);
-
-                        // Ctrl + Left
-//                register_code(KC_LCTL);
-//                tap_code(KC_LEFT);
-//                unregister_code(KC_LCTL);
-//                wait_ms(10);
-//
-//                register_code(KC_LCTL);
-//                register_code(KC_LSFT);
-//                tap_code(KC_RIGHT); // Selecciona palabra
-//                unregister_code(KC_LSFT); // Soltás shift antes de pegar
-//                tap_code16_delay(C(KC_V), 10); // Pega normal
-//                unregister_code(KC_LCTL);
-
-        break;
-
-        case TD_DOUBLE_HOLD: //portapapeles
-                      tap_code16(C(S(KC_V))); //portapapeles INTELLIJ
-                      //tap_code16(G(KC_V)); // portapapeles WIN
-
-                      //paste as plain text - disabled
-//                    register_code(KC_LCTL);
-//                    register_code(KC_LSFT);
-//                    register_code(KC_LALT);
-//                    tap_code(KC_V);
-//                    unregister_code(KC_LALT);
-//                    unregister_code(KC_LSFT);
-//                    unregister_code(KC_LCTL);
-        break;
-
-         case TD_TRIPLE_TAP: // paste 1 line
-
-                 // Ir al inicio (2 veces)
-                 tap_code_delay(KC_HOME,10);
-                 tap_code_delay(KC_HOME,10);
-
-                 // Shift + End para seleccionar
-                 tap_code16_delay(S(KC_END),10);
-
-                 // Ctrl + V para pegar
-                 tap_code16(C(KC_V));
-
-//                 // Ir al inicio
-//                 tap_code(KC_HOME);
-//                 wait_ms(10);
-//                 tap_code(KC_HOME);
-//                 wait_ms(10);
-//                 // Ctrl + Shift + End para seleccionar
-//                 register_code(KC_LSFT);
-//                 tap_code(KC_END);
-//                 unregister_code(KC_LSFT);
-//                 wait_ms(10);
-//
-//                 // Ctrl + V para pegar
-//                 register_code(KC_LCTL);
-//                 tap_code(KC_V);
-//                 unregister_code(KC_LCTL);
-         break;
-        default: break;
-    }
-}
 
 void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
+
+   xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:
             if (shift_active) {
@@ -2222,15 +2138,6 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data) {
 }
 
 
-void tdq_paste_reset(tap_dance_state_t *state, void *user_data) {
-    // si la acción hold fue la que activó la capa, al liberar apagamos la capa
-    if (tdq_paste_hold_active) {
-        layer_off(_MOVE_V);
-        tdq_paste_hold_active = false;
-    }
-    // resetea estado común (igual que x_reset)
-    xtap_state.state = TD_NONE;
-}
 
 void x_reset(tap_dance_state_t *state, void *user_data) {
 //  if (xtap_state.state == TD_DOUBLE_SINGLE_TAP)
