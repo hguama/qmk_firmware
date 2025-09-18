@@ -615,7 +615,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 // KC_RIGHT 5 veces
                 for (int i = 0; i < 5; i++) {
-                    tap_code(KC_RIGHT);
+                    tap_code16(C(KC_RIGHT));
                 }
             }
             return false;
@@ -624,7 +624,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 // KC_LEFT 5 veces
                 for (int i = 0; i < 5; i++) {
-                    tap_code(KC_LEFT);
+                    tap_code16(C(KC_LEFT));
                 }
             }
             return false;
@@ -1823,7 +1823,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //UP_10     KC_UP 10 VECES
     [_MOVE_V] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, DOWN_10, UP_10, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, G(KC_V), C(S(KC_V)), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, LT(0,PAGE_PARAGRAPH_UP), A(KC_UP), LT(0,PAGE_PARAGRAPH_DOWN), A(KC_DOWN),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
