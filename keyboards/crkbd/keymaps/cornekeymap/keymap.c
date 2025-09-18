@@ -252,12 +252,12 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
-const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(0,KC_K), COMBO_END};
+//const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(0,KC_K), COMBO_END};
 
 //combo actions
-combo_t key_combos[] = {
- [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
- };
+//combo_t key_combos[] = {
+// [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
+// };
 
 //general functions
 void clear_all(void) {
@@ -373,11 +373,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             return true;
 
-        case LT(_NUMB,KC_ESC)://
-               if (record->event.pressed) {
-                clear_all();
-                }
-            return true;
+case LT(_SYMB, KC_ESC):
+    if (record->event.pressed) {
+        if (record->tap.count > 0) {
+            // TAP → ESC personalizado
+            clear_all();
+            tap_code(KC_ESC);
+            return false;  // detenemos aquí, no dejamos pasar al LT original
+        }
+    }
+    // HOLD → dejamos que QMK maneje el LT como momentáneo
+    return true;
+
 
 
         case LT(0,GUI_E):
