@@ -51,7 +51,6 @@ enum custom_keycodes {
     ARROW_CTRL_RIGHT,
     CTRLW_L4,
     SPACE_BASE,
-    ALT_TAB,
     AMP_DOUBLE,
     OPEN_EXCL,
     OPEN_QUEST,
@@ -67,7 +66,7 @@ enum custom_keycodes {
     VOICE,
     CHATGPT,
     SEL_WORD_PARAGRAPH,
-    M_ALT_TAB,
+    ALT_TAB,
     F_W,
     B_V,
     N_ENIE,
@@ -346,17 +345,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (space_base_double_tap) {
                     unregister_code(KC_SPC);
                     space_base_double_tap = false;
-                }
-            }
-            return true;
-
-        case LT(_NUMB, ALT_TAB):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    return true; // HOLD: QMK activa capa 4
-                } else {
-                    tap_code16(A(KC_TAB)); // TAP: Alt+Tab
-                    return false; // No enviar el KC original
                 }
             }
             return true;
@@ -742,7 +730,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-case M_ALT_TAB:
+case ALT_TAB:
     if (record->event.pressed) {
         alt_tab_pressed = true;
         alt_tab_hold_done = false;
@@ -1656,7 +1644,8 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
         tap_code16(C(KC_X));
      }
 
-    if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 5000)   {
+
+    if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 7000)   {
            unregister_code(KC_LALT);
            unregister_code(KC_TAB);
            is_alt_tab_active = false;
@@ -1705,10 +1694,10 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) M_ALT_TAB
+    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,KC_TAB), M_ALT_TAB, LT(_NUMB,KC_ESC), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           KC_ESC, LT(_SYMB,KC_TAB), ALT_TAB, LT(_NUMB,KC_ESC), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_Z), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
