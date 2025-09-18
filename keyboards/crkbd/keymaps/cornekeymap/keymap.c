@@ -2296,39 +2296,48 @@ const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {0, 0, HSV_OFF}
 );
 
-// move ly2
-const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _alfa_layer ly1
+const rgblight_segment_t PROGMEM _alfa_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {9,1, HSV_GREEN}
 //    {8,1, HSV_RED} //PLAN B
 );
 
-// numbers ly5
-const rgblight_segment_t PROGMEM my_layer5_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _numb_layer ly5
+const rgblight_segment_t PROGMEM _numb_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_WHITE}
     //    {4,2, HSV_RED} //PLAN B
 );
 
-// mouse ly6
-const rgblight_segment_t PROGMEM my_layer6_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_RED}
-//        {4,2, HSV_RED} //PLAN B
-);
-
-// mouse ly7
-const rgblight_segment_t PROGMEM my_layer7_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _mode_layer ly13
+const rgblight_segment_t PROGMEM _mode_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_ORANGE}
     //    {4,2, HSV_RED} //PLAN B
 );
 
+// _commit_layer ly14
+const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {9,1, HSV_RED}
+//        {4,2, HSV_RED} //PLAN B
+);
+
+
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 0
-    my_layer2_layer,    // 1
+    _alfa_layer,        // 1
     NULL,               // 2
     NULL,               // 3
     NULL,               // 4
-    my_layer5_layer,    // 5
-    my_layer6_layer,    // 6
-    my_layer7_layer     // 7
+    _numb_layer,        // 5
+    NULL,               // 6
+    NULL,               // 7
+    NULL,               // 8
+    NULL,               // 9
+    NULL,               // 10
+    NULL,               // 11
+    NULL,               // 12
+    _mode_layer,        // 13
+    _commit_layer      // 14
+
 );
 
 void keyboard_post_init_user(void) {
@@ -2355,8 +2364,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(1, false); //alfa LY OFF
     rgblight_set_layer_state(2, false); // MOVE LY OFF
     rgblight_set_layer_state(5, false); // NUMBERS LY OFF
-    rgblight_set_layer_state(6, false); // MOUSE LY OFF
-    rgblight_set_layer_state(7, false); // MOUSE2 LY OFF
+    rgblight_set_layer_state(13, false); // MOUSE LY OFF
+    rgblight_set_layer_state(14, false); // MOUSE2 LY OFF
 
 
 uint8_t layer = get_highest_layer(state);
@@ -2372,15 +2381,16 @@ uint8_t layer = get_highest_layer(state);
                  send_layer_status("LAYER_NUM");
                 break;
 
-            case 6:
-                rgblight_set_layer_state(6, true); // MOUSE LY
+            case 13:
+                rgblight_set_layer_state(13, true); // MOUSE2 LY
+                send_layer_status("LAYER_MOUSE2");
+                break;
+
+            case 14:
+                rgblight_set_layer_state(14, true); // MOUSE LY
                 send_layer_status("LAYER_MOUSE");
                 break;
 
-            case 7:
-                rgblight_set_layer_state(7, true); // MOUSE LY
-                send_layer_status("LAYER_MOUSE2");
-                break;
 
             default:
                send_layer_status("LAYER_BASE");
