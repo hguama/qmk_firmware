@@ -132,6 +132,7 @@ enum custom_keycodes {
     P_ENIE,          // Tecla personalizada TAP: P | HOLD: Ñ
     COPY,            // Tecla personalizada para copy
     PASTE,           // Tecla personalizada para paste
+    CTRL_Z,          // Keycode para usar en LT(_BOOK, CTRL_Z)
 };
 
 //Combo enum
@@ -525,6 +526,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 } else {
                     // TAP: C(KC_2)
                     tap_code16(C(KC_2));
+                    return false;
+                }
+            }
+            return true;
+
+        case LT(_BOOK, CTRL_Z):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: MO(_BOOK)
+                    return true; // Permite que QMK maneje el layer tap
+                } else {
+                    // TAP: Ctrl+Z
+                    tap_code16(C(KC_Z));
                     return false;
                 }
             }
@@ -1658,14 +1672,14 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH)
+    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) M_ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,TG_0), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           KC_ESC, LT(_SYMB,KC_ESC), M_ALT_TAB, LT(_NUMB,ALT_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_Z), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), MO(_BOOK), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+           LT(0,VOICE), LT(0,MOUSE_PRESSED_CLICK), LT(_NUMB,KC_F3), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
                                      LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                      // `------------------------------------'                          `---------------------------------'
