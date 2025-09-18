@@ -523,8 +523,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     // HOLD: MO(_BOOK_2)
                     return true; // Permite que QMK maneje el layer tap
                 } else {
-                    // TAP: C(KC_3)
-                    tap_code16(C(KC_3));
+                    // TAP: C(KC_2)
+                    tap_code16(C(KC_2));
                     return false;
                 }
             }
@@ -534,7 +534,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: KC_RIGHT x10
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 20; i++) {
                         tap_code(KC_RIGHT);
                     }
                     return false;
@@ -550,7 +550,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: KC_LEFT x10
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 20; i++) {
                         tap_code(KC_LEFT);
                     }
                     return false;
@@ -1769,7 +1769,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
            XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,          XXXXXXX, XXXXXXX, C(KC_1), C(KC_2), LT(_BOOK_2,MARKER_3), C(KC_4),
+           C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_3), C(KC_2), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
            XXXXXXX, C(KC_F20), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
