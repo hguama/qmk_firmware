@@ -73,6 +73,7 @@ enum custom_keycodes {
     DEL_WORD,
     DEL_LINE,
     WIN_D,
+    SEL_W_ALL,
     LLAMBDA,
     RLAMBDA,
     DOUBLE_COLON,
@@ -399,6 +400,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 } else {
                     tap_code16(KC_EQUAL);  // TAP: =
+                    return false;
+                }
+            }
+            return false;
+
+        case LT(0,SEL_W_ALL):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Ctrl+A
+                    tap_code16(C(KC_A));
+                    return false;
+                } else {
+                    // TAP: Ctrl+W
+                    tap_code16(C(KC_W));
                     return false;
                 }
             }
@@ -1696,15 +1711,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
-        // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
-        // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
-        // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
-           LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,        HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
-        // |--------+--------+--------+--------+--------+--------+-------------------------------|      |--------+--------+--------+--------+--------+--------+--------|
-                                     LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                           TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
-                                     // `------------------------------------'                          `---------------------------------'
+        // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
+           KC_ESC, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+        // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
+           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+        // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
+           LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,            HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+        // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
+                                     LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                                  TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                     // `------------------------------------'                                 `---------------------------------'
     ),
 
 
