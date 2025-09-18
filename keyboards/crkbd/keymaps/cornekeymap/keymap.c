@@ -380,6 +380,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             return true;
 
+        case LT(_NUMB,KC_ESC)//
+               if (record->event.pressed) {
+                clear_all();
+                }
+            return true;
+
+
         case LT(0,GUI_E):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1675,7 +1682,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) M_ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.      ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,KC_ESC), M_ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           KC_ESC, LT(_SYMB,KC_TAB), M_ALT_TAB, LT(_NUMB,KC_ESC), TD(TDQ_CUT), QK_BOOT,                   QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_Z), C(KC_S),           SLEEP, C(KC_A), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|      |--------+--------+--------+--------+--------+--------|
