@@ -1592,6 +1592,7 @@ case ALT_TAB:
                 } else {
                     // TAP: Ctrl+C para copiar
                     tap_code16(C(KC_C));
+					clear_all();
                     return false;
                 }
             }
