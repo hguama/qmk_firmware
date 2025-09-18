@@ -187,6 +187,10 @@ static bool base_layer_active = false;
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
+static bool alt_tab_pressed = false;
+static bool alt_tab_hold_done = false;
+
+
 
 static bool shift_active = false;
 
@@ -380,7 +384,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             return true;
 
-        case LT(_NUMB,KC_ESC)//
+        case LT(_NUMB,KC_ESC)://
                if (record->event.pressed) {
                 clear_all();
                 }
@@ -736,18 +740,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case M_ALT_TAB:
-            if (record->event.pressed) {
-                if (!is_alt_tab_active) {
-                    is_alt_tab_active = true;
-                    register_code(KC_LALT);
-                }
-                alt_tab_timer = timer_read();
-                register_code(KC_TAB);
-            } else {
-                unregister_code(KC_TAB);
+
+
+case M_ALT_TAB:
+    if (record->event.pressed) {
+        alt_tab_pressed = true;
+        alt_tab_hold_done = false;
+        alt_tab_timer = timer_read();
+    } else {
+        alt_tab_pressed = false;
+
+        if (!alt_tab_hold_done) {
+            // TAP: comportamiento actual (Alt sostenido + Tab)
+            if (!is_alt_tab_active) {
+                is_alt_tab_active = true;
+                register_code(KC_LALT);
             }
-            break;
+            register_code(KC_TAB);
+            unregister_code(KC_TAB);
+            // Alt queda activo como hasta ahora
+        }
+    }
+    return false;
+
+
+
 
         case SLEEP:
             if (record->event.pressed) {
@@ -1593,6 +1610,15 @@ void matrix_scan_user(void) {
 
 //static uint16_t rpt_timer;
 
+if (alt_tab_pressed && !alt_tab_hold_done) {
+    if (timer_elapsed(alt_tab_timer) > 150) {  // puedes ajustar 150 ms a tu gusto
+        // HOLD: Alt+Tab corto inmediato
+        tap_code16(A(KC_TAB));
+        alt_tab_hold_done = true;
+    }
+}
+
+
     // LEFT
     if (is_pressed_left) {
         if (!is_hold_left && timer_elapsed(timer_key_left) > 200) {
@@ -1630,7 +1656,7 @@ void matrix_scan_user(void) {
         tap_code16(C(KC_X));
      }
 
-    if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 4000)   {
+    if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 5000)   {
            unregister_code(KC_LALT);
            unregister_code(KC_TAB);
            is_alt_tab_active = false;
