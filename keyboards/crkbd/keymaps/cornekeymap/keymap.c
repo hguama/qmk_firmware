@@ -282,6 +282,14 @@ void clear_all(void) {
 
 }
 
+void send_layer_status(const char* msg) {
+
+       uint8_t buffer[32] = {0};
+       const char* message = msg;
+       strncpy((char*)buffer, message, sizeof(buffer) - 1);
+       raw_hid_send(buffer, sizeof(buffer));
+
+  }
 // ============================================================================
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
@@ -1720,7 +1728,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
@@ -1927,7 +1935,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                        _______, _______,  _______,                             TO(_BASE), XXXXXXX, XXXXXXX
+                                        C(KC_F2), _______,  _______,                             TO(_BASE), XXXXXXX, XXXXXXX
                                         // `----------------------'                              `--------------------------'
     ),
 
@@ -2290,6 +2298,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 //RGB LIGHT
+
+
 //capslock
 //{0, 0, HSV_OFF} {starting, numbers_leds, HSV_OFF}
 const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
@@ -2348,14 +2358,9 @@ void keyboard_post_init_user(void) {
     rgblight_layers = my_rgb_layers;
 }
 
- void send_layer_status(const char* msg) {
 
-       uint8_t buffer[32] = {0};
-       const char* message = msg;
-       strncpy((char*)buffer, message, sizeof(buffer) - 1);
-       raw_hid_send(buffer, sizeof(buffer));
 
-  }
+
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
@@ -2372,23 +2377,23 @@ uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
             case 1:
-                 rgblight_set_layer_state(1, true); // MOVE LY
-                 send_layer_status("LAYER_MOVE");
+                 rgblight_set_layer_state(1, true); // ALFA LY
+                 send_layer_status("LAYER_ALFA");
                 break;
 
             case 5:
                  rgblight_set_layer_state(5, true); // NUMBERS LY
-                 send_layer_status("LAYER_NUM");
+                 send_layer_status("LAYER_NUMB");
                 break;
 
             case 13:
-                rgblight_set_layer_state(13, true); // MOUSE2 LY
-                send_layer_status("LAYER_MOUSE2");
+                rgblight_set_layer_state(13, true); // MODE   LY
+                send_layer_status("LAYER_MODE");
                 break;
 
             case 14:
-                rgblight_set_layer_state(14, true); // MOUSE LY
-                send_layer_status("LAYER_MOUSE");
+                rgblight_set_layer_state(14, true); // COMMIT LY
+                send_layer_status("LAYER_COMMIT");
                 break;
 
 
