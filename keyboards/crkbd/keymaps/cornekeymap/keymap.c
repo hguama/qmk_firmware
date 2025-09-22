@@ -174,7 +174,7 @@ typedef struct {//for quad
 //Vars
 
 // static uint16_t timer_key;
-
+static uint16_t shift_toggle_timer = 0;
 
 
 // para LT(_DEL, KC_PERC)
@@ -210,9 +210,9 @@ bool ms_acl0_active = false;
 
 bool voice_mode = false;
 
-static bool defer_copy = false;
+//static bool defer_copy = false;
 static bool defer_cut = false;
-static uint16_t defer_timer_copy = 0;
+//static uint16_t defer_timer_copy = 0;
 static uint16_t defer_timer_cut = 0;
 
 
@@ -341,6 +341,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 0) {
                     // HOLD sin taps: cambiar capa base
+  // Si CAPS está activado, lo apagamos
+    if (host_keyboard_led_state().caps_lock) {
+        tap_code(KC_CAPS);
+    }
+
                     layer_invert(_ALFA);
                     return false;
                 }
@@ -1389,6 +1394,7 @@ case ALT_TAB:
                     shift_active = !shift_active;
                     if (shift_active) {
                         register_code(KC_LSFT);   // Activa Shift
+						shift_toggle_timer = timer_read();
                     } else {
                         unregister_code(KC_LSFT); // Desactiva Shift
                     }
@@ -1629,6 +1635,15 @@ void matrix_scan_user(void) {
 
 //static uint16_t rpt_timer;
 
+//para shift_toggle
+    if (shift_active) {
+        if (timer_elapsed(shift_toggle_timer) > 10000) {  // 10 segundos
+            unregister_code(KC_LSFT);
+            shift_active = false;
+        }
+    }
+
+//para alt_tab
 if (alt_tab_pressed && !alt_tab_hold_done) {
     if (timer_elapsed(alt_tab_timer) > 150) {  // puedes ajustar 150 ms a tu gusto
         // HOLD: Alt+Tab corto inmediato
@@ -1636,6 +1651,15 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
         alt_tab_hold_done = true;
     }
 }
+
+
+	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 7000)   {
+           unregister_code(KC_LALT);
+           unregister_code(KC_TAB);
+           is_alt_tab_active = false;
+
+   }
+
 
 
     // LEFT
@@ -1663,26 +1687,8 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
     }
 
 
-    if (defer_copy && timer_elapsed(defer_timer_copy) > 2) {
-        defer_copy = false;
-        clear_mods();  // elimina cualquier modificador que haya sobrevivido
-        tap_code16(C(KC_C));
-     }
-
-    if (defer_cut && timer_elapsed(defer_timer_cut) > 50) {
-        defer_cut = false;
-        clear_mods();  // elimina cualquier modificador que haya sobrevivido
-        tap_code16(C(KC_X));
-     }
-
-
-    if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 7000)   {
-           unregister_code(KC_LALT);
-           unregister_code(KC_TAB);
-           is_alt_tab_active = false;
-
-   }
 /*
+
     if (sr_repeat) {
         if (timer_elapsed(timer_key) > 130) {
             for (int i = 0; i < 5; i++) {
@@ -1693,14 +1699,7 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
     }*/
 
 
-      /*
-    if (shift_active) {
-        if (timer_elapsed(shift_toggle_timer) > 30000) {
-            unregister_code(KC_LSFT);
-            shift_active = false;
-        }
-    }
-    */
+
 
  }
 
