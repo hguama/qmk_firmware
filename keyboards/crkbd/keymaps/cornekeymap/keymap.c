@@ -47,9 +47,6 @@ enum layer_names {
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
-    ARROW_CTRL_LEFT,
-    ARROW_CTRL_RIGHT,
-    CTRLW_L4,
     SPACE_BASE,
     AMP_DOUBLE,
     OPEN_EXCL,
@@ -190,19 +187,7 @@ uint16_t alt_tab_timer = 0;
 static bool alt_tab_pressed = false;
 static bool alt_tab_hold_done = false;
 
-
-
 static bool shift_active = false;
-
-// para LEFT
-static uint16_t timer_key_left;
-static bool is_hold_left = false;
-static bool is_pressed_left = false;
-
-// para RIGHT
-static uint16_t timer_key_right;
-static bool is_hold_right = false;
-static bool is_pressed_right = false;
 
 static bool space_base_double_tap = false;
 
@@ -210,10 +195,6 @@ bool ms_acl0_active = false;
 
 bool voice_mode = false;
 
-//static bool defer_copy = false;
-static bool defer_cut = false;
-//static uint16_t defer_timer_copy = 0;
-static uint16_t defer_timer_cut = 0;
 
 
 // Prototypes quad
@@ -222,7 +203,7 @@ void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
-void tdq_cut_finished(tap_dance_state_t *state, void *user_data);
+
 
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
@@ -296,42 +277,8 @@ void send_layer_status(const char* msg) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case ARROW_CTRL_LEFT:
-            if (record->event.pressed) {
-                timer_key_left = timer_read();
-                is_hold_left = false;
-                is_pressed_left = true;
-            } else {
-                is_pressed_left = false;
-                if (!is_hold_left) {
-                    // TAP: flecha izquierda
-                    tap_code(KC_LEFT);
-                }
-            }
-            return false;
 
-        case ARROW_CTRL_RIGHT:
-            if (record->event.pressed) {
-                timer_key_right = timer_read();
-                is_hold_right = false;
-                is_pressed_right = true;
-            } else {
-                is_pressed_right = false;
-                if (!is_hold_right) {
-                    // TAP: flecha derecha
-                    tap_code(KC_RGHT);
-                }
-            }
-            return false;
-        case LT(4, CTRLW_L4):
-            if (record->event.pressed) {
-                if (record->tap.count) {
-                    tap_code16(C(KC_W));  // TAP: Ctrl+W
-                }
-            }
-            return true;
-
-        case LT(0,SPACE_BASE):
+     	case LT(0,SPACE_BASE):
             if (record->event.pressed) {
                 if (record->tap.count == 2) {
                     // DOBLE TAP: activar espacio sostenido
@@ -341,10 +288,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 0) {
                     // HOLD sin taps: cambiar capa base
-  // Si CAPS está activado, lo apagamos
-    if (host_keyboard_led_state().caps_lock) {
-        tap_code(KC_CAPS);
-    }
+	  			// Si CAPS está activado, lo apagamos
+				if (host_keyboard_led_state().caps_lock) {
+					tap_code(KC_CAPS);
+						}
 
                     layer_invert(_ALFA);
                     return false;
@@ -1660,33 +1607,6 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
 
    }
 
-
-
-    // LEFT
-    if (is_pressed_left) {
-        if (!is_hold_left && timer_elapsed(timer_key_left) > 200) {
-            is_hold_left = true;
-            timer_key_left = timer_read();
-        }
-        if (is_hold_left && timer_elapsed(timer_key_left) > 80) {
-            tap_code16(C(KC_LEFT));
-            timer_key_left = timer_read();
-        }
-    }
-
-    // RIGHT
-    if (is_pressed_right) {
-        if (!is_hold_right && timer_elapsed(timer_key_right) > 200) {
-            is_hold_right = true;
-            timer_key_right = timer_read();
-        }
-        if (is_hold_right && timer_elapsed(timer_key_right) > 80) {
-            tap_code16(C(KC_RGHT));
-            timer_key_right = timer_read();
-        }
-    }
-
-
 /*
 
     if (sr_repeat) {
@@ -1710,7 +1630,6 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
 
 tap_dance_action_t tap_dance_actions[] = {
     [TDQ_SEL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_sel_finished, x_reset),
-    [TDQ_CUT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_cut_finished, x_reset),
     [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
     [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
@@ -1727,7 +1646,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) ALT_TAB
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
-           XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_CUT), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+           XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
@@ -2064,53 +1983,6 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-
-void tdq_cut_finished(tap_dance_state_t *state, void *user_data) {
-
-   xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:
-            if (shift_active) {
-                unregister_code(KC_LSFT);
-                shift_active = false;
-            }
-
-
-            defer_cut = true;
-            defer_timer_cut = timer_read();
-            break;
-
-        case TD_SINGLE_HOLD: // Cut 1 line
-                tap_code_delay(KC_HOME, 10);     // Ir al inicio
-                tap_code16_delay(S(KC_END), 10); // Shift + End para seleccionar
-                tap_code16(C(KC_X));             // Ctrl + X para cortar
-
-            break;
-
-        case TD_DOUBLE_TAP: // Cut 1 word
-
-                // Ctrl + Left
-                tap_code16_delay(C(KC_LEFT),10);
-
-                // Ctrl + Shift + Right
-                tap_code16_delay(C(S(KC_RIGHT)), 10);
-
-                // Ctrl + X para cortar
-                tap_code16(C(KC_X));
-
-            break;
-
-        case TD_DOUBLE_HOLD: //cut 1 paragraph
-
-                tap_code(KC_HOME);            // Home
-                tap_code16(S(A(KC_PGDN)));    // Shift + Alt + PgDn
-                tap_code16(C(KC_X));          // Ctrl + X
-
-         break;
-
-        default: break;
-    }
-}
 
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
