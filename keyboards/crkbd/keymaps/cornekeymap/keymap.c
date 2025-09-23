@@ -2237,7 +2237,7 @@ const rgblight_segment_t PROGMEM _numb_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 
 // _mode_layer ly13
 const rgblight_segment_t PROGMEM _mode_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_ORANGE}
+        {9,1, HSV_PURPLE}
     //    {4,2, HSV_RED} //PLAN B
 );
 
@@ -2283,32 +2283,31 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
 //    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
 
-    rgblight_set_layer_state(1, false); //alfa LY OFF
-    rgblight_set_layer_state(2, false); // MOVE LY OFF
-    rgblight_set_layer_state(5, false); // NUMBERS LY OFF
-    rgblight_set_layer_state(13, false); // MOUSE LY OFF
-    rgblight_set_layer_state(14, false); // MOUSE2 LY OFF
+    rgblight_set_layer_state(1, false);  // _ALFA LY OFF
+    rgblight_set_layer_state(5, false);  // _NUMB LY OFF
+    rgblight_set_layer_state(13, false); // _MODE LY OFF
+    rgblight_set_layer_state(14, false); // _COMMIT LY OFF
 
 
 uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
-            case 1:
+            case _ALFA:
                  rgblight_set_layer_state(1, true); // ALFA LY
                  send_layer_status("LAYER_ALFA");
                 break;
 
-            case 5:
+            case _NUMB:
                  rgblight_set_layer_state(5, true); // NUMBERS LY
                  send_layer_status("LAYER_NUMB");
                 break;
 
-            case 13:
+            case _MODE:
                 rgblight_set_layer_state(13, true); // MODE   LY
                 send_layer_status("LAYER_MODE");
                 break;
 
-            case 14:
+            case _COMMIT:
                 rgblight_set_layer_state(14, true); // COMMIT LY
                 send_layer_status("LAYER_COMMIT");
                 break;
