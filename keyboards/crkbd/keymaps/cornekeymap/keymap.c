@@ -72,7 +72,6 @@ enum custom_keycodes {
     LLAMBDA,
     DOUBLE_COLON,
     LBRC2,
-    HOME_END,
     PGUP_CTRLPG,
     PGDW_CTRLPG,
     PAGE_PARAGRAPH_UP,
@@ -842,18 +841,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(0,HOME_END):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_HOME); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_END); //TAP
-                    return false;
-                }
-            }
-            return false;
-
         case LT(0, PGUP_CTRLPG):   // TAP = Ctrl+PgUp | HOLD = PgUp
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1552,13 +1539,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //_BASE Layer
     [_BASE] = LAYOUT_split_3x6_3(
     // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
-     XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                                QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+     XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                                QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_SPACE, C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,              HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+     LCTL_T(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,              HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
     // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                    				   LT(_DEV,KC_ENT), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                        // `----------------------------------'               `---------------------------------'
     ),
 
