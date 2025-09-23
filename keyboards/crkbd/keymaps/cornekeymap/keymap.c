@@ -47,6 +47,8 @@ enum layer_names {
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+	TO_NUMB,
+	ALT_SHIFT,
     SPACE_BASE,
     AMP_DOUBLE,
     OPEN_EXCL,
@@ -276,6 +278,23 @@ void send_layer_status(const char* msg) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+
+        case TO_NUMB:
+            if (record->event.pressed) {
+                clear_all();        // Limpia mods y estados activos
+                layer_move(_NUMB);  // Mueve exclusivamente a la capa NUMB
+            }
+            return false; // Ya manejamos la acción, no continuar
+
+        case ALT_SHIFT:
+            if (record->event.pressed) {
+                register_code(KC_LALT);
+                register_code(KC_LSFT);
+            } else {
+                unregister_code(KC_LSFT);
+                unregister_code(KC_LALT);
+            }
+            return false;
 
      	case LT(0,SPACE_BASE):
             if (record->event.pressed) {
@@ -1378,6 +1397,12 @@ case ALT_TAB:
                     return true; //hold
                 } else {
                     clear_all();
+
+					// Si CAPS está activado, lo apagamos
+    				if (host_keyboard_led_state().caps_lock) {
+        				tap_code(KC_CAPS);
+    				}
+
                     layer_invert(_ALFA); //tap
                     return false;
                 }
@@ -1527,22 +1552,44 @@ case ALT_TAB:
             }
             return false;
 
-        case LT(0,P_ENIE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Ñ usando código Alt+164 para teclado inglés
-                    register_code(KC_LALT);
-                    tap_code(KC_KP_1);
-                    tap_code(KC_KP_6);
-                    tap_code(KC_KP_4);
-                    unregister_code(KC_LALT);
-                    return false;
-                } else {
-                    tap_code(KC_P); //TAP
-                    return false;
-                }
+ case LT(0, P_ENIE):
+    if (record->event.pressed) {
+        if (!record->tap.count) {
+            // HOLD: ñ / Ñ
+            uint8_t mods = get_mods();    // guardar mods actuales
+            clear_mods();                 // limpiar todos antes de mandar Alt-code
+            wait_ms(5);
+
+            register_code(KC_LALT);
+            wait_ms(10);
+
+            if (mods & MOD_MASK_SHIFT) {
+                // Ñ mayúscula → Alt+0209
+                tap_code(KC_P0);
+                tap_code(KC_P2);
+                tap_code(KC_P0);
+                tap_code(KC_P9);
+            } else {
+                // ñ minúscula → Alt+0241
+                tap_code(KC_P0);
+                tap_code(KC_P2);
+                tap_code(KC_P4);
+                tap_code(KC_P1);
             }
+
+            wait_ms(10);
+            unregister_code(KC_LALT);
+
+            set_mods(mods);   // restaurar mods originales
             return false;
+        } else {
+            // TAP: solo manda la P
+            tap_code(KC_P);
+            return false;
+        }
+    }
+    return false;
+
 
         case LT(_MOVE_H, COPY):
             if (record->event.pressed) {
@@ -1649,9 +1696,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
            LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
         // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-           LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,            HIBERNATE, XXXXXXX, MO(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+           LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
         // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                     LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,                                  TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                     LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,                                  TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                      // `------------------------------------'                                 `---------------------------------'
     ),
 
@@ -1861,11 +1908,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, TG(_COMMIT), TG(_NUMB), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, TG(_COMMIT), TO_NUMB, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                         XXXXXXX, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, XXXXXXX
+                                         XXXXXXX, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TO(_BASE)
                                          // `---------------------'                             `--------------------------'
     ),
 
