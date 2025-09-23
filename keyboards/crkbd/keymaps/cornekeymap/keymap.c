@@ -49,16 +49,13 @@ enum custom_keycodes {
     GUI_E = SAFE_RANGE,
 	TO_NUMB,
 	ALT_SHIFT,
-    SPACE_BASE,
     AMP_DOUBLE,
-    OPEN_EXCL,
     OPEN_QUEST,
     NOT_EQUAL,
     MS_ACL0_TOGGLE,
     DEV_LY_SPACE,
     Z_UNDO,
     TRIPLE_WHLD,
-    HASH_CIRC,
     EQUAL_DBL,
     DOUBLE_PIPE,
     VOICE_A,
@@ -68,13 +65,11 @@ enum custom_keycodes {
     ALT_TAB,
     F_W,
     V_B,
-    N_ENIE,
     DEL_WORD,
     DEL_LINE,
     WIN_D,
     SEL_W_ALL,
     LLAMBDA,
-    RLAMBDA,
     DOUBLE_COLON,
     LBRC2,
     HOME_END,
@@ -134,9 +129,9 @@ enum custom_keycodes {
 };
 
 //Combo enum
-enum combo_events {
-  CB_CTRL_Z,   // identificador del combo
-};
+//enum combo_events {
+//  CB_CTRL_Z,   // identificador del combo
+//};
 
 //Tap Dance enum
 enum {
@@ -174,12 +169,10 @@ typedef struct {//for quad
 // static uint16_t timer_key;
 static uint16_t shift_toggle_timer = 0;
 
-
 // para LT(_DEL, KC_PERC)
 static uint8_t del_prev_layer = _BASE;
 static bool del_layer_active = false;
 
-// para BASE_LAYER_F
 static uint8_t base_prev_layer = _ALFA;
 static bool base_layer_active = false;
 
@@ -189,8 +182,6 @@ static bool alt_tab_pressed = false;
 static bool alt_tab_hold_done = false;
 
 static bool shift_active = false;
-
-static bool space_base_double_tap = false;
 
 bool ms_acl0_active = false;
 
@@ -204,8 +195,6 @@ void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
-
-
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
 void tdq_find_finished(tap_dance_state_t *state, void *user_data);
@@ -265,13 +254,13 @@ void clear_all(void) {
 }
 
 void send_layer_status(const char* msg) {
-
        uint8_t buffer[32] = {0};
        const char* message = msg;
        strncpy((char*)buffer, message, sizeof(buffer) - 1);
        raw_hid_send(buffer, sizeof(buffer));
-
   }
+
+
 // ============================================================================
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
@@ -296,45 +285,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-     	case LT(0,SPACE_BASE):
-            if (record->event.pressed) {
-                if (record->tap.count == 2) {
-                    // DOBLE TAP: activar espacio sostenido
-                    space_base_double_tap = true;
-                    register_code(KC_SPC);
-                    return false;
-                }
-                if (record->tap.count == 0) {
-                    // HOLD sin taps: cambiar capa base
-	  			// Si CAPS está activado, lo apagamos
-				if (host_keyboard_led_state().caps_lock) {
-					tap_code(KC_CAPS);
-						}
-
-                    layer_invert(_ALFA);
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple: un espacio
-                    tap_code(KC_SPC);
-                    return false;
-                }
-            } else {
-                // Al soltar, cortar espacio sostenido si estaba en doble tap
-                if (space_base_double_tap) {
-                    unregister_code(KC_SPC);
-                    space_base_double_tap = false;
-                }
-            }
-            return true;
-
         case WIN_D:
             if (record->event.pressed) {
                 tap_code16(G(KC_D)); // Win + D
             }
             break;
 
-         case MS_ACL0_TOGGLE:
+        case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
                 if (ms_acl0_active) {
@@ -351,17 +308,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             return true;
 
-case LT(_SYMB, KC_ESC):
-    if (record->event.pressed) {
-        if (record->tap.count > 0) {
-            // TAP → ESC personalizado
-            clear_all();
-            tap_code(KC_ESC);
-            return false;  // detenemos aquí, no dejamos pasar al LT original
-        }
-    }
-    // HOLD → dejamos que QMK maneje el LT como momentáneo
-    return true;
+        case LT(_SYMB, KC_ESC):
+            if (record->event.pressed) {
+                if (record->tap.count > 0) {
+                    // TAP → ESC personalizado
+                    clear_all();
+                    tap_code(KC_ESC);
+                    return false;  // detenemos aquí, no dejamos pasar al LT original
+                }
+            }
+            // HOLD → dejamos que QMK maneje el LT como momentáneo
+            return true;
 
 
 
@@ -422,49 +379,6 @@ case LT(_SYMB, KC_ESC):
                     tap_code16_delay(MS_WHLD,10);
                 }
                 tap_code16(KC_ENT);
-            }
-            return false;
-
-
-        /*
-        case LT(1, KC_RIGHT):
-            if (record->event.pressed) {
-                if (record->tap.count == 2) {
-                    // DOBLE TAP + (mantener): repetir en ciclos de 5
-                    sr_repeat = true;
-                    timer_key  = timer_read();
-                    return false;
-                }
-                if (record->tap.count == 0) {
-                    // HOLD: 10 flechas inmediatas
-                    for (int i = 0; i < 40; i++) {
-                        tap_code(KC_RGHT);
-                    }
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple: 1 flecha
-                    tap_code(KC_RGHT);
-                    return false;
-                }
-            } else {
-                // Al soltar, detener el ciclo (si estaba activo)
-                if (sr_repeat) {
-                    sr_repeat = false;
-                }
-            }
-            return true;
-        */
-
-        case LT(0,HASH_CIRC):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(KC_CIRC);  // HOLD: ^
-                    return false;
-                } else {
-                    tap_code16(KC_HASH);  // TAP: #
-                    return false;
-                }
             }
             return false;
 
@@ -728,30 +642,26 @@ case LT(_SYMB, KC_ESC):
             return false;
 
 
+    	case ALT_TAB:
+            if (record->event.pressed) {
+                alt_tab_pressed = true;
+                alt_tab_hold_done = false;
+                alt_tab_timer = timer_read();
+            } else {
+                alt_tab_pressed = false;
 
-
-case ALT_TAB:
-    if (record->event.pressed) {
-        alt_tab_pressed = true;
-        alt_tab_hold_done = false;
-        alt_tab_timer = timer_read();
-    } else {
-        alt_tab_pressed = false;
-
-        if (!alt_tab_hold_done) {
-            // TAP: comportamiento actual (Alt sostenido + Tab)
-            if (!is_alt_tab_active) {
-                is_alt_tab_active = true;
-                register_code(KC_LALT);
+                if (!alt_tab_hold_done) {
+                    // TAP: comportamiento actual (Alt sostenido + Tab)
+                    if (!is_alt_tab_active) {
+                        is_alt_tab_active = true;
+                        register_code(KC_LALT);
+                    }
+                    register_code(KC_TAB);
+                    unregister_code(KC_TAB);
+                    // Alt queda activo como hasta ahora
+                }
             }
-            register_code(KC_TAB);
-            unregister_code(KC_TAB);
-            // Alt queda activo como hasta ahora
-        }
-    }
-    return false;
-
-
+            return false;
 
 
         case SLEEP:
@@ -864,18 +774,6 @@ case ALT_TAB:
                     return false;
                 } else {
                     tap_code16(S(KC_MINS));
-                    return false;
-                }
-            }
-            return true;
-
-        case LT(0,KC_AT):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(KC_QUES); // ? hold
-                    return false;
-                } else {
-                    tap_code16(KC_AT);  // @ tap
                     return false;
                 }
             }
@@ -1057,17 +955,6 @@ case ALT_TAB:
             }
             return true;
 
-        case LT(0,N_ENIE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    SEND_STRING(SS_DOWN(X_LALT) SS_TAP(X_KP_1) SS_TAP(X_KP_6) SS_TAP(X_KP_4) SS_UP(X_LALT));
-                    return false;
-                } else {
-                    tap_code(KC_N);
-                    return false;
-                }
-            }
-            return false;
 
         case LT(0,V_B):
             if (record->event.pressed) {
@@ -1092,19 +979,6 @@ case ALT_TAB:
                 }
             }
             return false;
-
-        case OPEN_EXCL: // ¡
-            if (record->event.pressed) {
-                SEND_STRING(
-                    SS_DOWN(X_LALT)
-                    SS_TAP(X_KP_0)
-                    SS_TAP(X_KP_1)
-                    SS_TAP(X_KP_6)
-                    SS_TAP(X_KP_1)
-                    SS_UP(X_LALT)
-                );
-            }
-            break;
 
         case OPEN_QUEST: // ¿
             if (record->event.pressed) {
@@ -1552,43 +1426,44 @@ case ALT_TAB:
             }
             return false;
 
- case LT(0, P_ENIE):
-    if (record->event.pressed) {
-        if (!record->tap.count) {
-            // HOLD: ñ / Ñ
-            uint8_t mods = get_mods();    // guardar mods actuales
-            clear_mods();                 // limpiar todos antes de mandar Alt-code
-            wait_ms(5);
+        case LT(0, P_ENIE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    uint8_t mods = get_mods();   // guardar mods actuales
+                    clear_mods();
 
-            register_code(KC_LALT);
-            wait_ms(10);
+                    if (mods & MOD_MASK_SHIFT) {
+                        // Ñ (Alt+0209)
+                        SEND_STRING(
+                            SS_DOWN(X_LALT)
+                            SS_TAP(X_KP_0)
+                            SS_TAP(X_KP_2)
+                            SS_TAP(X_KP_0)
+                            SS_TAP(X_KP_9)
+                            SS_UP(X_LALT)
+                        );
+                    } else {
+                        // ñ (Alt+0241)
+                        SEND_STRING(
+                            SS_DOWN(X_LALT)
+                            SS_TAP(X_KP_0)
+                            SS_TAP(X_KP_2)
+                            SS_TAP(X_KP_4)
+                            SS_TAP(X_KP_1)
+                            SS_UP(X_LALT)
+                        );
+                    }
 
-            if (mods & MOD_MASK_SHIFT) {
-                // Ñ mayúscula → Alt+0209
-                tap_code(KC_P0);
-                tap_code(KC_P2);
-                tap_code(KC_P0);
-                tap_code(KC_P9);
-            } else {
-                // ñ minúscula → Alt+0241
-                tap_code(KC_P0);
-                tap_code(KC_P2);
-                tap_code(KC_P4);
-                tap_code(KC_P1);
+                    set_mods(mods); // restaurar mods originales
+                    return false;
+                } else {
+                    // TAP: manda la P normal
+                    tap_code(KC_P);
+                    return false;
+                }
             }
-
-            wait_ms(10);
-            unregister_code(KC_LALT);
-
-            set_mods(mods);   // restaurar mods originales
             return false;
-        } else {
-            // TAP: solo manda la P
-            tap_code(KC_P);
-            return false;
-        }
-    }
-    return false;
+
 
 
         case LT(_MOVE_H, COPY):
@@ -1623,12 +1498,11 @@ case ALT_TAB:
 };
 //Pr record END
 
+
 //timer for  macro
 void matrix_scan_user(void) {
 
-//static uint16_t rpt_timer;
-
-//para shift_toggle
+	//para shift_toggle
     if (shift_active) {
         if (timer_elapsed(shift_toggle_timer) > 10000) {  // 10 segundos
             unregister_code(KC_LSFT);
@@ -1636,14 +1510,14 @@ void matrix_scan_user(void) {
         }
     }
 
-//para alt_tab
-if (alt_tab_pressed && !alt_tab_hold_done) {
-    if (timer_elapsed(alt_tab_timer) > 150) {  // puedes ajustar 150 ms a tu gusto
-        // HOLD: Alt+Tab corto inmediato
-        tap_code16(A(KC_TAB));
-        alt_tab_hold_done = true;
+	//para alt_tab
+    if (alt_tab_pressed && !alt_tab_hold_done) {
+        if (timer_elapsed(alt_tab_timer) > 150) {
+            // HOLD: Alt+Tab corto inmediato
+            tap_code16(A(KC_TAB));
+            alt_tab_hold_done = true;
+        }
     }
-}
 
 
 	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 7000)   {
@@ -1652,20 +1526,6 @@ if (alt_tab_pressed && !alt_tab_hold_done) {
            is_alt_tab_active = false;
 
    }
-
-/*
-
-    if (sr_repeat) {
-        if (timer_elapsed(timer_key) > 130) {
-            for (int i = 0; i < 5; i++) {
-                tap_code(KC_RGHT);
-            }
-            timer_key = timer_read();
-        }
-    }*/
-
-
-
 
  }
 
@@ -1689,21 +1549,21 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    // Base Layer
+    //_BASE Layer
     [_BASE] = LAYOUT_split_3x6_3(
-        // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
-           XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
-        // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-           LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
-        // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-           LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
-        // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                     LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,                                  TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
-                                     // `------------------------------------'                                 `---------------------------------'
+    // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
+     XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                                QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
+    // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
+     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), C(KC_SPACE),C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK, KC_LEFT), LT(_MOVE_WIN, KC_DOWN), LT(_MOVE_L, KC_RIGHT), LT(0,HOME_END),
+    // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
+     LCTL(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,              HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+    // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
+                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                                       // `----------------------------------'               `---------------------------------'
     ),
 
 
-    //Alfa ly1
+    //_ALFA ly 1
     [_ALFA] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
            XXXXXXX, LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), XXXXXXX,
@@ -1713,10 +1573,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, KC_Y, LT(0,P_ENIE), KC_TAB,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
                                  LSFT_T(KC_ENT), KC_CAPS, XXXXXXX,                     			TO(_BASE),  XXXXXXX,  RSFT_T(KC_SPACE)
-                                 // `--------------------------------------'                     `--------------------------'
+                                 // `--------------------------------'                          `--------------------------'
     ),
 
-    // Dev Layer (posición 2 según enum) LT(0, MAX_MIN_WIN)
+    //_DEV Ly 2
     [_DEV] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,MULTICURSOR), A(KC_J), S(A(KC_J)), LT(0,FOLDING), XXXXXXX,             XXXXXXX, C(S(KC_U)), A(KC_F12), LT(0,PROJECT_VIEW), LT(0,NEW_FILE), XXXXXXX,
@@ -1729,7 +1589,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       // `------------------------------'                        `--------------------------'
     ),
 
-    // Super DEL Layer (posición 3 según enum)
+    //_DEL Ly 3
     [_DEL] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
@@ -1742,33 +1602,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                     // `----------------------'                                  `--------------------------'
     ),
 
-    //Symbols ly2 (posición 4 según enum)
-
-//para eliminar
-// LT(0,HASH_CIRC)
-// LT(0,KC_AT)
-//rlambda
-// OPEN_EXCL
-// tap_code16(KC_CIRC);  // HOLD: ^
-// tap_code16(KC_HASH);  // TAP: #
-// KC_QUOT '
-
-
-// [_SYMB]
-// LT(0,astrisk_plus) * + kc_plus
-// LT(0, QUESTION) ? ¿ OPEN_QUEST
-// LT(0,KC_DQT)  " '
-// LT(0,LLAMBDA)   ->  <-
-// LT(0,EXC_DLR) $ #
-// LT(0,NOT_EQUAL)  != ¡
-// LT(0,excl_grave) !  ^ KC_EXLM
-
-// pipe_m |>
-
-    // Symbols Layer (posición 4 según enum)
+    // _SYMB Ly 4
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,---------------------------------------------------------------------.                ,-----------------------------------------------------.
-           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,       XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
+           XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,             XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
            LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
@@ -1778,13 +1615,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                          // `----------------------'                                `--------------------------'
     ),
 
-    // Numbers Layer (posición 5 según enum) XXXXXXX LT(0,KC_MINS),
-    // LT(0,astrisk_plus) * +
+    // _NUMB Ly 5
     [_NUMB] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                         XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -1792,23 +1628,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `---------------------------------'                      `--------------------------'
     ),
 
-    // Bookmark Layer (posición 6 según enum) D Y H FALTAN
-    // LT HOLD TAP
-    // LT(_BOOK_2,MARKER_B)    C(KC_F14)  MO(_BOOK_2)
-    // LT(_BOOK_2,MARKER_3)    C(KC_3)    MO(_BOOK_2)
+    // _BOOK Ly 6
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
            XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
            C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_3), C(KC_2), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, C(KC_F20), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+           XXXXXXX, C(KC_F20), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
     ),
 
-    // Super bookmark Layer (posición 7 según enum)
+    // _BOOK_2 Ly 7
     [_BOOK_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
@@ -1821,17 +1654,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `------------------------'                              `--------------------------'
     ),
 
-    //Super move ly9 (posición 8 según enum) MS_WHLU,  , MS_WHLD
-// LT TAP HOLD
-// LT(0, CRIGHT_10) C(KC_RIGHT) KC_RIGHT 10 VECES
-// LT(0, CLEFT_10)  C(KC_LEFT)  KC_LEFT 10 VECES
-// LT(0,C_END_HOME)  C(KC_END) C(KC_HOME)
-
-// CRIGHT_5   KC_RIGHT 5 VECES
-// CLEFT_5    KC_LEFT 5 VECES
-
-
-    // Move Horizontal Layer (posición 8 según enum)
+    // _MOVE_H Ly 8
     [_MOVE_H] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_M)), KC_F20, XXXXXXX,
@@ -1844,14 +1667,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `------------------------'                              `--------------------------'
     ),
 
-    // Layer 13 - new (posición 9 según enum)
-
-    //LT TAP HOLD
-    //[_MOVE_V]
-    //LT(0, PGDN_PGUP) KC_PGDN KC_PGUP
-
-    //DOWN_10   KC_DOWN 10 VECES
-    //UP_10     KC_UP 10 VECES
+    // _MOVE_V Ly 9
     [_MOVE_V] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
@@ -1864,7 +1680,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                        // `----------------------'                              `--------------------------'
     ),
 
-    // Super close window Layer (posición 10 según enum)
+    // _MOVE_WIN Ly 10
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, C(KC_T), C(KC_L), LT(0,SPLIT_WIN), A(KC_F4), XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1877,7 +1693,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `------------------------'                               `--------------------------'
     ),
 
-    // Mouse2 Layer - hand left (posición 11 según enum)
+    // _MOVE_L Ly 11
     [_MOVE_L] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1890,7 +1706,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `------------------------'                               `--------------------------'
     ),
 
-    // Run debug Layer (posición 12 según enum)
+    // _RUN  Ly 12
     [_RUN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1903,7 +1719,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                         // `----------------------'                              `--------------------------'
     ),
 
-    // Mode Layer (posición 13 según enum)
+    // _MODE Ly 13
     [_MODE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1916,7 +1732,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                          // `---------------------'                             `--------------------------'
     ),
 
-    // Commit Layer (posición 14 según enum)        MS_ACL0_TOGGLE MS_ACL21
+    // _COMMIT Ly 14     MS_ACL0_TOGGLE
     [_COMMIT] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, KC_ESC, C(KC_K), A(KC_0), XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Z), XXXXXXX, XXXXXXX,
@@ -1929,7 +1745,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                      // `-------------------------'                             `--------------------------'
     ),
 
-    // AI Layer (posición 15 según enum)
+    // _AI Ly 15
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
