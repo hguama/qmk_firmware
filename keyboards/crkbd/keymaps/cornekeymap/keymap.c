@@ -65,7 +65,7 @@ enum custom_keycodes {
     SEL_WORD_PARAGRAPH,
     ALT_TAB,
     F_W,
-    B_V,
+    V_B,
     N_ENIE,
     DEL_WORD,
     DEL_LINE,
@@ -118,9 +118,8 @@ enum custom_keycodes {
     UP_10,
     PIPE_M,
     DEL_LAYER_PERC,  // Tecla personalizada para ir a capa _DEL momentáneamente
-    BASE_LAYER_F,    // Tecla personalizada para ir a capa _BASE momentáneamente
     ESC_W,           // Tecla personalizada TAP: ESC | HOLD: W
-    TAB_F,           // Tecla personalizada TAP: TAB | HOLD: F
+    T_F,           // Tecla personalizada TAP: TAB | HOLD: F
     H_J,             // Tecla personalizada TAP: H | HOLD: J
     D_Q,             // Tecla personalizada TAP: D | HOLD: Q
     L_K,             // Tecla personalizada TAP: L | HOLD: K
@@ -1051,13 +1050,13 @@ case ALT_TAB:
             }
             return false;
 
-        case LT(0,B_V):
+        case LT(0,V_B):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    tap_code(KC_V);
+                    tap_code(KC_B);
                     return false;
                 } else {
-                    tap_code(KC_B);
+                    tap_code(KC_V);
                     return false;
                 }
             }
@@ -1421,7 +1420,7 @@ case ALT_TAB:
 				}
 			return true;
 
-        case LT(_DEL,KC_F):
+        case LT(_BASE,KC_I):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _BASE
@@ -1432,7 +1431,7 @@ case ALT_TAB:
                 }
                 if (record->tap.count == 1) {
                     // TAP simple: enviar F
-                    tap_code(KC_F);
+                    tap_code(KC_I);
                     return false;
                 }
             } else {
@@ -1456,13 +1455,13 @@ case ALT_TAB:
             }
             return false;
 
-        case LT(0,TAB_F):
+        case LT(0,T_F):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     tap_code(KC_F); //HOLD
                     return false;
                 } else {
-                    tap_code(KC_TAB); //TAP
+                    tap_code(KC_T); //TAP
                     return false;
                 }
             }
@@ -1552,7 +1551,7 @@ case ALT_TAB:
                     return true; // QMK maneja el HOLD automáticamente
                 } else {
                     // TAP: Ctrl+C para copiar
-                    tap_code16(C(KC_C));
+                    tap_code16_delay(C(KC_C),40);
 					clear_all();
                     return false;
                 }
@@ -1643,7 +1642,7 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    // Base Layer ARROW_CTRL_RIGHT ARROW_CTRL_LEFT LT(0,SEL_WORD_PARAGRAPH) ALT_TAB
+    // Base Layer
     [_BASE] = LAYOUT_split_3x6_3(
         // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
            XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                           QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_UP), LT(_SYMB,KC_TAB), XXXXXXX,
@@ -1660,13 +1659,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //Alfa ly1
     [_ALFA] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
-           KC_ESC, LT(_SYMB,KC_Q), LT(0,GUI_E), KC_R, KC_T, KC_W,                                XXXXXXX, KC_Y, KC_U, KC_I, LT(_SYMB,KC_O), KC_TRNS,
+           XXXXXXX, LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), XXXXXXX,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           LT(_DEL,KC_A), LT(_DEL,KC_S), KC_D, LT(_DEL,KC_F), KC_G , C(KC_S),                    SLEEP,  KC_H, KC_J, KC_K, KC_L, KC_P,
+           LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), C(KC_Z), XXXXXXX,        XXXXXXX,  KC_CAPS, KC_O, LT(_SYMB,KC_S), KC_R, LT(_AI,KC_N),
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           KC_Z, KC_X, LT(_NUMB,KC_C), LT(0,B_V), XXXXXXX, WIN_D,                                HIBERNATE, XXXXXXX,  KC_M, LT(0,CODE_COMPLET), KC_BSPC, LT(0,N_ENIE),
+           C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, KC_Y, LT(0,P_ENIE), KC_TAB,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(0,SPACE_BASE), LSFT_T(KC_CAPS), XXXXXXX,                     TO(_BASE),  TG(_NUMB),  RSFT_T(KC_ENT)
+                                 LSFT_T(KC_ENT), KC_CAPS, XXXXXXX,                     			TO(_BASE),  XXXXXXX,  RSFT_T(KC_SPACE)
                                  // `--------------------------------------'                     `--------------------------'
     ),
 
