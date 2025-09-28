@@ -1541,11 +1541,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
      XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                                QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_SPACE, C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
+     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_ENT , C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
      LCTL_T(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,              HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
     // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                    				   LT(_DEV,KC_ENT), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
+                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                                        // `----------------------------------'               `---------------------------------'
     ),
 
@@ -1559,7 +1559,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, KC_Y, LT(0,P_ENIE), KC_TAB,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
-                                 LSFT_T(KC_ENT), KC_CAPS, XXXXXXX,                     			TO(_BASE),  XXXXXXX,  RSFT_T(KC_SPACE)
+                                 LSFT_T(KC_SPACE), KC_CAPS, XXXXXXX,                     			TO(_BASE),  XXXXXXX,  RSFT_T(KC_ENT)
                                  // `--------------------------------'                          `--------------------------'
     ),
 
@@ -1598,7 +1598,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
            PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                  QK_BOOT, XXXXXXX, KC_DLR, KC_SCLN, LT(0,NOT_EQUAL), KC_CIRC,
         // |--------+--------+--------+--------+--------+--------+---------------|                |--------+--------+--------+--------+--------+--------+--------|
-                                         XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, TRIPLE_WHLD
+                                         XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                          // `----------------------'                                `--------------------------'
     ),
 
@@ -1607,11 +1607,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, XXXXXXX, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, KC_ENT, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), TRIPLE_WHLD
+                                      KC_SPACE, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), KC_ENT
                                      // `---------------------------------'                      `--------------------------'
     ),
 
