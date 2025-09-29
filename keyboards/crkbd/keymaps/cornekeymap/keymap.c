@@ -1536,14 +1536,14 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    //_BASE Layer
+    //_BASE Layer LT(0,VOICE) LT(0,MOUSE_PRESSED_CLICK)
     [_BASE] = LAYOUT_split_3x6_3(
     // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
-     XXXXXXX, LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                                QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
+     LCTL_T(KC_F3), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                          QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_ENT , C(KC_S),       SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
+     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_ENT , C(KC_S),          SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LCTL_T(KC_F3), LT(0,MOUSE_PRESSED_CLICK), LT(0,VOICE), LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,              HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+     XXXXXXX, G(KC_T), KC_MS_BTN1, LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,                  					HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
     // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
                                     				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
                                                        // `----------------------------------'               `---------------------------------'
