@@ -1249,6 +1249,53 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
+        case SHIFT_TOGGLE:
+            if (record->event.pressed) {
+                    shift_active = !shift_active;
+                    if (shift_active) {
+                        register_code(KC_LSFT);   // Activa Shift
+						shift_toggle_timer = timer_read();
+                    } else {
+                        unregister_code(KC_LSFT); // Desactiva Shift
+                    }
+
+            }
+            break;
+            
+        case LT(KC_MS_ACCEL1, COPY):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Activar KC_MS_ACCEL1
+                    register_code(KC_MS_ACCEL1);
+                    return false;
+                } else {
+                    // TAP: Ejecutar COPY (Ctrl+C)
+                    tap_code16(C(KC_C));
+                    return false;
+                }
+            } else {
+                // Al soltar la tecla, desactivar KC_MS_ACCEL1 si estaba activo
+                unregister_code(KC_MS_ACCEL1);
+            }
+            return false;
+            
+        case LT(KC_MS_ACCEL2, PASTE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Activar KC_MS_ACCEL2
+                    register_code(KC_MS_ACCEL2);
+                    return false;
+                } else {
+                    // TAP: Ejecutar PASTE (Ctrl+V)
+                    tap_code16(C(KC_V));
+                    return false;
+                }
+            } else {
+                // Al soltar la tecla, desactivar KC_MS_ACCEL2 si estaba activo
+                unregister_code(KC_MS_ACCEL2);
+            }
+            return false;
+
         case TG(2):
             if (!record->event.pressed) {
                 clear_all();
@@ -1556,7 +1603,7 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    //_BASE Layer LT(0,VOICE) LT(0,MOUSE_PRESSED_CLICK)   LT(_AI,SHIFT_TOGGLE)
+    //_BASE Layer LT(0,VOICE) LT(0,MOUSE_PRESSED_CLICK)   LT(_AI,SHIFT_TOGGLE) ALT_SHIFT
     [_BASE] = LAYOUT_split_3x6_3(
     // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
      LCTL_T(KC_F3), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                          QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
@@ -1565,7 +1612,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
      TG(_MOUSE_1), G(KC_T), KC_MS_BTN1, LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,                  					HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
     // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), KC_INS, LT(_DEV,KC_ENT)
+                                    				   LT(_DEV,KC_SPACE), SHIFT_TOGGLE, KC_LALT,               TO(_BASE), KC_INS, LT(_DEV,KC_ENT)
                                                        // `----------------------------------'               `---------------------------------'
     ),
 
@@ -1770,11 +1817,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, KC_ESC, ALT_TAB, C(KC_C), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           TO(_BASE), KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
+TO(_BASE), KC_MS_ACCEL0, LT(KC_MS_ACCEL1,COPY), LT(KC_MS_ACCEL2,PASTE), KC_BTN2, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            C(KC_V), G(KC_T), KC_BTN1, C(KC_Z), XXXXXXX, XXXXXXX,                                XXXXXXX, KC_BTN1, XXXXXXX, KC_MS_WH_RIGHT, KC_MS_WH_LEFT, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       KC_BTN2, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
+                                       KC_SPACE, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
                                        // `---------------------'                               `--------------------------'
     ),
 
