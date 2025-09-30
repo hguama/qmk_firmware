@@ -40,7 +40,9 @@ enum layer_names {
     _RUN,          // 12
     _MODE,         // 13
     _COMMIT,       // 14
-    _AI            // 15
+    _AI,           // 15
+    _MOUSE_1,      // 16
+    _MOUSE_2       // 17
 };
 
 
@@ -1118,6 +1120,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
+            
+        case LT(_AI,_MOUSE_2):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    return true; // hold - will activate _AI layer
+                } else {
+                    clear_all();
+                    
+                    // If CAPS is on, turn it off
+                    if (host_keyboard_led_state().caps_lock) {
+                        tap_code(KC_CAPS);
+                    }
+                    
+                    layer_invert(_MOUSE_2); // tap - toggle _MOUSE_2 layer
+                    return false;
+                }
+            }
+            return true;
 
         case LT(0,SHOW_QUICK_ENT):
             if (record->event.pressed) {
@@ -1536,16 +1556,16 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    //_BASE Layer LT(0,VOICE) LT(0,MOUSE_PRESSED_CLICK)
+    //_BASE Layer LT(0,VOICE) LT(0,MOUSE_PRESSED_CLICK)   LT(_AI,SHIFT_TOGGLE)
     [_BASE] = LAYOUT_split_3x6_3(
     // ,-------------------------------------------------------------------------------------.             ,-----------------------------------------------------.
      LCTL_T(KC_F3), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                          QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     LT(_AI,SHIFT_TOGGLE), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_ENT , C(KC_S),          SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
+    LT(_AI,_MOUSE_2), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), KC_ENT , C(KC_S),          SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
     // |--------+--------+--------+--------+--------+----------------------------------------|             |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, G(KC_T), KC_MS_BTN1, LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,                  					HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+     TG(_MOUSE_1), G(KC_T), KC_MS_BTN1, LT(_BOOK,CTRL_Z), LT(0,TG_6), WIN_D,                  					HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
     // |--------+--------+--------+--------+--------+--------+-------------------------------|             |--------+--------+--------+--------+--------+--------+--------|
-                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), XXXXXXX, LT(_DEV,KC_ENT)
+                                    				   LT(_DEV,KC_SPACE), ALT_SHIFT, KC_LALT,               TO(_BASE), KC_INS, LT(_DEV,KC_ENT)
                                                        // `----------------------------------'               `---------------------------------'
     ),
 
@@ -1742,6 +1762,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                        XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, KC_TAB
+                                       // `---------------------'                               `--------------------------'
+    ),
+
+    // _MOUSE_1 Ly 16
+    [_MOUSE_1] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, KC_ESC, ALT_TAB, C(KC_C), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           TO(_BASE), KC_MS_ACCEL0, KC_MS_ACCEL1, KC_MS_ACCEL2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           C(KC_V), G(KC_T), KC_BTN1, C(KC_Z), XXXXXXX, XXXXXXX,                                XXXXXXX, KC_BTN1, XXXXXXX, KC_MS_WH_RIGHT, KC_MS_WH_LEFT, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                       KC_BTN2, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, LT(0, PGDN_PGUP)
+                                       // `---------------------'                               `--------------------------'
+    ),
+
+    // _MOUSE_2 Ly 17
+    [_MOUSE_2] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+           XXXXXXX, KC_ESC, ALT_TAB, KC_ESC, C(KC_C), XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           TO(_BASE), KC_MS_ACCEL1, KC_MS_D, KC_MS_U, XXXXXXX, XXXXXXX,                                XXXXXXX, KC_WH_L, KC_WH_D, KC_WH_U, KC_WH_R, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+           C(KC_V), G(KC_T), KC_BTN1, C(KC_Z), XXXXXXX, XXXXXXX,                                XXXXXXX, KC_BTN1, KC_BTN2, KC_BTN3, XXXXXXX, XXXXXXX,
+        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                       TO(_MOUSE_1), XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, TO(_BASE)
                                        // `---------------------'                               `--------------------------'
     ),
 
@@ -2050,6 +2096,15 @@ const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 //        {4,2, HSV_RED} //PLAN B
 );
 
+// _mouse_1_layer ly16
+const rgblight_segment_t PROGMEM _mouse_1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {9,1, HSV_YELLOW}
+);
+
+// _mouse_2_layer ly17
+const rgblight_segment_t PROGMEM _mouse_2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+        {9,1, HSV_BLUE}
+);
 
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 0
@@ -2066,8 +2121,10 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 11
     NULL,               // 12
     _mode_layer,        // 13
-    _commit_layer      // 14
-
+    _commit_layer,      // 14
+    NULL,               // 15
+    _mouse_1_layer,     // 16
+    _mouse_2_layer      // 17
 );
 
 void keyboard_post_init_user(void) {
@@ -2090,6 +2147,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(5, false);  // _NUMB LY OFF
     rgblight_set_layer_state(13, false); // _MODE LY OFF
     rgblight_set_layer_state(14, false); // _COMMIT LY OFF
+    rgblight_set_layer_state(16, false); // _MOUSE_1 LY OFF
+    rgblight_set_layer_state(17, false); // _MOUSE_1 LY OFF
 
 
 uint8_t layer = get_highest_layer(state);
@@ -2115,6 +2174,15 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status("LAYER_COMMIT");
                 break;
 
+      		 case _MOUSE_1:
+                rgblight_set_layer_state(16, true); // MOUSE_1 LY
+                send_layer_status("LAYER_MOUSE_1");
+                break;
+
+      		 case _MOUSE_2:
+                rgblight_set_layer_state(17, true); // MOUSE_2 LY
+                send_layer_status("LAYER_MOUSE_2");
+                break;
 
             default:
                send_layer_status("LAYER_BASE");

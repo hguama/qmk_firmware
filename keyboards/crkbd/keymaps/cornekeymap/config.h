@@ -19,10 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
-#define LAYER_STATE_16BIT
+#define LAYER_STATE_32BIT
 //#define PERMISSIVE_HOLD
 
-#define RGBLIGHT_MAX_LAYERS 16
+#define RGBLIGHT_MAX_LAYERS 32
 
 
 
