@@ -1527,8 +1527,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return true; // QMK maneja el HOLD automáticamente
                 } else {
                     // TAP: Ctrl+C para copiar
-                    tap_code16_delay(C(KC_C),40);
-					clear_all();
+					 clear_all();
+                   	 tap_code16(C(KC_C));
+
                     return false;
                 }
             }
