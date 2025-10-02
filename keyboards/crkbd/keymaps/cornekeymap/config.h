@@ -44,8 +44,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_BASE_SPEED 150 //150 300 500 ok
 #define MOUSEKEY_MAX_SPEED 5 //5 0k bajar //max speed en la que se detiene la aceleracion
 #define MOUSEKEY_TIME_TO_MAX 150 //150 100 0k
-#define MOUSEKEY_MOVE_DELTA 5 //5 2 0k mas lento
-#define MOUSEKEY_INTERVAL 5 //5 ok
+#define MOUSEKEY_MOVE_DELTA 3 //5 2 0k mas lento
+#define MOUSEKEY_INTERVAL 3 //5 ok
 #define MOUSEKEY_WHEEL_DELTA 2 //Wheel movement step size
 #define MOUSEKEY_WHEEL_MAX_SPEED 3 //Maximum number of scroll steps per scroll action
 
