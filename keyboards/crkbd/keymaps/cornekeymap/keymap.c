@@ -1539,7 +1539,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(SEL_ALL, KC_ENT):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Ctrl+A (Seleccionar todo)
+                    // HOLD: Ctrl+A
                     tap_code16(C(KC_A));
                     return false;
                 } else {
