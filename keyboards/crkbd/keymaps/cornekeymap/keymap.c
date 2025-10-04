@@ -1280,11 +1280,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             
-        case LT(KC_MS_ACCEL1, PASTE):
+        case LT(KC_MS_ACCEL2, PASTE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Activar KC_MS_ACCEL1
-                    register_code(KC_MS_ACCEL1);
+                    register_code(KC_MS_ACCEL2);
                     return false;
                 } else {
                     // TAP: Ejecutar PASTE (Ctrl+V)
@@ -1293,7 +1293,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             } else {
                 // Al soltar la tecla, desactivar KC_MS_ACCEL1
-                unregister_code(KC_MS_ACCEL1);
+                unregister_code(KC_MS_ACCEL2);
             }
             return false;
 
@@ -1887,26 +1887,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // _MOUSE_1 Ly 16
     [_MOUSE_1] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
-           XXXXXXX, KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
+        XXXXXXX, KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL1,PASTE), KC_MS_ACCEL2,                        XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
+        TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL2,PASTE), XXXXXXX,               XXXXXXX, XXXXXXX, KC_BTN2, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,           XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
+        LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(KC_ENT, KC_SPC), XXXXXXX , XXXXXXX,                                     XXXXXXX, XXXXXXX, KC_BTN2
+                                        LT(KC_ENT, KC_SPC), XXXXXXX , XXXXXXX,                          XXXXXXX, KC_BTN2, KC_SPC
                                        // `---------------------'                                       `--------------------------'
     ),
 
     // _MOUSE_2 Ly 17
     [_MOUSE_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                ,-----------------------------------------------------.
-         KC_MS_ACCEL1, KC_ESC, ALT_TAB, LT(PASTE,COPY), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+         KC_MS_ACCEL1, KC_ESC, ALT_TAB, LT(PASTE,COPY), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, LT(PASTE,COPY), ALT_TAB, KC_ESC, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------|
-         TO(_BASE), KC_BTN1, KC_MS_D, KC_MS_U, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+         TO(_BASE), KC_BTN1, KC_MS_D, KC_MS_U, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,          XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_U, KC_MS_D, KC_BTN1, TO(_BASE),
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------|
-         LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+         LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, C(KC_Z),  G(KC_T), LT(0,PGDN_PGUP), LT(KC_MS_WH_UP,KC_MS_WH_DOWN),
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(KC_ENT, KC_SPC), XXXXXXX, XXXXXXX,                              TO(_BASE), XXXXXXX, TO(_MOUSE_1)
+                                       LT(KC_ENT, KC_SPC), XXXXXXX, XXXXXXX,                              TO(_BASE),  LT(KC_ENT, KC_SPC), TO(_MOUSE_1)
                                        // `---------------------'                                  `--------------------------'
     ),
 
