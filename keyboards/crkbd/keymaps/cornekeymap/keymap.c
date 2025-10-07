@@ -1693,7 +1693,6 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // ============================================================================
 // KEYMAPS
-// ============================================================================
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -1716,7 +1715,7 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
         // ,--------------------------------------------------------.                           ,-----------------------------------------------------.
            XXXXXXX, LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), XXXXXXX,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), C(KC_Z), XXXXXXX,        XXXXXXX,  KC_CAPS, KC_O, LT(_SYMB,KC_S), KC_R, LT(_AI,KC_N),
+           LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), C(KC_Z), XXXXXXX,        XXXXXXX,  KC_CAPS, KC_O, LT(_SYMB,KC_S), KC_R, KC_N,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, KC_Y, LT(0,P_ENIE), KC_TAB,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
