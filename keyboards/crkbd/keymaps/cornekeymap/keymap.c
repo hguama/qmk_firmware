@@ -1602,15 +1602,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(SEL_ALL, KC_ENT):
+        case LT(SEL_ALL, KC_SPACE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Ctrl+A
                     tap_code16(C(KC_A));
                     return false;
                 } else {
-                    // TAP: Enter
-                    tap_code(KC_ENT);
+                    // TAP:  
+                    tap_code(KC_SPACE);
                     return false;
                 }
             }
