@@ -844,6 +844,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
+
+       case  LT(KC_ENT, KC_SPC):
+            if (record->event.pressed) {
+                clear_all();
+            }
+            return true;
+
+
         case LT(0, PGUP_CTRLPG):   // TAP = Ctrl+PgUp | HOLD = PgUp
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1319,6 +1327,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+
+        case LT(KC_MS_ACCEL2, TG_0):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Activar KC_MS_ACCEL2
+                    register_code(KC_MS_ACCEL2);
+                    return false;
+                } else {
+                    // TAP
+                    layer_invert(_MOUSE_2);
+                    return false;
+                }
+            } else {
+                // Al soltar la tecla, desactivar KC_MS_ACCEL2
+                unregister_code(KC_MS_ACCEL2);
+            }
+            return false;
+
+        case LT(KC_MS_ACCEL2, KC_ENT):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Activar KC_MS_ACCEL2
+                    register_code(KC_MS_ACCEL2);
+                    return false;
+                } else {
+                    // TAP
+                   tap_code(KC_ENT);
+                    return false;
+                }
+            } else {
+                // Al soltar la tecla, desactivar KC_MS_ACCEL2
+                unregister_code(KC_MS_ACCEL2);
+            }
+            return false;
+
+
         case TG(2):
             if (!record->event.pressed) {
                 clear_all();
@@ -1586,19 +1630,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             
-        case LT(KC_ENT, KC_SPC):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Enviar Enter
-                    tap_code(KC_ENT);
-                    return false;
-                } else {
-                    // TAP: Enviar Espacio
-                    tap_code(KC_SPC);
-                    return false;
-                }
-            }
-            return false;
+
             
         case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
             if (record->event.pressed) {
@@ -1910,24 +1942,24 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
         XXXXXXX, KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL2,PASTE), XXXXXXX,               XXXXXXX, XXXXXXX, KC_BTN2, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
+        TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL2,PASTE), XXXXXXX, XXXXXXX,           XXXXXXX, KC_BTN2, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
         LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(KC_ENT, KC_SPC), XXXXXXX , XXXXXXX,                          XXXXXXX, KC_BTN2, KC_SPC
+                                        LT(KC_SPC, KC_ENT), XXXXXXX , XXXXXXX,                          XXXXXXX, KC_BTN2, KC_SPC
                                        // `---------------------'                                       `--------------------------'
     ),
 
     // _MOUSE_2 Ly 17
     [_MOUSE_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                ,-----------------------------------------------------.
-         KC_MS_ACCEL1, KC_ESC, ALT_TAB, LT(PASTE,COPY), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, LT(PASTE,COPY), ALT_TAB, KC_ESC, XXXXXXX,
+        XXXXXXX, KC_ESC, ALT_TAB, LT(PASTE,COPY), XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, LT(PASTE,COPY), ALT_TAB, KC_ESC, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------|
-         TO(_BASE), KC_BTN1, KC_MS_D, KC_MS_U, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,          XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_U, KC_MS_D, KC_BTN1, TO(_BASE),
+        LT(KC_MS_ACCEL2, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,          XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_BTN1, TO(_BASE),
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------|
-         LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, C(KC_Z),  G(KC_T), LT(0,PGDN_PGUP), LT(KC_MS_WH_UP,KC_MS_WH_DOWN),
+        LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,       XXXXXXX, XXXXXXX, C(KC_Z),  G(KC_T), LT(0,PGDN_PGUP), LT(KC_MS_WH_UP,KC_MS_WH_DOWN),
         // |--------+--------+--------+--------+--------+--------|                                |--------+--------+--------+--------+--------+--------+--------|
-                                       LT(KC_ENT, KC_SPC), XXXXXXX, XXXXXXX,                              TO(_BASE),  LT(KC_ENT, KC_SPC), TO(_MOUSE_1)
+                                       LT(KC_MS_ACCEL2, KC_ENT), KC_MS_ACCEL2, XXXXXXX,                              TO(_BASE), LT(KC_SPC, KC_ENT), TO(_MOUSE_1)
                                        // `---------------------'                                  `--------------------------'
     ),
 
