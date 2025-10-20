@@ -68,6 +68,7 @@ enum custom_keycodes {
     ALT_TAB,
     F_W,
     V_B,
+    M_Y,
     DEL_WORD,
     DEL_LINE,
     WIN_D,
@@ -966,6 +967,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case LT(0,M_Y):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    tap_code(KC_Y);
+                    return false;
+                } else {
+                    tap_code(KC_M);
+                    return false;
+                }
+            }
+            return false;
+
         case LT(0,F_W):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1749,7 +1762,7 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
            LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), C(KC_Z), XXXXXXX,        XXXXXXX,  KC_CAPS, KC_O, LT(_SYMB,KC_S), KC_R, KC_N,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------|
-           C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, KC_Y, LT(0,P_ENIE), KC_TAB,
+           C(KC_Z), LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, WIN_D,                             HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_TAB,
         // |--------+--------+--------+--------+--------+-----------|                           |--------+--------+--------+--------+--------+--------+--------|
                                  LSFT_T(KC_ENT), KC_CAPS, XXXXXXX,                     			TO(_BASE),  XXXXXXX,  RSFT_T(KC_SPACE)
                                  // `--------------------------------'                          `--------------------------'
