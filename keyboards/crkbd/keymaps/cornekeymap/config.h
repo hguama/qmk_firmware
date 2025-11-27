@@ -74,9 +74,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
 //#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 80  // Valor entre 0 y 255
 
-
-
+#define RGBLIGHT_SLEEP
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLIGHT_LIMIT_VAL
     #define RGBLIGHT_LIMIT_VAL 150 //ok 255 default
+
+    // Apagar luces después de 10 minutos sin uso
+    #define RGBLIGHT_IDLE_TIMEOUT 60000
+
 #endif
