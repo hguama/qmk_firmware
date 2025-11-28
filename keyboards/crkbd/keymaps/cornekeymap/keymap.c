@@ -1966,13 +1966,13 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
     // _MOUSE_2 Ly 17 LCTL_T(KC_F3)
     [_MOUSE_2] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                                             ,-----------------------------------------------------.
-    LT(0,PGDN_PGUP),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), XXXXXXX,                         XXXXXXX, XXXXXXX, TD(TDQ_SEL), KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX,
+    LT(0,PGDN_PGUP),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), XXXXXXX,                        XXXXXXX, XXXXXXX, TD(TDQ_SEL), KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    LT(KC_MS_ACCEL2, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(SEL_ALL,KC_SPACE), XXXXXXX,                       XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_MS_WH_DOWN, KC_MS_WH_UP,
+    LT(KC_MS_ACCEL2, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(SEL_ALL,KC_SPACE), XXXXXXX,                       SLEEP, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_MS_WH_DOWN, KC_MS_WH_UP,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-     A(KC_F4), LT(PASTE,COPY), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,                                     XXXXXXX, XXXXXXX, KC_BTN2, LT(0,PGDN_PGUP), XXXXXXX, XXXXXXX,
+    A(KC_F4), LT(PASTE,COPY), G(KC_T), C(KC_Z), XXXXXXX, WIN_D,                                            XXXXXXX, HIBERNATE, KC_BTN2, LT(0,PGDN_PGUP), XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                       KC_ENT,LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,                      TO(_BASE), XXXXXXX, KC_SPC
+                                       KC_ENT,LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_LALT,                      TO(_BASE), XXXXXXX, KC_SPC
                                        // `---------------------'                                           `--------------------------'
     ),
 
