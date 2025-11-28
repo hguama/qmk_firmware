@@ -672,7 +672,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code16_delay(LGUI(KC_X),120);
                 tap_code16_delay(KC_U,120);
                 wait_ms(300);
-                tap_code(KC_S);		
+                tap_code(KC_S);
             }
             break;
 
@@ -1142,19 +1142,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
-            
+
         case LT(_AI,_MOUSE_2):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     return true; // hold - will activate _AI layer
                 } else {
                     clear_all();
-                    
+
                     // If CAPS is on, turn it off
                     if (host_keyboard_led_state().caps_lock) {
                         tap_code(KC_CAPS);
                     }
-                    
+
                     layer_invert(_MOUSE_2); // tap - toggle _MOUSE_2 layer
                     return false;
                 }
@@ -1305,7 +1305,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
             }
             break;
-            
+
         case LT(KC_MS_ACCEL0, COPY):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1322,7 +1322,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_MS_ACCEL0);
             }
             return false;
-            
+
         case LT(KC_MS_ACCEL2, PASTE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1622,13 +1622,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     tap_code16(C(KC_A));
                     return false;
                 } else {
-                    // TAP:  
+                    // TAP:
                     tap_code(KC_SPACE);
                     return false;
                 }
             }
             return false;
-            
+
         case LT(PASTE, COPY):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1642,9 +1642,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
-            
 
-            
+
+
         case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1713,7 +1713,7 @@ void matrix_scan_user(void) {
     }
 
 
-	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 7000)   {
+	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 3000)   {
            unregister_code(KC_LALT);
            unregister_code(KC_TAB);
            is_alt_tab_active = false;
@@ -1744,11 +1744,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //_BASE Layer
     [_BASE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                ,-----------------------------------------------------.
-LCTL_T(KC_F3), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                              QK_BOOT, VOICE_A, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
+LCTL_T(KC_F3), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                |--------+--------+--------+--------+--------+--------|
 LT(_AI,_MOUSE_2), LT(_DEL,TG_0), LT(_MOVE_H, COPY), LT(_MOVE_V, PASTE), LT(SEL_ALL,KC_SPACE), C(KC_S),     SLEEP, LT(0,SEL_W_ALL), LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
 // |--------+--------+--------+--------+--------+----------------------------------------|                |--------+--------+--------+--------+--------+--------|
-LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX, WIN_D,                  	       HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX, WIN_D,                   HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                |--------+--------+--------+--------+--------+--------+--------|
                                     				   LT(_DEV,KC_ENT), KC_LGUI, KC_LALT,                TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                        // `----------------------------------'              `---------------------------------'
@@ -1918,9 +1918,9 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, TG(_COMMIT), TO_NUMB, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, TG(_MODE), XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                         XXXXXXX, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TO(_BASE)
+                                         XXXXXXX, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TG(_MODE)
                                          // `---------------------'                             `--------------------------'
     ),
 
@@ -1950,7 +1950,7 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
                                        // `---------------------'                               `--------------------------'
     ),
 
-    // _MOUSE_1 Ly 16
+    // _MOUSE_1 Ly 16 not used
     [_MOUSE_1] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
         XXXXXXX, KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
@@ -1963,16 +1963,16 @@ LT(ALT_SHIFT,_MOUSE_1), LT(_AI,SHIFT_TOGGLE), G(KC_T), LT(_BOOK,CTRL_Z), XXXXXXX
                                        // `---------------------'                                       `--------------------------'
     ),
 
-    // _MOUSE_2 Ly 17
+    // _MOUSE_2 Ly 17 LCTL_T(KC_F3)
     [_MOUSE_2] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                                             ,-----------------------------------------------------.
-    LCTL_T(KC_F3), KC_ESC, ALT_TAB, LT(PASTE,COPY), XXXXXXX, XXXXXXX,                                       XXXXXXX, XXXXXXX, LT(PASTE,COPY), C(KC_LEFT), C(KC_RIGHT), XXXXXXX,
+    LT(0,PGDN_PGUP),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), C(KC_X), XXXXXXX,                         XXXXXXX, XXXXXXX, TD(TDQ_SEL), KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    LT(KC_MS_ACCEL2, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(SEL_ALL,KC_SPACE), XXXXXXX,                       XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_BTN1, TO(_BASE),
+    LT(KC_MS_ACCEL2, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(SEL_ALL,KC_SPACE), XXXXXXX,                       XXXXXXX, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_MS_WH_DOWN, KC_MS_WH_UP,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, C(S(KC_LEFT)), G(KC_T), LT(0,PGDN_PGUP), LT(KC_MS_WH_UP,KC_MS_WH_DOWN),
+     A(KC_F4), LT(PASTE,COPY), G(KC_T), C(KC_Z), XXXXXXX, XXXXXXX,                                     XXXXXXX, XXXXXXX, KC_BTN2, LT(0,PGDN_PGUP), XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                       KC_ENT,LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,                      TO(_BASE), LT(KC_SPC, KC_ENT), TO(_MOUSE_1)
+                                       KC_ENT,LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), XXXXXXX,                      TO(_BASE), XXXXXXX, KC_SPC
                                        // `---------------------'                                           `--------------------------'
     ),
 
