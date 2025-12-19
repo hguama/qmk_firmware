@@ -172,6 +172,8 @@ typedef struct {//for quad
 
 // static uint16_t timer_key;
 static uint16_t shift_toggle_timer = 0;
+static bool space_repeat_active = false;
+
 
 // para LT(_DEL, KC_PERC)
 static uint8_t del_prev_layer = _BASE;
@@ -1357,6 +1359,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case LT(KC_F22, KC_ENT):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD → F22 DOWN real
+                    register_code(KC_F22);
+                } else {
+                    // TAP → alternar capa
+                    tap_code(KC_ENT);
+                }
+            } else {
+                // RELEASE → F22 UP real
+                unregister_code(KC_F22);
+            }
+            return false;
+
         case LT(KC_MS_ACCEL2, KC_ENT):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1616,14 +1633,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case LT(SEL_ALL, KC_SPACE):
             if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Ctrl+A
+
+                // DOBLE TAP + HOLD → repetir espacio
+                if (record->tap.count == 2) {
+                    register_code(KC_SPACE);   // mantiene espacio presionado
+                    space_repeat_active = true;
+                    return false;
+                }
+
+                // HOLD normal → Ctrl + A
+                if (record->tap.count == 0) {
                     tap_code16(C(KC_A));
                     return false;
-                } else {
-                    // TAP:
-                    tap_code(KC_SPACE);
-                    return false;
+                }
+
+                // TAP simple → espacio
+                tap_code(KC_SPACE);
+                return false;
+
+            } else {
+                // Al soltar → detener repetición del espacio
+                if (space_repeat_active) {
+                    unregister_code(KC_SPACE);
+                    space_repeat_active = false;
                 }
             }
             return false;
@@ -1971,7 +2003,7 @@ A(KC_F4), LT(_AI,SHIFT_TOGGLE), KC_F24, LT(_BOOK,CTRL_Z), XXXXXXX, WIN_D,       
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
     A(KC_F4), LT(PASTE,COPY), KC_F24, KC_F23, XXXXXXX, WIN_D,                                             HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, LT(0,PGDN_PGUP) , XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                       KC_ENT, C(KC_Z), KC_LCTL,                                          TO(_BASE), KC_BTN2, KC_SPC
+                                        LT(KC_F22, KC_ENT), C(KC_Z), KC_LCTL,                                          TO(_BASE), KC_BTN2, KC_SPC
                                        // `---------------------'                                           `--------------------------'
     ),
 
