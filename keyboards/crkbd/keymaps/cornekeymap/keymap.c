@@ -49,6 +49,7 @@ enum layer_names {
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    CLOSE_WIN,
     SELALL_SPACE,
     SEL_ALL,
 	TO_NUMB,
@@ -1674,6 +1675,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case LT(KC_F4, CLOSE_WIN):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD:  cerrar pestaña
+                    tap_code16(C(KC_W));
+                    return false;
+                } else {
+                    // TAP: cerrar ventana
+                    tap_code16(A(KC_F4));
+                    return false;
+                }
+            }
+            return false;
+
 
 
         case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
@@ -2001,7 +2016,7 @@ A(KC_F4), LT(_AI,SHIFT_TOGGLE), KC_F24, LT(_BOOK,CTRL_Z), XXXXXXX, WIN_D,       
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
     LT(KC_F22, TG_0), KC_BTN1, KC_MS_D, KC_MS_U, LT(SEL_ALL,KC_SPACE), XXXXXXX,                            SLEEP, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_MS_WH_DOWN, KC_MS_WH_UP,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    A(KC_F4), LT(PASTE,COPY), KC_F24, KC_F23, XXXXXXX, WIN_D,                                             HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, LT(0,PGDN_PGUP) , XXXXXXX,
+   LT(KC_F4, CLOSE_WIN), LT(PASTE,COPY), KC_F24, KC_F23, XXXXXXX, WIN_D,                                             HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, LT(0,PGDN_PGUP) , XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
                                         LT(KC_F22, KC_ENT), C(KC_Z), KC_LCTL,                                          TO(_BASE), KC_BTN2, KC_SPC
                                        // `---------------------'                                           `--------------------------'
