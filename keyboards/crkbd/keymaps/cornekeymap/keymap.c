@@ -2172,11 +2172,8 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         //wait_ms(50);
 
         // 2. Ahora sí, soltamos el Alt físicamente
-        unregister_code(KC_LALT);
-        unregister_code(KC_TAB);
+       clear_all();
 
-        // 3. Reset de lógica interna
-        is_alt_tab_active = false;
         alt_tab_hold_done = false;
         alt_tab_pressed = false;
         alt_tab_timer = timer_read();
