@@ -205,6 +205,10 @@ bool voice_mode = false;
 
 
 // Prototypes quad
+void send_layer_status(const char* msg);
+void send_layer_status_with_at(const char* msg, layer_state_t state);
+
+
 td_state_t cur_dance(tap_dance_state_t *state);
 void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
@@ -254,6 +258,7 @@ void clear_all(void) {
        unregister_code(KC_LALT);
        unregister_code(KC_TAB);
        is_alt_tab_active = false;
+         send_layer_status_with_at("AT_OFF",layer_state);
        }
 
     if (shift_active) {
@@ -275,7 +280,25 @@ void send_layer_status(const char* msg) {
        raw_hid_send(buffer, sizeof(buffer));
   }
 
+void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
+    char buffer[40];
+    // IMPORTANTE: Ahora usamos 'state' (el valor real actual), no la variable global
+    uint8_t layer = get_highest_layer(state);
+    const char* layer_name;
 
+    switch (layer) {
+        case _ALFA:    layer_name = "LAYER_ALFA"; break;
+        case _NUMB:    layer_name = "LAYER_NUMB"; break;
+        case _MODE:    layer_name = "LAYER_MODE"; break;
+        case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
+        case _MOUSE_1: layer_name = "LAYER_MOUSE_1"; break;
+        case _MOUSE_2: layer_name = "LAYER_MOUSE_2"; break;
+        default:       layer_name = "LAYER_BASE"; break;
+    }
+
+    snprintf(buffer, sizeof(buffer), "%s %s", at_msg, layer_name);
+    send_layer_status(buffer);
+}
 // ============================================================================
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
@@ -317,11 +340,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false; // Ya manejamos la tecla
 
-/*        case LT(_DEV,KC_SPACE):
+        case LT(_DEV,KC_SPACE):
                if (record->event.pressed) {
                 clear_all();
                 }
-            return true;*/
+            return true;
 
         case LT(_SYMB, KC_ESC):
             if (record->event.pressed) {
@@ -662,6 +685,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 alt_tab_pressed = true;
                 alt_tab_hold_done = false;
                 alt_tab_timer = timer_read();
+                 send_layer_status_with_at("AT_ON",layer_state);
             } else {
                 alt_tab_pressed = false;
 
@@ -670,6 +694,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     if (!is_alt_tab_active) {
                         is_alt_tab_active = true;
                         register_code(KC_LALT);
+                         send_layer_status_with_at("AT_ON",layer_state);
                     }
                     register_code(KC_TAB);
                     unregister_code(KC_TAB);
@@ -852,6 +877,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         case LT(_DEV,KC_ENT):
+            if (record->event.pressed) {
+                clear_all();
+            }
+            return true;
+
+
+        case LT(_MOVE_WIN,KC_ENT):
             if (record->event.pressed) {
                 clear_all();
             }
@@ -1782,6 +1814,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (record->tap.count == 1) {
                     // TAP simple:
                     tap_code(KC_ENT);
+                    clear_all();
                     return false;
                 }
             } else {
@@ -1861,10 +1894,11 @@ void matrix_scan_user(void) {
     }
 
 
-	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 3000)   {
+	if (is_alt_tab_active && timer_elapsed(alt_tab_timer) > 20000)   {
            unregister_code(KC_LALT);
            unregister_code(KC_TAB);
            is_alt_tab_active = false;
+           send_layer_status_with_at("AT_OFF",layer_state);
 
    }
 
@@ -2121,7 +2155,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
     TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                             HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, LT(0,PGDN_PGUP) , XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                             TO(_BASE), KC_BTN2, KC_SPC
+                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                             TO(_BASE), KC_BTN2, LT(_DEV,KC_SPACE)
                                        // `---------------------'                                           `--------------------------'
     ),
 
@@ -2132,7 +2166,25 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
 
 };
 
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+    if (data[0] == 'R' || data[1] == 'R') {
+        // 1. Esperamos 50ms para que el clic del mouse "entre" en Windows primero
+      //  wait_ms(50);
 
+        // 2. Ahora sí, soltamos el Alt físicamente
+        unregister_code(KC_LALT);
+        unregister_code(KC_TAB);
+
+        // 3. Reset de lógica interna
+        is_alt_tab_active = false;
+        alt_tab_hold_done = false;
+        alt_tab_pressed = false;
+        alt_tab_timer = timer_read();
+
+        // 4. Confirmación a Python
+        send_layer_status_with_at("AT_OFF", layer_state);
+    }
+}
 
 //Tap dance imple
 
@@ -2490,36 +2542,36 @@ uint8_t layer = get_highest_layer(state);
         switch (layer) {
             case _ALFA:
                  rgblight_set_layer_state(1, true); // ALFA LY
-                 send_layer_status("LAYER_ALFA");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _NUMB:
                  rgblight_set_layer_state(5, true); // NUMBERS LY
-                 send_layer_status("LAYER_NUMB");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _MODE:
                 rgblight_set_layer_state(13, true); // MODE   LY
-                send_layer_status("LAYER_MODE");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _COMMIT:
                 rgblight_set_layer_state(14, true); // COMMIT LY
-                send_layer_status("LAYER_COMMIT");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
       		 case _MOUSE_1:
                 rgblight_set_layer_state(16, true); // MOUSE_1 LY
-                send_layer_status("LAYER_MOUSE_1");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
       		 case _MOUSE_2:
                 rgblight_set_layer_state(17, true); // MOUSE_2 LY
-                send_layer_status("LAYER_MOUSE_2");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             default:
-               send_layer_status("LAYER_BASE");
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                break;
         }
     return state;
