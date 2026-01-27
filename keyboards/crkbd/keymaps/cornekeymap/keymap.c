@@ -2169,7 +2169,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
 void raw_hid_receive(uint8_t *data, uint8_t length) {
     if (data[0] == 'R' || data[1] == 'R') {
         // 1. Esperamos 50ms para que el clic del mouse "entre" en Windows primero
-      //  wait_ms(50);
+        wait_ms(50);
 
         // 2. Ahora sí, soltamos el Alt físicamente
         unregister_code(KC_LALT);
