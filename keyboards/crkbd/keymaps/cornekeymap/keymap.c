@@ -715,9 +715,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case HIBERNATE:
             if (record->event.pressed) {
-                tap_code16_delay(LGUI(KC_X), 120);
-                tap_code16_delay(KC_U,120);
-                wait_ms(300);
+                tap_code16_delay(LGUI(KC_X), 420);
+                tap_code16_delay(KC_U,320);
                 tap_code(KC_H);
             }
             break;
@@ -1930,7 +1929,7 @@ LT(KC_F4, CLOSE_WIN), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC
 // |--------+--------+--------+--------+--------+----------------------------------------|                                    |--------+--------+--------+--------+--------+--------|
 LT(_AI,_MOUSE_2), LT(_DEL,TG_0), LT(_MOVE_H,COPY), LT(_MOVE_V,PASTE), PASTE, LT(KC_S,SHIFT_2), LT(KC_S, SHIFT_2),          SLEEP, LT(_BOOK,KC_LEFT), LT(_MOVE_WIN,KC_DOWN), LT(_MOVE_L,KC_RIGHT), LT(_AI,KC_UP),
 // |--------+--------+--------+--------+--------+----------------------------------------|                                    |--------+--------+--------+--------+--------+--------|
-TG(_ALFA), LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                                    HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG(_MOUSE_2), LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                                    HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                                    |--------+--------+--------+--------+--------+--------+--------|
                                     				   LT(_MOVE_WIN,KC_ENT), C(KC_Z), LT(0,CTL_GUI),                           TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                         // `----------------------------------'                                `---------------------------------'
@@ -2061,7 +2060,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), C(KC_F), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+        C(S(KC_F12)), A(KC_UP), XXXXXXX, C(KC_F), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      C(KC_F4), _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
