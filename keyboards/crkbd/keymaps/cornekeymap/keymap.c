@@ -1939,7 +1939,7 @@ TG(_MOUSE_2), LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                  
     //_ALFA ly 1
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), XXXXXXX,
+LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), XXXXXXX,             XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), XXXXXXX,
 // |--------+--------+--------+--------+--------+-----------|                                |--------+--------+--------+--------+--------+--------|
 LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), KC_F24, LT(KC_S, SHIFT_2),      XXXXXXX,  KC_CAPS, KC_O, LT(_SYMB,KC_S), KC_R, KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                |--------+--------+--------+--------+--------+--------|
