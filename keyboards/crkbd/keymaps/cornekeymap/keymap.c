@@ -2142,7 +2142,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
                                        // `---------------------'                                       `--------------------------'
     ),
 
-    // _MOUSE_2 Ly 17 LCTL_T(KC_F3) LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT) LT(KC_F22, TG_F22)
+    // _MOUSE_2 Ly 17 LCTL_T(KC_F3) LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE)
     [_MOUSE_2] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                                             ,-----------------------------------------------------.
     LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), KC_F15,       XXXXXXX, XXXXXXX, TD(TDQ_SEL), KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
@@ -2151,7 +2151,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
     TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                               HIBERNATE, XXXXXXX, KC_MS_WH_LEFT , KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                        TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
+                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                        TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                        // `---------------------'                                           `--------------------------'
     ),
 
