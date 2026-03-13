@@ -118,7 +118,6 @@ enum custom_keycodes {
     CRIGHT_10,
     CLEFT_10,
     C_END_HOME,
-    PGDN_PGUP,
     QUESTION,
     CRIGHT_5,
     CLEFT_5,
@@ -541,19 +540,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(0, PGDN_PGUP):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: KC_PGUP
-                    tap_code(KC_PGUP);
-                    return false;
-                } else {
-                    // TAP: KC_PGDN
-                    tap_code(KC_PGDN);
-                    return false;
-                }
-            }
-            return false;
+
 
         case LT(0, QUESTION):
             if (record->event.pressed) {
@@ -2059,7 +2046,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, LT(0, PGDN_PGUP)
+                                       XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                        // `----------------------'                              `--------------------------'
     ),
 
@@ -2068,11 +2055,11 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, C(KC_T), C(KC_L), LT(0,SPLIT_WIN), XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT), KC_F5, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+           C(S(KC_TAB)), A(KC_LEFT), C(KC_TAB), A(KC_RIGHT),  C(S(KC_F12)), XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        C(S(KC_F12)), A(KC_UP), XXXXXXX, C(KC_F), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+           A(KC_UP), G(C(KC_LEFT)), G(C(KC_RIGHT)), C(KC_F), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     C(KC_F4), _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
+                                      XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
     ),
 
@@ -2149,7 +2136,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
         TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL2,PASTE), XXXXXXX, XXXXXXX,           XXXXXXX, KC_BTN2, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        LT(KC_MS_WH_UP,KC_MS_WH_DOWN), LT(0,PGDN_PGUP), G(KC_T), C(KC_Z), XXXXXXX, KC_LALT  ,             XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
+        LT(KC_MS_WH_UP,KC_MS_WH_DOWN),XXXXXXX, G(KC_T), C(KC_Z), XXXXXXX, KC_LALT  ,             XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
                                         LT(KC_SPC, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                          XXXXXXX, KC_BTN2, KC_SPC
                                        // `---------------------'                                       `--------------------------'
@@ -2160,11 +2147,11 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
     // ,-----------------------------------------------------.                                             ,-----------------------------------------------------.
     LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), KC_F15,       XXXXXXX, XXXXXXX, TD(TDQ_SEL), KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    LT(_MOVE_H, TG_0), KC_F22, KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                  SLEEP, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_BTN1, XXXXXXX,
+    LT(_MOVE_H, TG_0), KC_F22, KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                  SLEEP, LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT), KC_MS_L, KC_MS_R, KC_BTN1, KC_BTN2,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                               HIBERNATE, XXXXXXX, KC_MS_WH_LEFT , KC_MS_WH_RIGHT, LT(0,PGDN_PGUP) , XXXXXXX,
+    TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                               HIBERNATE, XXXXXXX, KC_MS_WH_LEFT , KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
     // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                        TO(_BASE), KC_BTN2, LT(_DEV,KC_SPACE)
+                                        LT(_MOVE_WIN, ENT2), C(KC_Z), LT(0,CTL_GUI),                        TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                        // `---------------------'                                           `--------------------------'
     ),
 
