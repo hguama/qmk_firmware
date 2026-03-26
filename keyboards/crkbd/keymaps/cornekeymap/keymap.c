@@ -1118,7 +1118,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(_AI,_MOUSE_2):
+        case LT(_MOVE_H,_MOUSE_2):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     return true; // hold - will activate _AI layer
