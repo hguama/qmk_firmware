@@ -1894,13 +1894,28 @@ tap_dance_action_t tap_dance_actions[] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
+
+//eliminar LT(0,CTL_GUI)
+// _MOUSE_2 Ly 17 LCTL_T(KC_F3) LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22
+[_BASE] = LAYOUT_split_3x6_3(
+        // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
+LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
+// |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
+LT(_MOVE_H, TG_0), TG(_ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                     SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
+// |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
+TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
+// |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
+                                                      LT(_MOVE_WIN, ENT2), C(KC_Z), XXXXXXX,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
+                                                      // `---------------------'                          `--------------------------'
+),
+
     //_BASE Layer LT(ALT_SHIFT,_MOUSE_1) LT(_DEV,SHIFT_TOGGLE) _MOVE_H _MOVE_V  _MOVE_L _BOOK _MOVE_L _MOVE_WIN
     //LT(_MOVE_H,_MOUSE_2)no  Se está usando, pero se deja para la recurrencia.
-    [_BASE] = LAYOUT_split_3x6_3(
+    [_MOUSE_2] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                     QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                             SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,XXXXXXX, XXXXXXX,
+LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                         SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,XXXXXXX, XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG(_MOUSE_2), LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                        HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -2118,19 +2133,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
                                        // `---------------------'                                       `--------------------------'
     ),
 
-    //eliminar LT(0,CTL_GUI)
-    // _MOUSE_2 Ly 17 LCTL_T(KC_F3) LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL),
-    [_MOUSE_2] = LAYOUT_split_3x6_3(
-    // ,-----------------------------------------------------.                                             ,-----------------------------------------------------.
-    LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), KC_F15,       XXXXXXX, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
-    // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    LT(_MOVE_H, TG_0), KC_F22, KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                  SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
-    // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------|
-    TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                               HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
-    // |--------+--------+--------+--------+--------+--------|                                             |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(_MOVE_WIN, ENT2), C(KC_Z), XXXXXXX,                             TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
-                                       // `---------------------'                                           `--------------------------'
-    ),
+
 
 
 
@@ -2464,6 +2467,7 @@ const rgblight_segment_t PROGMEM _mouse_2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 0
+    NULL,
     _alfa_layer,        // 1
     NULL,               // 2
     NULL,               // 3
