@@ -1534,7 +1534,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _BASE
                     base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_BASE);                       // dejamos _BASE sola (prioridad)
+                    layer_move(_MOUSE_2);                       // dejamos _BASE sola (prioridad)
                     base_layer_active = true;
                     return false;
                 }
@@ -1896,14 +1896,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar LT(0,CTL_GUI)
-// _MOUSE_2 Ly 17 LCTL_T(KC_F3) LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22
+// _MOUSE_2 CTL_GUIKC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22 TG_ALFA
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), TG(_ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                     SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
+XXXXXXX, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                                       LT(_MOVE_WIN, ENT2), C(KC_Z), XXXXXXX,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
@@ -1915,9 +1915,9 @@ TG_ALFA, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                       
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                     QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                         SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,XXXXXXX, XXXXXXX,
+LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                         SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,KC_DOWN, KC_UP,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG(_MOUSE_2), LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                        HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                        HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                     				   LT(_MOVE_WIN,KC_ENT), C(KC_Z), LT(0,CTL_GUI),                 TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                         // `----------------------------------'                       `---------------------------------'
