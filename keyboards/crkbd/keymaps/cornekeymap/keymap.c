@@ -26,6 +26,7 @@ JKL
 //Layer names enum
 enum layer_names {
     _BASE    = 0,  // 0
+    _MOUSE_2,
     _ALFA,         // 1
     _DEV,          // 2
     _DEL,          // 3
@@ -41,8 +42,8 @@ enum layer_names {
     _MODE,         // 13
     _COMMIT,       // 14
     _AI,           // 15
-    _MOUSE_1,      // 16
-    _MOUSE_2       // 17
+    _MOUSE_1     // 16
+           // 17
 };
 
 
@@ -52,7 +53,6 @@ enum custom_keycodes {
     TG_F22,
     CUT,
     TG_ALFA,
-    ENT2,
     SHIFT_2,
     CLOSE_WIN,
     SELALL_SPACE,
@@ -1755,6 +1755,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+
+        case LT(KC_F22, _ALFA):
+            if (record->event.pressed) {
+                if (record->tap.count && !record->tap.interrupted) {
+                    // TAP
+                    layer_invert(_ALFA);
+                } else {
+                    // HOLD (presionar F22)
+                    register_code16(KC_F22);
+                }
+            } else {
+                // RELEASE (soltar F22)
+                unregister_code16(KC_F22);
+            }
+            return false;
+
         case LT(KC_S, SHIFT_2):
             if (record->event.pressed) {
                 if (record->tap.count > 0) {
@@ -1772,31 +1788,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-         case LT(_MOVE_WIN, ENT2):
-            if (record->event.pressed) {
-                if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _DEL
-                    del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOVE_WIN);                       // dejamos _DEL sola (prioridad)
-                    del_layer_active = true;
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple:
-                    tap_code(KC_ENT);
-                    clear_all();
-                    return false;
-                }
-            } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (del_layer_active) {
-                    layer_move(del_prev_layer);
-                    del_layer_active = false;
-                }
-            }
-            return true;
-
-        case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
+       case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Scroll up
@@ -1901,11 +1893,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), TG(_ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                     SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
+LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                                     SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-XXXXXXX, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
+KC_LGUI, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, ENT2), C(KC_Z), XXXXXXX,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), C(KC_Z), XXXXXXX,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
@@ -1919,7 +1911,7 @@ LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),   
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                        HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
-                                    				   LT(_MOVE_WIN,KC_ENT), C(KC_Z), LT(0,CTL_GUI),                 TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
+                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                 TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                         // `----------------------------------'                       `---------------------------------'
     ),
 
