@@ -1907,7 +1907,7 @@ KC_LGUI, LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                       
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                     QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOUSE_2), LT(_DEL,TG_0), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                         SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,KC_DOWN, KC_UP,
+LT(_MOVE_H,_MOUSE_2), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                         SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT,KC_DOWN, KC_UP,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                        HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
