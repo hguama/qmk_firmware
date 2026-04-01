@@ -26,7 +26,7 @@ JKL
 //Layer names enum
 enum layer_names {
     _BASE    = 0,  // 0
-    _MOUSE_2,
+    _MOVE,
     _ALFA,         // 1
     _DEV,          // 2
     _DEL,          // 3
@@ -287,7 +287,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _MODE:    layer_name = "LAYER_MODE"; break;
         case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
         case _MOUSE_1: layer_name = "LAYER_MOUSE_1"; break;
-        case _MOUSE_2: layer_name = "LAYER_MOUSE_2"; break;
+        case _MOVE: layer_name = "LAYER_MOVE"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
 
@@ -1118,7 +1118,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(_MOVE_H,_MOUSE_2):
+        case LT(_MOVE_H,_MOVE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     return true; // hold - will activate _AI layer
@@ -1130,7 +1130,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         tap_code(KC_CAPS);
                     }
 
-                    layer_invert(_MOUSE_2); // tap - toggle _MOUSE_2 layer
+                    layer_invert(_MOVE); // tap - toggle _MOVE layer
                     return false;
                 }
             }
@@ -1352,7 +1352,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            // layer_invert(_MOUSE_2); // tap - toggle _MOUSE_2 layer
+            // layer_invert(_MOVE); // tap - toggle _MOVE layer
          case LT(_MOVE_H, TG_0):
              if (record->event.pressed) {
                 if (record->tap.count == 0) {
@@ -1364,7 +1364,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 1) {
                     // TAP simple: enviar
-                    layer_invert(_MOUSE_2); // tap - toggle _MOUSE_2 layer
+                    layer_invert(_MOVE); // tap - toggle _MOVE layer
                     return false;
                 }
             } else {
@@ -1402,19 +1402,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case TG_ALFA:
             if (record->event.pressed) {
-                if (IS_LAYER_ON(_MOUSE_2)) {
+                if (IS_LAYER_ON(_MOVE)) {
                     // Si estoy en Mouse, la apago y enciendo Alfa
-                    layer_off(_MOUSE_2);
+                    layer_off(_MOVE);
                     layer_on(_ALFA);
                 }
                 else if (IS_LAYER_ON(_ALFA)) {
                     // Si ya estoy en Alfa, la apago y regreso a Mouse
                     layer_off(_ALFA);
-                    layer_on(_MOUSE_2);
+                    layer_on(_MOVE);
                 }
                 else {
                     // Si por alguna razón estoy en Base, voy a Mouse (o lo que prefieras)
-                    layer_on(_MOUSE_2);
+                    layer_on(_MOVE);
                 }
             }
             return false;
@@ -1534,7 +1534,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _BASE
                     base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOUSE_2);                       // dejamos _BASE sola (prioridad)
+                    layer_move(_MOVE);                       // dejamos _BASE sola (prioridad)
                     base_layer_active = true;
                     return false;
                 }
@@ -1882,32 +1882,32 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 // ============================================================================
-// KEYMAPS  LT(_AI,_MOUSE_2)
+// KEYMAPS  LT(_AI,_MOVE)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar LT(0,CTL_GUI)
-// _MOUSE_2 CTL_GUIKC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22 TG_ALFA
+// _MOVE CTL_GUIKC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22 TG_ALFA
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                          SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                                  HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
+LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                         HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                                       LT(_MOVE_WIN, KC_ENT), C(KC_Z), KC_LCTL,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
     //_BASE Layer LT(ALT_SHIFT,_MOUSE_1) LT(_DEV,SHIFT_TOGGLE) _MOVE_H _MOVE_V  _MOVE_L _BOOK _MOVE_L _MOVE_WIN
-    //LT(_MOVE_H,_MOUSE_2)no  Se está usando, pero se deja para la recurrencia.
-    [_MOUSE_2] = LAYOUT_split_3x6_3(
+    //LT(_MOVE_H,_MOVE)no  Se está usando, pero se deja para la recurrencia.
+    [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), KC_ESC, ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                    QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOUSE_2), MO(_DEL), LT(_SYMB,KC_DOWN), KC_UP, PASTE, LT(KC_S,SHIFT_2),                                             SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, LSFT_T(KC_UP),
+LT(_MOVE_H,_MOVE), MO(_DEL), LT(_SYMB,KC_DOWN), KC_UP, PASTE, LT(KC_S,SHIFT_2),                                             SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, LSFT_T(KC_UP),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                           HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -2452,8 +2452,8 @@ const rgblight_segment_t PROGMEM _mouse_1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_YELLOW}
 );
 
-// _mouse_2_layer ly17
-const rgblight_segment_t PROGMEM _mouse_2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _move_layer ly17
+const rgblight_segment_t PROGMEM _move_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_BLUE}
 );
 
@@ -2476,7 +2476,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     _commit_layer,      // 14
     NULL,               // 15
     _mouse_1_layer,     // 16
-    _mouse_2_layer      // 17
+    _move_layer      // 17
 );
 
 void keyboard_post_init_user(void) {
@@ -2531,7 +2531,7 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-      		 case _MOUSE_2:
+      		 case _MOVE:
                 rgblight_set_layer_state(17, true); // MOUSE_2 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
