@@ -1802,7 +1802,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            //para eliminar la tecla d
+            //todo:para eliminar la tecla d
         case  LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1887,8 +1887,8 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
-//eliminar LT(0,CTL_GUI)
-// _MOVE CTL_GUIKC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 KC_F22 TG_ALFA
+//eliminar SHIFT_TOGGLE ALT_SHIFT
+//  CTL_GUI KC_MS_WH_RIGHT) LT(KC_F22, TG_F22) LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
@@ -1897,17 +1897,16 @@ LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2)
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT  ,                                         HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), C(KC_Z), KC_LCTL,              TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),      TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
-    //_BASE Layer LT(ALT_SHIFT,_MOUSE_1) LT(_DEV,SHIFT_TOGGLE) _MOVE_H _MOVE_V  _MOVE_L _BOOK _MOVE_L _MOVE_WIN
-    //LT(_MOVE_H,_MOVE)no  Se está usando, pero se deja para la recurrencia.
+    //_BASE Layer   _MOVE_V  _MOVE_L _BOOK
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), KC_ESC, ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                    QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LT(_SYMB,KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOVE), MO(_DEL), LT(_SYMB,KC_DOWN), KC_UP, PASTE, LT(KC_S,SHIFT_2),                                             SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, LSFT_T(KC_UP),
+LT(_MOVE_H,_MOVE), MO(_DEL), LT(_SYMB,KC_DOWN), LT(_DEL, KC_UP), PASTE, LT(KC_S,SHIFT_2),                                             SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, LSFT_T(KC_UP),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                           HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -1947,7 +1946,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, TO(_BASE), XXXXXXX, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, KC_DEL, KC_BSPC , DEL_WORD,  DEL_LINE,
+           XXXXXXX, C(S(KC_V)), G(KC_V), XXXXXXX, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, KC_DEL, KC_BSPC , DEL_WORD,  DEL_LINE,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
