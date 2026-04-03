@@ -2011,9 +2011,9 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, LGUI(KC_UP), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, C(S(KC_V)), G(KC_V), C(KC_L), KC_F11, XXXXXXX,                                 XXXXXXX, XXXXXXX,  S(KC_TAB), XXXXXXX, XXXXXXX,  C(S(KC_L)),
+           XXXXXXX, C(S(KC_V)), G(KC_V), C(KC_F), KC_F11, XXXXXXX,                                 XXXXXXX, XXXXXXX,  S(KC_TAB), XXXXXXX, XXXXXXX,  C(S(KC_L)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, C(KC_F), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L) , XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       KC_PSCR, KC_LGUI, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                      // `------------------------'                              `--------------------------'
