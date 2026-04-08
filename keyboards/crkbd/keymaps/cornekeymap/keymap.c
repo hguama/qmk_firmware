@@ -1696,15 +1696,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // 1. LÓGICA DE HOLD (Seleccionar Todo)
                 if (record->tap.count == 0) {
                     // Limpiamos cualquier estado previo para evitar conflictos
-                    clear_keyboard();
-                    _delay_ms(15); // Aumentamos ligeramente a 15ms para estabilidad
+                   // clear_keyboard();
+                   // _delay_ms(15); // Aumentamos ligeramente a 15ms para estabilidad
 
                     // Enviamos Ctrl+A de forma atómica y explícita
-                    register_code(KC_LCTL);
-                    _delay_ms(5); // Micro-pausa entre Ctrl y A
-                    tap_code(KC_A);
-                    _delay_ms(5);
-                    unregister_code(KC_LCTL);
+                   // register_code(KC_LCTL);
+                   // _delay_ms(5); // Micro-pausa entre Ctrl y A
+                    //tap_code(KC_A);
+                    //_delay_ms(5);
+                   // unregister_code(KC_LCTL);
+                    tap_code16(G(KC_D));
 
                     return false;
                 }
@@ -1888,14 +1889,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar SHIFT_TOGGLE ALT_SHIFT  LT(KC_F22, TG_F22)
-//  CTL_GUI KC_MS_WH_RIGHT)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15
+//  CTL_GUI KC_MS_WH_RIGHT)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, LT(_SYMB,KC_MS_WH_UP), XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,         QK_BOOT, LT(SEL_ALL,KC_SPACE), XXXXXXX, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                          SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT,                                         HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
+LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                                         HIBERNATE, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                                       LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),      TO(_BASE), KC_LSFT, LCTL_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
@@ -1904,11 +1905,11 @@ LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, WIN_D, KC_LALT,                
     //_BASE Layer   _MOVE_V  _MOVE_L _BOOK
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), QK_BOOT,                     QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
+LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                     QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H,_MOVE), MO(_DEL), LT(_SYMB,KC_DOWN), KC_UP, PASTE, LT(KC_S,SHIFT_2),                                     SLEEP, XXXXXXX, KC_LEFT, LT(_SYMB,KC_RIGHT), KC_DOWN, KC_UP,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), WIN_D, KC_LALT,                                                           HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), LT(SEL_ALL,KC_SPACE), KC_LALT,                                                           HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
 // |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                         LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                TO(_BASE), XXXXXXX, LT(_DEV,KC_SPACE)
                                                         // `----------------------------------'                       `---------------------------------'
@@ -2201,9 +2202,9 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP://
-                    //seleccionar palabra
-                    tap_code16_delay(C(KC_LEFT), 10);
-                    tap_code16_delay(C(S(KC_RIGHT)), 10);
+                    //select all
+              tap_code16(C(KC_A));
+
         break;
 
         case TD_SINGLE_HOLD: //
@@ -2216,11 +2217,15 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data) {
          break;
 
         case TD_DOUBLE_TAP:
+            //select word
+            tap_code16_delay(C(KC_LEFT), 10);
+            tap_code16_delay(C(S(KC_RIGHT)), 10);
+
                     // HOLD: seleccionar párrafo
-                    tap_code16_delay(KC_END, 10);
-                    tap_code16_delay(KC_HOME, 10);
-                    tap_code16_delay(KC_HOME, 30);
-                    tap_code16(S(A(KC_PGDN))); // Shift + Alt + PgDn
+                   // tap_code16_delay(KC_END, 10);
+                   // tap_code16_delay(KC_HOME, 10);
+                    //tap_code16_delay(KC_HOME, 30);
+                    //tap_code16(S(A(KC_PGDN))); // Shift + Alt + PgDn
 
         break;
 
