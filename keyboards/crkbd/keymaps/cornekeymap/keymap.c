@@ -79,7 +79,6 @@ enum custom_keycodes {
     M_Y,
     DEL_WORD,
     DEL_LINE,
-    WIN_D,
     SEL_W_ALL,
     LLAMBDA,
     DOUBLE_COLON,
@@ -318,11 +317,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case WIN_D:
-            if (record->event.pressed) {
-                tap_code16(G(KC_D)); // Win + D
-            }
-            break;
 
         case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
@@ -1552,6 +1546,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
+
+        case LT(_BASE,KC_O):
+            if (record->event.pressed) {
+                if (record->tap.count == 0) {
+                    // HOLD (sin taps): mover exclusivamente a _BASE
+                    base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
+                    layer_move(_MOVE);                       // dejamos _BASE sola (prioridad)
+                    base_layer_active = true;
+                    return false;
+                }
+                if (record->tap.count == 1) {
+                    // TAP simple: enviar F
+                    tap_code(KC_O);
+                    return false;
+                }
+            } else {
+                // RELEASE: si activamos la capa, restauramos la previa
+                if (base_layer_active) {
+                    layer_move(base_prev_layer);
+                    base_layer_active = false;
+                }
+            }
+            return true;
+
         case LT(0,ESC_W):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1919,11 +1937,11 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MO(_BOOK), LT(SEL_ALL,KC_SPACE), KC_LALT,        
     //_ALFA ly 1
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                      ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), LT(SEL_ALL,KC_SPACE), XXXXXXX,      XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), KC_RALT,
+LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), LT(0,T_F), LT(_NUMB,KC_TAB), TD(TDQ_SEL), XXXXXXX,      XXXXXXX, XXXXXXX, LT(0,H_J), LT(0,D_Q), LT(0,L_K), KC_RALT,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), PASTE, LT(KC_S, SHIFT_2),              XXXXXXX, KC_F , KC_O, LT(_SYMB,KC_S), KC_R, KC_N,
+LT(_MOVE_H,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), PASTE, LT(KC_S, SHIFT_2),              XXXXXXX, KC_F , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                                         HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_T,
+TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), LT(SEL_ALL,KC_SPACE), KC_LALT  ,                                         HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_T,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------+--------|
                          LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		        TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                      `--------------------------'
@@ -2093,7 +2111,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), WIN_D, KC_LALT  ,                     
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            MS_ACL2, MS_ACL1, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                                 SLEEP, XXXXXXX, MS_WHLL, MS_WHLD, MS_WHLR, MS_WHLU,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, WIN_D,                                  HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, LT(SEL_ALL,KC_SPACE),                                  HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      C(A(KC_R)),  XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TO(_BASE)
                                      // `-------------------------'                             `--------------------------'
