@@ -2032,7 +2032,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, C(S(KC_V)), G(KC_V), C(KC_F), KC_F5, XXXXXXX,                                 XXXXXXX, XXXXXXX,  S(KC_TAB), XXXXXXX, XXXXXXX,  C(S(KC_L)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_F11, C(KC_L) , XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
+           XXXXXXX, XXXXXXX, KC_F11, KC_BTN2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       KC_PSCR, KC_LGUI, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                      // `------------------------'                              `--------------------------'
@@ -2058,7 +2058,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
        C(KC_T), C(S(KC_TAB)), C(KC_TAB), KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       KC_BTN2, G(C(KC_LEFT)), G(C(KC_RIGHT)), A(KC_UP), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+       C(KC_L), G(C(KC_LEFT)), G(C(KC_RIGHT)), A(KC_UP), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
