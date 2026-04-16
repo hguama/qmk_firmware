@@ -1141,7 +1141,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 } else {
                     // TAP: limpiar y alternar capa de mouse
                     clear_all();
-                    tap_code(KC_LGUI);
+                    tap_code16(C(KC_Z));
                     return false;
                 }
             } else {
@@ -1916,7 +1916,7 @@ LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2)
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), KC_MS_WH_LEFT, KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),      TO(_BASE), KC_LCTL, LSFT_T(KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), XXXXXXX,      TO(_BASE), KC_LCTL, LSFT_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
