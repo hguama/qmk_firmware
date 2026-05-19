@@ -1,8 +1,8 @@
 TAP_DANCE_ENABLE    = yes
 MOUSEKEY_ENABLE     = yes
 RAW_ENABLE          = yes
-RGBLIGHT_ENABLE     = yes  # Activa la iluminación RGB
-RGB_MATRIX_ENABLE   = no   # Activa RGB matrix (RGBLIGHT_ENABLE debe estar en NO)
+RGBLIGHT_ENABLE     = no  # Activa la iluminación RGB
+RGB_MATRIX_ENABLE   = yes   # Activa RGB matrix (RGBLIGHT_ENABLE debe estar en NO)
 COMBO_ENABLE        = no
 REPEAT_KEY_ENABLE   = no
 

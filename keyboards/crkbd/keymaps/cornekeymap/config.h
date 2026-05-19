@@ -61,20 +61,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //leds total 54. 27 leds one half
 
 //RGB LIGHT
-#define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT
-#define RGBLIGHT_LAYERS //for RGBLIGHT
-#define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
+//#define SPLIT_LAYER_STATE_ENABLE //para RGB LIGHT
+//#define RGBLIGHT_LAYERS //for RGBLIGHT
+//#define RGBLIGHT_DISABLE_EFFECTS //for RGB LIGHT
 //#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
 
 //RGB MATRIX
 ////#define SPLIT_LAYER_STATE_ENABLE //for RGB MATRIX(desactivar para que no haga mirror. Dejar comentado)
-//#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
-//#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX. desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
+#define DISABLE_RGB_MATRIX_EFFECTS //para RGB MATRIX
+#define RGB_MATRIX_DISABLE_SHARED_KEYCODES //for RGB MATRIX. desactiva botones de RGB MATRIX, como RM_TOGG, RM_SATU, ETC.
 //#define RGBLIGHT_SLEEP //si el pc sleep, los leds tambien.
-//#undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
-//#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 80  // Valor entre 0 y 255
+#undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 80  // Valor entre 0 y 255
 
-#define RGBLIGHT_SLEEP
+/*#define RGBLIGHT_SLEEP
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLIGHT_LIMIT_VAL
     #define RGBLIGHT_LIMIT_VAL 150 //ok 255 default
@@ -82,4 +82,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     // Apagar luces después de 10 minutos sin uso
     #define RGBLIGHT_IDLE_TIMEOUT 60000
 
-#endif
+#endif*/

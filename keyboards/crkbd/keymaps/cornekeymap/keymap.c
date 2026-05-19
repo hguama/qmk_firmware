@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JKL
 */
 #include QMK_KEYBOARD_H
-#include "rgblight.h"
+//#include "rgblight.h"
 #include "raw_hid.h"
 
 
@@ -2414,26 +2414,43 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 /////RGB MATRIX
-//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-//
-// switch (get_highest_layer(layer_state | default_layer_state)) {
-//         case 2:
-//             rgb_matrix_set_color(8, RGB_GREEN);  // R, G, B
-//             break;
-//         case 5:
-//            rgb_matrix_set_color(8, RGB_WHITE); //gris suave
-//             break;
-//         case 6:
-//             rgb_matrix_set_color(8, RGB_ORANGE);
-//             break;
-//
-//         default:
-//             //apagar todos los LEDs
-//             rgb_matrix_set_color_all(0, 0, 0);
-//             break;
-//     }
-//     return false;
-//}
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+// 1. Apagamos absolutamente todos los LEDs primero
+    rgb_matrix_set_color_all(0, 0, 0);
+uint8_t layer = get_highest_layer(layer_state);
+
+ switch (layer) {
+         case _MOVE:
+             rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
+             break;
+
+         case _ALFA:
+            rgb_matrix_set_color(8, 0, 100, 0); //gris suave
+             break;
+
+         case _NUMB:
+             rgb_matrix_set_color(8, 128, 128, 128);
+             break;
+
+         case _MODE:
+             rgb_matrix_set_color(8, RGB_PURPLE);
+             break;
+
+         case _COMMIT:
+             rgb_matrix_set_color(8, RGB_ORANGE);
+             break;
+
+         case _MOUSE_1:
+             rgb_matrix_set_color(8, 180, 150, 255);
+             break;
+
+         default:
+             //apagar todos los LEDs
+             rgb_matrix_set_color_all(0, 0, 0);
+             break;
+     }
+     return false;
+}
 
 
 //RGB LIGHT
@@ -2441,6 +2458,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 //capslock
 //{0, 0, HSV_OFF} {starting, numbers_leds, HSV_OFF}
+/*
 const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {0, 0, HSV_OFF}
 );
@@ -2478,7 +2496,9 @@ const rgblight_segment_t PROGMEM _mouse_1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 const rgblight_segment_t PROGMEM _move_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_BLUE}
 );
+*/
 
+/*
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 0
     NULL,
@@ -2500,13 +2520,15 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     _mouse_1_layer,     // 16
     _move_layer      // 17
 );
+*/
 
 void keyboard_post_init_user(void) {
+    rgb_matrix_set_color(8, 255, 150, 0);
     // Enable the LED layers
 //    debug_enable=true;
 //    debug_keyboard=true;
-    rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
-    rgblight_layers = my_rgb_layers;
+   // rgblight_sethsv_noeeprom(0, 0, 0); // Blanco puro//para apagar la primera capa, que no alumbren todos los leds
+    //rgblight_layers = my_rgb_layers;
 }
 
 
@@ -2517,44 +2539,46 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
 //    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
 
+/*
     rgblight_set_layer_state(1, false);  // _ALFA LY OFF
     rgblight_set_layer_state(5, false);  // _NUMB LY OFF
     rgblight_set_layer_state(13, false); // _MODE LY OFF
     rgblight_set_layer_state(14, false); // _COMMIT LY OFF
     rgblight_set_layer_state(16, false); // _MOUSE_1 LY OFF
     rgblight_set_layer_state(17, false); // _MOUSE_1 LY OFF
+*/
 
 
 uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
             case _ALFA:
-                 rgblight_set_layer_state(1, true); // ALFA LY
+                 //rgblight_set_layer_state(1, true); // ALFA LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _NUMB:
-                 rgblight_set_layer_state(5, true); // NUMBERS LY
+                // rgblight_set_layer_state(5, true); // NUMBERS LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _MODE:
-                rgblight_set_layer_state(13, true); // MODE   LY
+                //rgblight_set_layer_state(13, true); // MODE   LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _COMMIT:
-                rgblight_set_layer_state(14, true); // COMMIT LY
+                //rgblight_set_layer_state(14, true); // COMMIT LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
       		 case _MOUSE_1:
-                rgblight_set_layer_state(16, true); // MOUSE_1 LY
+                //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
       		 case _MOVE:
-                rgblight_set_layer_state(17, true); // MOUSE_2 LY
+                //rgblight_set_layer_state(17, true); // MOUSE_2 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
