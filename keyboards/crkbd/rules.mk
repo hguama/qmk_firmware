@@ -3,7 +3,7 @@ MOUSEKEY_ENABLE     = yes
 RAW_ENABLE          = yes
 RGBLIGHT_ENABLE     = no  # Activa la iluminación RGB
 RGB_MATRIX_ENABLE   = yes   # Activa RGB matrix (RGBLIGHT_ENABLE debe estar en NO)
-COMBO_ENABLE        = no
+COMBO_ENABLE        = yes
 REPEAT_KEY_ENABLE   = no
 
 #for reduce size firmware
