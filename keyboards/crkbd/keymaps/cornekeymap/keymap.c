@@ -134,9 +134,14 @@ enum custom_keycodes {
 };
 
 //Combo enum
-//enum combo_events {
-//  CB_CTRL_Z,   // identificador del combo
-//};
+enum combo_events {
+ CB_CENTER,
+ CB_SUP_DER,
+ CB_SUP_IZQ,
+ CB_INF_DER,
+ CB_INF_IZQ
+
+};
 
 //Tap Dance enum
 enum {
@@ -236,12 +241,18 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
-//const uint16_t PROGMEM cb_ctrl_z[] = {KC_J, LT(0,KC_K), COMBO_END};
+const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), KC_BTN1, COMBO_END};
+const uint16_t PROGMEM cb_ctrl_z2[] = {KC_MS_U, KC_MS_L, COMBO_END};
 
 //combo actions
-//combo_t key_combos[] = {
-// [CB_CTRL_Z]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
-// };
+combo_t key_combos[] = {
+ [CB_CENTER]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
+// [CB_CENTER] =
+// [CB_SUP_DER] =
+// [CB_SUP_IZQ] =
+// [CB_INF_DER] =
+// [CB_INF_IZQ] =
+};
 
 //general functions
 void clear_all(void) {
@@ -483,23 +494,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return true;
-
-
-
-        //Revisar si es necesario o eliminar.
-        case LT(0, C_END_HOME):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: C(KC_HOME)
-                    tap_code16(C(KC_HOME));
-                    return false;
-                } else {
-                    // TAP: C(KC_END)
-                    tap_code16(C(KC_END));
-                    return false;
-                }
-            }
-            return false;
 
 
 
@@ -1821,20 +1815,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            //todo:para eliminar la tecla d
-        case  LT(KC_MS_WH_LEFT,KC_MS_WH_RIGHT):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD:
-                    tap_code(KC_MS_WH_LEFT);
-                    return false;
-                } else {
-                    // TAP:
-                    tap_code(KC_MS_WH_RIGHT);
-                    return false;
-                }
-            }
-            return false;
 
         case LT(_MOVE_V, PASTE):
             if (record->event.pressed) {
