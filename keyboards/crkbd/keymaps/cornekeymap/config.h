@@ -49,7 +49,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_WHEEL_DELTA 2 //Wheel movement step size
 #define MOUSEKEY_WHEEL_MAX_SPEED 3 //Maximum number of scroll steps per scroll action
 
-
+//MOUSE MOVE Inertia
+//
+//#define MOUSEKEY_INERTIA
+//#define MOUSEKEY_DELAY        150
+//#define MOUSEKEY_INTERVAL     16      // 1000/60fps
+//#define MOUSEKEY_MAX_SPEED    32      // ~1920px/60fps
+//#define MOUSEKEY_TIME_TO_MAX  30
+//#define MOUSEKEY_FRICTION     32      // más alto = frena más rápido
+//#define MOUSEKEY_MOVE_DELTA   1       // para movimientos precisos antes del deslizamiento
 //MOUSE MOVE
 /*#define MK_KINETIC             // curva cuadrática: arranque suave + turbo
 #define MOUSEKEY_DELAY         5

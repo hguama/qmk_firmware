@@ -55,7 +55,6 @@ enum custom_keycodes {
     TG_ALFA,
     SHIFT_2,
     CLOSE_WIN,
-    SELALL_SPACE,
     SEL_ALL,
 	TO_NUMB,
     CTL_GUI,
@@ -64,7 +63,6 @@ enum custom_keycodes {
     OPEN_QUEST,
     NOT_EQUAL,
     MS_ACL0_TOGGLE,
-    DEV_LY_SPACE,
     Z_UNDO,
     TRIPLE_WHLD,
     EQUAL_DBL,
@@ -119,7 +117,6 @@ enum custom_keycodes {
     DOWN_10,
     UP_10,
     PIPE_M,
-    DEL_LAYER_PERC,  // Tecla personalizada para ir a capa _DEL momentáneamente
     ESC_W,           // Tecla personalizada TAP: ESC | HOLD: W
     T_F,           // Tecla personalizada TAP: TAB | HOLD: F
     H_J,             // Tecla personalizada TAP: H | HOLD: J
@@ -146,8 +143,6 @@ enum combo_events {
 //Tap Dance enum
 enum {
     TDQ_SEL,
-    TDQ_PASTE,
-    TDQ_CUT,
     TDQ_BOOKMARK,
     TDQ_GOTO,
     TDQ_FIND,
@@ -713,7 +708,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(0,KC_LABK):
             if (record->event.pressed) {
                 if (!record->tap.count) { //hold
-                    SEND_STRING("<=");
+                  //  SEND_STRING("<=");
+                    tap_code16(KC_LABK);
+                    tap_code16(KC_EQL);
                     return false;
                 } else {
                     tap_code16(KC_LABK); //tap <
@@ -2394,43 +2391,43 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 /////RGB MATRIX
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-// 1. Apagamos absolutamente todos los LEDs primero
-    rgb_matrix_set_color_all(0, 0, 0);
-uint8_t layer = get_highest_layer(layer_state);
-
- switch (layer) {
-         case _MOVE:
-             rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
-             break;
-
-         case _ALFA:
-            rgb_matrix_set_color(8, 0, 100, 0); //gris suave
-             break;
-
-         case _NUMB:
-             rgb_matrix_set_color(8, 128, 128, 128);
-             break;
-
-         case _MODE:
-             rgb_matrix_set_color(8, RGB_PURPLE);
-             break;
-
-         case _COMMIT:
-             rgb_matrix_set_color(8, RGB_ORANGE);
-             break;
-
-         case _MOUSE_1:
-             rgb_matrix_set_color(8, 180, 150, 255);
-             break;
-
-         default:
-             //apagar todos los LEDs
-             rgb_matrix_set_color_all(0, 0, 0);
-             break;
-     }
-     return false;
-}
+//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+//// 1. Apagamos absolutamente todos los LEDs primero
+//    rgb_matrix_set_color_all(0, 0, 0);
+//uint8_t layer = get_highest_layer(layer_state);
+//
+// switch (layer) {
+//         case _MOVE:
+//             rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
+//             break;
+//
+//         case _ALFA:
+//            rgb_matrix_set_color(8, 0, 100, 0); //gris suave
+//             break;
+//
+//         case _NUMB:
+//             rgb_matrix_set_color(8, 128, 128, 128);
+//             break;
+//
+//         case _MODE:
+//             rgb_matrix_set_color(8, RGB_PURPLE);
+//             break;
+//
+//         case _COMMIT:
+//             rgb_matrix_set_color(8, RGB_ORANGE);
+//             break;
+//
+//         case _MOUSE_1:
+//             rgb_matrix_set_color(8, 180, 150, 255);
+//             break;
+//
+//         default:
+//             //apagar todos los LEDs
+//             rgb_matrix_set_color_all(0, 0, 0);
+//             break;
+//     }
+//     return false;
+//}
 
 
 //RGB LIGHT
@@ -2503,7 +2500,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
 */
 
 void keyboard_post_init_user(void) {
-    rgb_matrix_set_color(8, 255, 150, 0);
+    //rgb_matrix_set_color(8, 255, 150, 0);
     // Enable the LED layers
 //    debug_enable=true;
 //    debug_keyboard=true;
