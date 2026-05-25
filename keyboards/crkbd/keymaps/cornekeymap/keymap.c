@@ -236,8 +236,8 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
 //Combos
-const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), KC_BTN1, COMBO_END};
-const uint16_t PROGMEM cb_ctrl_z2[] = {KC_MS_U, KC_MS_L, COMBO_END};
+const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), MS_BTN1, COMBO_END};
+const uint16_t PROGMEM cb_ctrl_z2[] = {MS_UP, MS_LEFT, COMBO_END};
 
 //combo actions
 combo_t key_combos[] = {
@@ -323,14 +323,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-
+            //todo: para eliminar
         case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
                 if (ms_acl0_active) {
-                    register_code(KC_MS_ACCEL0);   // Activa y mantiene
+                    register_code(MS_ACL0);   // Activa y mantiene
                 } else {
-                    unregister_code(KC_MS_ACCEL0); // Desactiva
+                    unregister_code(MS_ACL0); // Desactiva
                 }
             }
             return false; // Ya manejamos la tecla
@@ -1303,11 +1303,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 
-        case LT(KC_MS_ACCEL0, COPY):
+       //todo: para eliminar
+        case LT(MS_ACL0, COPY):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Activar KC_MS_ACCEL0
-                    register_code(KC_MS_ACCEL0);
+                    // HOLD: Activar MS_ACL0
+                    register_code(MS_ACL0);
                     return false;
                 } else {
                     // TAP: Ejecutar COPY (Ctrl+C)
@@ -1315,16 +1316,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 }
             } else {
-                // Al soltar la tecla, desactivar KC_MS_ACCEL0
-                unregister_code(KC_MS_ACCEL0);
+                // Al soltar la tecla, desactivar MS_ACL0
+                unregister_code(MS_ACL0);
             }
             return false;
 
-        case LT(KC_MS_ACCEL2, PASTE):
+            //todo: para eliminar
+        case LT(MS_ACL2, PASTE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Activar KC_MS_ACCEL1
-                    register_code(KC_MS_ACCEL2);
+                    // HOLD: Activar MS_ACL1
+                    register_code(MS_ACL2);
                     return false;
                 } else {
                     // TAP: Ejecutar PASTE (Ctrl+V)
@@ -1332,8 +1334,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 }
             } else {
-                // Al soltar la tecla, desactivar KC_MS_ACCEL1
-                unregister_code(KC_MS_ACCEL2);
+                // Al soltar la tecla, desactivar MS_ACL1
+                unregister_code(MS_ACL2);
             }
             return false;
 
@@ -1361,7 +1363,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(_RUN, KC_BTN2):
+        case LT(_RUN, MS_BTN2):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _DEL
@@ -1372,7 +1374,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 1) {
                     // TAP simple: enviar
-                    tap_code16(KC_MS_BTN2);
+                    tap_code16(MS_BTN2);
                     return false;
                 }
             } else {
@@ -1419,11 +1421,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(KC_MS_ACCEL2, KC_ENT):
+            //todo: para eliminar
+        case LT(MS_ACL2, KC_ENT):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Activar KC_MS_ACCEL2
-                    register_code(KC_MS_ACCEL2);
+                    // HOLD: Activar MS_ACL2
+                    register_code(MS_ACL2);
                     return false;
                 } else {
                     // TAP
@@ -1431,8 +1434,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 }
             } else {
-                // Al soltar la tecla, desactivar KC_MS_ACCEL2
-                unregister_code(KC_MS_ACCEL2);
+                // Al soltar la tecla, desactivar MS_ACL2
+                unregister_code(MS_ACL2);
             }
             return false;
 
@@ -1773,11 +1776,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     layer_invert(_ALFA);
                 } else {
                     // HOLD (presionar F22)
-                    register_code16(KC_MS_ACCEL0);
+                    register_code16(MS_ACL0);
                 }
             } else {
                 // RELEASE (soltar F22)
-                unregister_code16(KC_MS_ACCEL0);
+                unregister_code16(MS_ACL0);
             }
             return false;
 
@@ -1798,15 +1801,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-       case LT(KC_MS_WH_UP, KC_MS_WH_DOWN):
+            //todo: para eliminar
+       case LT(MS_WHLU, MS_WHLD):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Scroll up
-                    tap_code(KC_MS_WH_UP);
+                    tap_code(MS_WHLU);
                     return false;
                 } else {
                     // TAP: Scroll down
-                    tap_code(KC_MS_WH_DOWN);
+                    tap_code(MS_WHLD);
                     return false;
                 }
             }
@@ -1884,14 +1888,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar SHIFT_TOGGLE ALT_SHIFT  LT(KC_F22, TG_F22)
-//  CTL_GUI KC_MS_WH_RIGHT)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D KC_MS_ACCEL0a
+//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0a
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                 QK_BOOT, LT(SEL_ALL,KC_SPACE), KC_MS_WH_LEFT, KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                 QK_BOOT, LT(SEL_ALL,KC_SPACE), MS_WHLL, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), KC_MS_D, KC_MS_U, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, KC_MS_L, KC_MS_R, KC_BTN1, LT(_RUN,KC_BTN2),
+LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, KC_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), KC_MS_WH_RIGHT, KC_PGDN, KC_PGUP, XXXXXXX,
+LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), MS_WHLR, KC_PGDN, KC_PGUP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                                       LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), XXXXXXX,      TO(_BASE), KC_LCTL, LSFT_T(KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
@@ -2009,7 +2013,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, C(S(KC_V)), G(KC_V), C(KC_F), KC_F5, XXXXXXX,                                 XXXXXXX, XXXXXXX,  S(KC_TAB), XXXXXXX, XXXXXXX,  C(S(KC_L)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_F11, KC_BTN2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
+           XXXXXXX, XXXXXXX, KC_F11, MS_BTN2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       KC_PSCR, KC_LGUI, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                      // `------------------------'                              `--------------------------'
@@ -2031,9 +2035,9 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
     // _MOVE_WIN Ly 10 C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), KC_MS_WH_RIGHT, KC_MS_WH_LEFT, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), MS_WHLR, MS_WHLL, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       C(KC_T), C(S(KC_TAB)), C(KC_TAB), KC_MS_WH_DOWN, KC_MS_WH_UP, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+       C(KC_T), C(S(KC_TAB)), C(KC_TAB), MS_WHLD, MS_WHLU, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
        C(KC_L), G(C(KC_LEFT)), G(C(KC_RIGHT)), A(KC_UP), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -2110,13 +2114,13 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
     // _MOUSE_1 Ly 16 not used
     [_MOUSE_1] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
-        LT(KC_F4, CLOSE_WIN), KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, KC_MS_WH_UP, KC_MS_WH_DOWN, XXXXXXX,
+        LT(KC_F4, CLOSE_WIN), KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        TO(_BASE), KC_BTN1, LT(KC_MS_ACCEL0, COPY), LT(KC_MS_ACCEL2,PASTE), XXXXXXX, XXXXXXX,           XXXXXXX, KC_BTN2, KC_MS_L, KC_MS_D , KC_MS_R, KC_MS_U,
+        TO(_BASE), MS_BTN1, LT(MS_ACL0, COPY), LT(MS_ACL2,PASTE), XXXXXXX, XXXXXXX,           XXXXXXX, MS_BTN2, MS_LEFT, MS_DOWN , MS_RGHT, MS_UP,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        LT(KC_MS_WH_UP,KC_MS_WH_DOWN),XXXXXXX, G(KC_T), C(KC_Z), XXXXXXX, KC_LALT  ,             XXXXXXX, XXXXXXX, KC_MS_WH_LEFT, KC_MS_WH_RIGHT, XXXXXXX, XXXXXXX,
+        LT(MS_WHLU,MS_WHLD),XXXXXXX, G(KC_T), C(KC_Z), XXXXXXX, KC_LALT  ,             XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(KC_SPC, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                          XXXXXXX, KC_BTN2, KC_SPC
+                                        LT(KC_SPC, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                          XXXXXXX, MS_BTN2, KC_SPC
                                        // `---------------------'                                       `--------------------------'
     ),
 
