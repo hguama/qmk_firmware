@@ -1771,16 +1771,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case LT(KC_F22, _ALFA):
             if (record->event.pressed) {
-                if (record->tap.count && !record->tap.interrupted) {
-                    // TAP
-                    layer_invert(_ALFA);
+                if (!record->tap.count) {
+                    // HOLD: Activar MS_ACL0
+                    register_code(MS_ACL0);
+                    return false;
                 } else {
-                    // HOLD (presionar F22)
-                    register_code16(MS_ACL0);
+                    // TAP: Ejecutar COPY (Ctrl+C)
+                    layer_invert(_ALFA);
+                    return false;
                 }
             } else {
-                // RELEASE (soltar F22)
-                unregister_code16(MS_ACL0);
+                // Al soltar la tecla, desactivar MS_ACL0
+                unregister_code(MS_ACL0);
             }
             return false;
 
@@ -1897,7 +1899,7 @@ LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2), 
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), MS_WHLR, KC_PGDN, KC_PGUP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), XXXXXXX,      TO(_BASE), KC_LCTL, LSFT_T(KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), MS_ACL0,      TO(_BASE), MO(_BOOK_2), LT(_BOOK,KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
@@ -1956,7 +1958,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
 
     // _SYMB Ly 4
     [_SYMB] = LAYOUT_split_3x6_3(
-        // ,---------------------------------------------------------------------.                ,-----------------------------------------------------.
+        // ,--------------------------------------------------o-------------------.                ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,             XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
            LT(0, QUESTION), LT(0,KC_DQT), KC_COMM, C(S(KC_ENT)), DOUBLE_PIPE, XXXXXXX,             XXXXXXX, AMP_DOUBLE, KC_DOT, LT(0,EQUAL_DBL), LT(0,KC_LPRN), LT(0,KC_LCBR),
@@ -2037,9 +2039,9 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
         C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), MS_WHLR, MS_WHLL, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       C(KC_T), C(S(KC_TAB)), C(KC_TAB), MS_WHLD, MS_WHLU, XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+       MS_WHLU, C(S(KC_TAB)), C(KC_TAB), MS_WHLD, A(KC_UP), XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       C(KC_L), G(C(KC_LEFT)), G(C(KC_RIGHT)), A(KC_UP), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+       C(KC_L), G(C(KC_LEFT)), G(C(KC_RIGHT)), C(KC_T), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
