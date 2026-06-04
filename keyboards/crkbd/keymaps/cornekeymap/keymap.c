@@ -2177,11 +2177,10 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         // === NUEVA LÓGICA PARA CALIBRAR EL MOUSE ===
     else if (data[0] == 'M') {
 #ifdef MOUSEKEY_ENABLE
-        // data[1] y data[5] los recibimos de Python para mantener el buffer simétrico,
-    // y alteramos en vivo la rampa de aceleración nativa de QMK:
-    mk_max_speed    = data[2]; // ej: 2
-    mk_time_to_max  = data[3]; // ej: 130
-    mk_interval     = data[4]; // ej: 2
+        // Recibimos consecutivamente desde la posición 1
+    mk_max_speed   = data[1]; // Lee buf[2] de Python
+    mk_time_to_max = data[2]; // Lee buf[3] de Python
+    mk_interval    = data[3]; // Lee buf[4] de Python
 #endif
     }
 }
