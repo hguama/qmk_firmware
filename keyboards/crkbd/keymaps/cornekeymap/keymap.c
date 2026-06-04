@@ -21,6 +21,12 @@ JKL
 #include QMK_KEYBOARD_H
 //#include "rgblight.h"
 #include "raw_hid.h"
+// Conexión directa con las variables reales del motor de mouse de QMK
+#ifdef MOUSEKEY_ENABLE
+extern uint8_t mk_max_speed;
+extern uint8_t mk_time_to_max;
+extern uint8_t mk_interval;
+#endif
 
 
 //Layer names enum
@@ -1786,6 +1792,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        case LT(MS_ACL0, KC_SPACE):
+            if (record->event.pressed) {
+                if (!record->tap.count) {
+                    // HOLD: Activar MS_ACL0
+                    register_code(MS_ACL0);
+                    return false;
+                } else {
+                    // TAP: Ejecutar COPY (Ctrl+C)
+                    tap_code(KC_SPACE);
+                    return false;
+                }
+            } else {
+                // Al soltar la tecla, desactivar MS_ACL0
+                unregister_code(MS_ACL0);
+            }
+            return false;
+
         case LT(KC_S, SHIFT_2):
             if (record->event.pressed) {
                 if (record->tap.count > 0) {
@@ -1899,7 +1922,7 @@ LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2), 
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), MS_WHLR, KC_PGDN, KC_PGUP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), MS_ACL0,      TO(_BASE), MO(_BOOK_2), LT(_BOOK,KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), MS_ACL0,      MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
@@ -1989,7 +2012,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
            C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, C(KC_F20), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+          C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
@@ -2002,7 +2025,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            A(KC_A), A(KC_B), A(KC_C), A(KC_D), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_1)), C(S(KC_2)), C(S(KC_3)), C(S(KC_4)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, A(KC_H), A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
+          A(KC_H), XXXXXXX, A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, XXXXXXX,  _______,                               TO(_BASE),   XXXXXXX, XXXXXXX
                                      // `------------------------'                              `--------------------------'
@@ -2149,6 +2172,17 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
 
         // 4. Confirmación a Python
         send_layer_status_with_at("AT_OFF", layer_state);
+    }
+
+        // === NUEVA LÓGICA PARA CALIBRAR EL MOUSE ===
+    else if (data[0] == 'M') {
+#ifdef MOUSEKEY_ENABLE
+        // data[1] y data[5] los recibimos de Python para mantener el buffer simétrico,
+    // y alteramos en vivo la rampa de aceleración nativa de QMK:
+    mk_max_speed    = data[2]; // ej: 2
+    mk_time_to_max  = data[3]; // ej: 130
+    mk_interval     = data[4]; // ej: 2
+#endif
     }
 }
 
