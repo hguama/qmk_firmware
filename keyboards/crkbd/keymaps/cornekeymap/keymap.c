@@ -1796,7 +1796,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Activar MS_ACL0
-                    register_code(MS_ACL0);
+                    register_code(KC_F22);
                     return false;
                 } else {
                     // TAP: Ejecutar COPY (Ctrl+C)
@@ -1805,7 +1805,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             } else {
                 // Al soltar la tecla, desactivar MS_ACL0
-                unregister_code(MS_ACL0);
+                unregister_code(KC_F22);
             }
             return false;
 
@@ -1922,7 +1922,7 @@ LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2), 
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), MS_WHLR, KC_PGDN, KC_PGUP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), MS_ACL0,      MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
+                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), KC_F22,      MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
