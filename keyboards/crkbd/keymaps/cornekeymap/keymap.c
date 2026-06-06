@@ -48,7 +48,7 @@ enum layer_names {
     _MODE,         // 13
     _COMMIT,       // 14
     _AI,           // 15
-    _MOUSE_1     // 16
+    _MIRROR     // 16
            // 17
 };
 
@@ -297,7 +297,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _NUMB:    layer_name = "LAYER_NUMB"; break;
         case _MODE:    layer_name = "LAYER_MODE"; break;
         case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
-        case _MOUSE_1: layer_name = "LAYER_MOUSE_1"; break;
+        case _MIRROR: layer_name = "LAYER_MIRROR"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
@@ -1775,7 +1775,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case LT(KC_F22, _ALFA):
+/*        case LT(KC_F22, _ALFA):
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: Activar MS_ACL0
@@ -1790,7 +1790,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 // Al soltar la tecla, desactivar MS_ACL0
                 unregister_code(MS_ACL0);
             }
-            return false;
+            return false;*/
+
+        case LT(_MIRROR, _ALFA):
+            if (record->event.pressed) {
+                if (record->tap.count == 0) {
+                    // HOLD (sin taps): mover exclusivamente a _DEL
+                    del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
+                    layer_move(_MIRROR);                       // dejamos _DEL sola (prioridad)
+                    del_layer_active = true;
+                    return false;
+                }
+                if (record->tap.count == 1) {
+                    // TAP simple: enviar
+                    layer_invert(_ALFA); // tap - toggle _MOVE layer
+                    return false;
+                }
+            } else {
+                // RELEASE: si activamos la capa, restauramos la previa
+                if (del_layer_active) {
+                    layer_move(del_prev_layer);
+                    del_layer_active = false;
+                }
+            }
+            return true;
 
         case LT(MS_ACL0, KC_SPACE):
             if (record->event.pressed) {
@@ -1913,12 +1936,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar SHIFT_TOGGLE ALT_SHIFT  LT(KC_F22, TG_F22)
-//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0a
+//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0 _MOVE_H
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                 QK_BOOT, LT(SEL_ALL,KC_SPACE), MS_WHLL, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), LT(KC_F22, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
+LT(_MOVE_H, TG_0), LT(_MIRROR, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_DEL,KC_LGUI), LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), MS_WHLR, KC_PGDN, KC_PGUP, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -2136,16 +2159,17 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
                                        // `---------------------'                               `--------------------------'
     ),
 
-    // _MOUSE_1 Ly 16 not used
-    [_MOUSE_1] = LAYOUT_split_3x6_3(
+    // _MIRROR Ly 16 not used
+    //C(S(KC_F13)), C(S(KC_F14)) mirror
+    [_MIRROR] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
-        LT(KC_F4, CLOSE_WIN), KC_ESC, ALT_TAB, XXXXXXX, XXXXXXX, XXXXXXX,                                            XXXXXXX, XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F17)), C(S(KC_F18)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        TO(_BASE), MS_BTN1, LT(MS_ACL0, COPY), LT(MS_ACL2,PASTE), XXXXXXX, XXXXXXX,           XXXXXXX, MS_BTN2, MS_LEFT, MS_DOWN , MS_RGHT, MS_UP,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, C(S(KC_F15)), C(S(KC_F16)), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        LT(MS_WHLU,MS_WHLD),XXXXXXX, G(KC_T), C(KC_Z), XXXXXXX, KC_LALT  ,             XXXXXXX, XXXXXXX, MS_WHLL, MS_WHLR, XXXXXXX, XXXXXXX,
+        XXXXXXX,XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  ,                                         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                        LT(KC_SPC, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                          XXXXXXX, MS_BTN2, KC_SPC
+        XXXXXXX, XXXXXXX, XXXXXXX,      XXXXXXX, XXXXXXX, XXXXXXX
                                        // `---------------------'                                       `--------------------------'
     ),
 
@@ -2456,7 +2480,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 //             rgb_matrix_set_color(8, RGB_ORANGE);
 //             break;
 //
-//         case _MOUSE_1:
+//         case _MIRROR:
 //             rgb_matrix_set_color(8, 180, 150, 255);
 //             break;
 //
@@ -2503,8 +2527,8 @@ const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 //        {4,2, HSV_RED} //PLAN B
 );
 
-// _mouse_1_layer ly16
-const rgblight_segment_t PROGMEM _mouse_1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _MIRROR_layer ly16
+const rgblight_segment_t PROGMEM _MIRROR_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_YELLOW}
 );
 
@@ -2533,7 +2557,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     _mode_layer,        // 13
     _commit_layer,      // 14
     NULL,               // 15
-    _mouse_1_layer,     // 16
+    _MIRROR_layer,     // 16
     _move_layer      // 17
 );
 */
@@ -2560,8 +2584,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(5, false);  // _NUMB LY OFF
     rgblight_set_layer_state(13, false); // _MODE LY OFF
     rgblight_set_layer_state(14, false); // _COMMIT LY OFF
-    rgblight_set_layer_state(16, false); // _MOUSE_1 LY OFF
-    rgblight_set_layer_state(17, false); // _MOUSE_1 LY OFF
+    rgblight_set_layer_state(16, false); // _MIRROR LY OFF
+    rgblight_set_layer_state(17, false); // _MIRROR LY OFF
 */
 
 
@@ -2588,7 +2612,7 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-      		 case _MOUSE_1:
+      		 case _MIRROR:
                 //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
