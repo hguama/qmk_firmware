@@ -1939,7 +1939,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0 _MOVE_H
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                 QK_BOOT, LT(SEL_ALL,KC_SPACE), MS_WHLL, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_SEL), QK_BOOT,                 QK_BOOT, LT(SEL_ALL,KC_SPACE), KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), LT(_MIRROR, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
