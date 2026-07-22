@@ -41,14 +41,14 @@ enum layer_names {
     _BOOK,         // 6
     _BOOK_2,       // 7
     _MOVE_H,       // 8
-    _MOVE_V,       // 9
+    _SCROLL,       // 9
     _MOVE_WIN,     // 10
     _MOVE_L,       // 11
     _RUN,          // 12
     _MODE,         // 13
     _COMMIT,       // 14
     _AI,           // 15
-    _MIRROR     // 16
+    _FAST     // 16
            // 17
 };
 
@@ -300,7 +300,8 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _NUMB:    layer_name = "LAYER_NUMB"; break;
         case _MODE:    layer_name = "LAYER_MODE"; break;
         case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
-        case _MIRROR: layer_name = "LAYER_MIRROR"; break;
+        case _FAST: layer_name = "LAYER_FAST"; break;
+        case _SCROLL: layer_name = "LAYER_SCROLL"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
@@ -565,7 +566,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case DOWN_10:
             if (record->event.pressed) {
                 // KC_DOWN 10 veces
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 15; i++) {
                     tap_code(KC_DOWN);
                 }
             }
@@ -574,7 +575,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case UP_10:
             if (record->event.pressed) {
                 // KC_UP 10 veces
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 15; i++) {
                     tap_code(KC_UP);
                 }
             }
@@ -1832,12 +1833,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;*/
 
-        case LT(_MIRROR, _ALFA):
+        case LT(_FAST, _ALFA):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _DEL
                     del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MIRROR);                       // dejamos _DEL sola (prioridad)
+                    layer_move(_FAST);                       // dejamos _DEL sola (prioridad)
                     del_layer_active = true;
                     return false;
                 }
@@ -1905,10 +1906,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case LT(_MOVE_V, PASTE):
+        case LT(_SCROLL, PASTE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Activar capa _MOVE_V
+                    // HOLD: Activar capa _SCROLL
                     return true; // QMK maneja el HOLD automáticamente
                 } else {
                     // TAP: Ctrl+V para pegar
@@ -1979,7 +1980,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // LT(_SYMB,KC_ESC)
 /// LT(_NUMB,KC_TAB)
 // LT(_NUMB,KC_TAB) *
-// LT(_MIRROR, _ALFA) *
+// LT(_FAST, _ALFA) *
 // PASTE
 // LT(_DEL,KC_LGUI)
 // LT(CUT,COPY)
@@ -2020,17 +2021,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_SYMB,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD , QK_BOOT,                 QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD , QK_BOOT,                 QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), LT(_MIRROR, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
+LT(_MOVE_H, TG_0), LT(_FAST, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-TG(_MOVE_V), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
+TG(_SCROLL), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                                       LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), G(KC_D),      MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                                       // `---------------------'                          `--------------------------'
 ),
 
-    //_BASE Layer   _MOVE_V  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
+    //_BASE Layer   _SCROLL  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
@@ -2148,13 +2149,13 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
                                      // `------------------------'                              `--------------------------'
     ),
 
-    // _MOVE_V Ly 9
+    // _SCROLL Ly 9
     //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)
-    [_MOVE_V] = LAYOUT_split_3x6_3(
+    [_SCROLL] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX,  A(KC_UP),  A(KC_DOWN), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-         DOWN_10, UP_10, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
+         UP_10, DOWN_10, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
          TO(_BASE), XXXXXXX, C(KC_SPACE), MS_BTN1, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -2241,15 +2242,15 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
                                        // `---------------------'                               `--------------------------'
     ),
 
-    // _MIRROR Ly 16 not used
+    // _FAST Ly 16 not used
     //C(S(KC_F13)), C(S(KC_F14)) mirror
-    [_MIRROR] = LAYOUT_split_3x6_3(
+    [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F17)), C(S(KC_F18)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
         XXXXXXX, XXXXXXX, XXXXXXX, CTL_CLICK, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, C(S(KC_F15)), C(S(KC_F16)), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        XXXXXXX,XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  ,                                         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        XXXXXXX,XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  ,                                         XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
         XXXXXXX, XXXXXXX, XXXXXXX,      KC_A, XXXXXXX, XXXXXXX
                                        // `---------------------'                                       `--------------------------'
@@ -2563,7 +2564,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 //             rgb_matrix_set_color(8, RGB_ORANGE);
 //             break;
 //
-//         case _MIRROR:
+//         case _FAST:
 //             rgb_matrix_set_color(8, 180, 150, 255);
 //             break;
 //
@@ -2610,8 +2611,8 @@ const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 //        {4,2, HSV_RED} //PLAN B
 );
 
-// _MIRROR_layer ly16
-const rgblight_segment_t PROGMEM _MIRROR_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// _FAST_layer ly16
+const rgblight_segment_t PROGMEM _FAST_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_YELLOW}
 );
 
@@ -2640,7 +2641,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     _mode_layer,        // 13
     _commit_layer,      // 14
     NULL,               // 15
-    _MIRROR_layer,     // 16
+    _FAST_layer,     // 16
     _move_layer      // 17
 );
 */
@@ -2667,8 +2668,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(5, false);  // _NUMB LY OFF
     rgblight_set_layer_state(13, false); // _MODE LY OFF
     rgblight_set_layer_state(14, false); // _COMMIT LY OFF
-    rgblight_set_layer_state(16, false); // _MIRROR LY OFF
-    rgblight_set_layer_state(17, false); // _MIRROR LY OFF
+    rgblight_set_layer_state(16, false); // _FAST LY OFF
+    rgblight_set_layer_state(17, false); // _FAST LY OFF
 */
 
 
@@ -2695,7 +2696,12 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-      		 case _MIRROR:
+      		 case _FAST:
+                //rgblight_set_layer_state(16, true); // MOUSE_1 LY
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
+                break;
+
+            case _SCROLL:
                 //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
