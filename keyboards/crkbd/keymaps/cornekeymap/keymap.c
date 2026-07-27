@@ -48,7 +48,7 @@ enum layer_names {
     _MODE,         // 13
     _COMMIT,       // 14
     _AI,           // 15
-    _FAST     // 16
+    _NEW     // 16
            // 17
 };
 
@@ -302,7 +302,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _NUMB:    layer_name = "LAYER_NUMB"; break;
         case _MODE:    layer_name = "LAYER_MODE"; break;
         case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
-        case _FAST: layer_name = "LAYER_FAST"; break;
+        case _NEW: layer_name = "LAYER_NEW"; break;
         case _SCROLL: layer_name = "LAYER_SCROLL"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
         default:       layer_name = "LAYER_BASE"; break;
@@ -1853,12 +1853,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;*/
 
-        case LT(_FAST, _ALFA):
+        case LT(_NEW, _ALFA):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _DEL
                     del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_FAST);                       // dejamos _DEL sola (prioridad)
+                    layer_move(_NEW);                       // dejamos _DEL sola (prioridad)
                     del_layer_active = true;
                     return false;
                 }
@@ -2043,7 +2043,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD , QK_BOOT,                 QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), LT(_FAST, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
+LT(_MOVE_H, TG_0), LT(_NEW, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 TG(_SCROLL), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -2262,9 +2262,9 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
                                        // `---------------------'                               `--------------------------'
     ),
 
-    // _FAST Ly 16 not used
+    // _NEW Ly 16 not used
     //C(S(KC_F13)), C(S(KC_F14)) mirror
-    [_FAST] = LAYOUT_split_3x6_3(
+    [_NEW] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F17)), C(S(KC_F18)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
@@ -2584,7 +2584,7 @@ uint8_t layer = get_highest_layer(layer_state);
              rgb_matrix_set_color(8, RGB_ORANGE);
              break;
 
-         case _FAST:
+         case _NEW:
              rgb_matrix_set_color(8, RGB_ORANGE);
              break;
 
@@ -2635,8 +2635,8 @@ const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 //        {4,2, HSV_RED} //PLAN B
 );
 
-// _FAST_layer ly16
-const rgblight_segment_t PROGMEM _FAST_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+// __NEW_layer ly16
+const rgblight_segment_t PROGMEM __NEW_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_YELLOW}
 );
 
@@ -2665,7 +2665,7 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     _mode_layer,        // 13
     _commit_layer,      // 14
     NULL,               // 15
-    _FAST_layer,     // 16
+    __NEW_layer,     // 16
     _move_layer      // 17
 );
 */
@@ -2692,8 +2692,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     rgblight_set_layer_state(5, false);  // _NUMB LY OFF
     rgblight_set_layer_state(13, false); // _MODE LY OFF
     rgblight_set_layer_state(14, false); // _COMMIT LY OFF
-    rgblight_set_layer_state(16, false); // _FAST LY OFF
-    rgblight_set_layer_state(17, false); // _FAST LY OFF
+    rgblight_set_layer_state(16, false); // _NEW LY OFF
+    rgblight_set_layer_state(17, false); // _NEW LY OFF
 */
 
 
@@ -2720,7 +2720,7 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-      		 case _FAST:
+      		 case _NEW:
                 //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
