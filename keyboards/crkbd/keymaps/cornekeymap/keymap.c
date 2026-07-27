@@ -56,6 +56,7 @@ enum layer_names {
 //Macro enum
 enum custom_keycodes {
     GUI_E = SAFE_RANGE,
+    CS_F15_HOLD,
     CTL_CLICK,
     TG_F22,
     CUT,
@@ -204,6 +205,7 @@ bool ms_acl0_active = false;
 
 bool voice_mode = false;
 static bool mouse_held = false;
+bool cs_f15_held = false; // Nueva bandera para Ctrl + Shift + F15
 
 
 
@@ -315,6 +317,24 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+
+        case CS_F15_HOLD:
+            if (record->event.pressed) {
+                cs_f15_held = !cs_f15_held; // Cambiamos el estado de la bandera
+
+                if (cs_f15_held) {
+                    // Activa los modificadores y la tecla
+                    register_code(KC_LCTL);
+                    register_code(KC_LSFT);
+                    register_code(KC_F15);
+                } else {
+                    // Desactiva la tecla y los modificadores
+                    unregister_code(KC_F15);
+                    unregister_code(KC_LSFT);
+                    unregister_code(KC_LCTL);
+                }
+            }
+            return false; // Evita que QMK procese la tecla de forma predeterminada
 
         case MOUSE_HOLD:
             if (record->event.pressed) {
@@ -1980,7 +2000,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // LT(_SYMB,KC_ESC)
 /// LT(_NUMB,KC_TAB)
 // LT(_NUMB,KC_TAB) *
-// LT(_FAST, _ALFA) *
+// LT(_MIRROR, _ALFA) *
 // PASTE
 // LT(_DEL,KC_LGUI)
 // LT(CUT,COPY)
@@ -2025,10 +2045,10 @@ LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD , 
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), LT(_FAST, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-TG(_SCROLL), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
+TG(_SCROLL), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                                      LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), G(KC_D),      MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
-                                                      // `---------------------'                          `--------------------------'
+                              LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), CS_F15_HOLD,                           MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
+                                // `---------------------'                                                  `--------------------------'
 ),
 
     //_BASE Layer   _SCROLL  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
@@ -2039,8 +2059,8 @@ LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_
 LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, KC_UP,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
-// |--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
-                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                TO(_BASE), KC_LCTL, LT(_DEV,KC_SPACE)
+ //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
+                                                       LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                TO(_BASE), KC_LCTL, LT(_DEV,KC_SPACE)
                                                         // `----------------------------------'                       `---------------------------------'
     ),
 
@@ -2106,7 +2126,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), KC_SPACE
+                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), C(S(KC_F15))
                                      // `---------------------------------'                      `--------------------------'
     ),
 
