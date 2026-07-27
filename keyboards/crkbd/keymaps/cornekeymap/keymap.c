@@ -2558,43 +2558,47 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 /////RGB MATRIX
-//bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-//// 1. Apagamos absolutamente todos los LEDs primero
-//    rgb_matrix_set_color_all(0, 0, 0);
-//uint8_t layer = get_highest_layer(layer_state);
-//
-// switch (layer) {
-//         case _MOVE:
-//             rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
-//             break;
-//
-//         case _ALFA:
-//            rgb_matrix_set_color(8, 0, 100, 0); //gris suave
-//             break;
-//
-//         case _NUMB:
-//             rgb_matrix_set_color(8, 128, 128, 128);
-//             break;
-//
-//         case _MODE:
-//             rgb_matrix_set_color(8, RGB_PURPLE);
-//             break;
-//
-//         case _COMMIT:
-//             rgb_matrix_set_color(8, RGB_ORANGE);
-//             break;
-//
-//         case _FAST:
-//             rgb_matrix_set_color(8, 180, 150, 255);
-//             break;
-//
-//         default:
-//             //apagar todos los LEDs
-//             rgb_matrix_set_color_all(0, 0, 0);
-//             break;
-//     }
-//     return false;
-//}
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+// 1. Apagamos absolutamente todos los LEDs primero
+    rgb_matrix_set_color_all(0, 0, 0);
+uint8_t layer = get_highest_layer(layer_state);
+
+ switch (layer) {
+         case _MOVE:
+             rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
+             break;
+
+         case _ALFA:
+            rgb_matrix_set_color(8, 0, 100, 0); //gris suave
+             break;
+
+         case _NUMB:
+             rgb_matrix_set_color(8, 128, 128, 128);
+             break;
+
+         case _MODE:
+             rgb_matrix_set_color(8, RGB_PURPLE);
+             break;
+
+         case _COMMIT:
+             rgb_matrix_set_color(8, RGB_ORANGE);
+             break;
+
+         case _FAST:
+             rgb_matrix_set_color(8, RGB_ORANGE);
+             break;
+
+         case _SCROLL:
+             rgb_matrix_set_color(8, RGB_RED);
+             break;
+
+         default:
+             //apagar todos los LEDs
+             rgb_matrix_set_color_all(0, 0, 0);
+             break;
+     }
+     return false;
+}
 
 
 //RGB LIGHT
