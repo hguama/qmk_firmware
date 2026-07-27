@@ -41,7 +41,7 @@ enum layer_names {
     _BOOK,         // 6
     _BOOK_2,       // 7
     _MOVE_H,       // 8
-    _SCROLL,       // 9
+    _FAST,       // 9
     _MOVE_WIN,     // 10
     _MOVE_L,       // 11
     _RUN,          // 12
@@ -303,7 +303,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _MODE:    layer_name = "LAYER_MODE"; break;
         case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
         case _NEW: layer_name = "LAYER_NEW"; break;
-        case _SCROLL: layer_name = "LAYER_SCROLL"; break;
+        case _FAST: layer_name = "LAYER_FAST"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
@@ -1926,10 +1926,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case LT(_SCROLL, PASTE):
+        case LT(_FAST, PASTE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    // HOLD: Activar capa _SCROLL
+                    // HOLD: Activar capa _FAST
                     return true; // QMK maneja el HOLD automáticamente
                 } else {
                     // TAP: Ctrl+V para pegar
@@ -2045,13 +2045,13 @@ LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD , 
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_MOVE_H, TG_0), LT(_NEW, _ALFA), MS_DOWN, MS_UP, PASTE, LT(KC_S, SHIFT_2),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-TG(_SCROLL), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
+TG(_FAST), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, LT(SEL_ALL,KC_SPACE), G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                               LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), CS_F15_HOLD,                           MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 
-    //_BASE Layer   _SCROLL  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
+    //_BASE Layer   _FAST  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
@@ -2169,9 +2169,9 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
                                      // `------------------------'                              `--------------------------'
     ),
 
-    // _SCROLL Ly 9
+    // _FAST Ly 9
     //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)
-    [_SCROLL] = LAYOUT_split_3x6_3(
+    [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX,  A(KC_UP),  A(KC_DOWN), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
@@ -2588,7 +2588,7 @@ uint8_t layer = get_highest_layer(layer_state);
              rgb_matrix_set_color(8, RGB_ORANGE);
              break;
 
-         case _SCROLL:
+         case _FAST:
              rgb_matrix_set_color(8, RGB_RED);
              break;
 
@@ -2725,7 +2725,7 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-            case _SCROLL:
+            case _FAST:
                 //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
