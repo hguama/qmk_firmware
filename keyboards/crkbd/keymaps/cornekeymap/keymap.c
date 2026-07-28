@@ -2175,7 +2175,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX,  A(KC_UP),  A(KC_DOWN), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-         UP_10, DOWN_10, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
+         UP_10, DOWN_10, MS_WHLU, MS_WHLD, CS_F15_HOLD, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
          TO(_BASE), XXXXXXX, C(KC_SPACE), MS_BTN1, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
