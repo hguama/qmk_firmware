@@ -23,6 +23,7 @@ JKL
 #include "raw_hid.h"
 // Conexión directa con las variables reales del motor de mouse de QMK
 #ifdef MOUSEKEY_ENABLE
+extern uint8_t mk_delay;
 extern uint8_t mk_max_speed;
 extern uint8_t mk_time_to_max;
 extern uint8_t mk_interval;
@@ -2061,7 +2062,7 @@ LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),           
 TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                TO(_BASE), KC_LCTL, LT(_DEV,KC_SPACE)
-                                                        // `----------------------------------'                       `---------------------------------'
+                                                         // `----------------------------------'                       `---------------------------------'
     ),
 
 
@@ -2305,9 +2306,10 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
     else if (data[0] == 'M') {
 #ifdef MOUSEKEY_ENABLE
         // Recibimos consecutivamente desde la posición 1
-    mk_max_speed   = data[1]; // Lee buf[2] de Python
-    mk_time_to_max = data[2]; // Lee buf[3] de Python
-    mk_interval    = data[3]; // Lee buf[4] de Python
+    mk_delay       = data[1]; // Lee buf[1] de Python
+    mk_max_speed   = data[2]; // Lee buf[2] de Python
+    mk_time_to_max = data[3]; // Lee buf[3] de Python
+    mk_interval    = data[4]; // Lee buf[4] de Python
 #endif
     }
 }
