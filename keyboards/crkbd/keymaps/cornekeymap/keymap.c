@@ -140,15 +140,15 @@ enum custom_keycodes {
     CTRL_Z,          // Keycode para usar en LT(_BOOK, CTRL_Z)
 };
 
-//Combo enum
-enum combo_events {
- CB_CENTER,
- CB_SUP_DER,
- CB_SUP_IZQ,
- CB_INF_DER,
- CB_INF_IZQ
-
-};
+// --- COMBOS DESACTIVADOS (no usados, LT(KC_F22, _ALFA) no existe en ninguna capa) ---
+//enum combo_events {
+// CB_CENTER,
+// CB_SUP_DER,
+// CB_SUP_IZQ,
+// CB_INF_DER,
+// CB_INF_IZQ
+//
+//};
 
 //Tap Dance enum
 enum {
@@ -227,39 +227,33 @@ void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 
 
-//Config revert to repeat key
-/*uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+// Alternate repeat key: Alt + Repeat invierte la acción
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
-    //form1
-    if ((mods & MOD_MASK_CTRL)) {  // Was Ctrl held?
+    // Ctrl+Tab → Ctrl+Shift+Tab (navegar pestañas en reversa)
+    if ((mods & MOD_MASK_CTRL)) {
         switch (keycode) {
-            case KC_TAB: return C(S(KC_TAB)); //ctrl tab # ctrl shift tab
+            case KC_TAB: return C(S(KC_TAB));
         }
     }
 
-   //form2
-   switch (keycode) { //Was the modifier key pressed?
-            case C(KC_Z): return  C(KC_Y); //ctrl z # ctrl y
-            case C(KC_Y): return  C(KC_Z); //ctrl y # ctrl z
-        }
+    // Ctrl+Z ↔ Ctrl+Y (undo/redo reversibles)
+    switch (keycode) {
+        case C(KC_Z): return C(KC_Y);
+        case C(KC_Y): return C(KC_Z);
+    }
 
-    return KC_TRNS;  // Defer to default definitions.
-}*/
+    return KC_TRNS;
+}
 
 
-//Combos
-const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), MS_BTN1, COMBO_END};
-const uint16_t PROGMEM cb_ctrl_z2[] = {MS_UP, MS_LEFT, COMBO_END};
-
-//combo actions
-combo_t key_combos[] = {
- [CB_CENTER]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
-// [CB_CENTER] =
-// [CB_SUP_DER] =
-// [CB_SUP_IZQ] =
-// [CB_INF_DER] =
-// [CB_INF_IZQ] =
-};
+// --- COMBOS DESACTIVADOS (no usados, LT(KC_F22, _ALFA) no existe en ninguna capa) ---
+//const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), MS_BTN1, COMBO_END};
+//const uint16_t PROGMEM cb_ctrl_z2[] = {MS_UP, MS_LEFT, COMBO_END};
+//
+//combo_t key_combos[] = {
+// [CB_CENTER]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
+//};
 
 //general functions
 void clear_all(void) {
