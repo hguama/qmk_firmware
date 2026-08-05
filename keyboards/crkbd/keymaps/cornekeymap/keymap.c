@@ -328,6 +328,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     register_code(KC_LCTL);
                     register_code(KC_LSFT);
                     register_code(KC_F15);
+                    register_code(KC_F15);
+
                 } else {
                     // Desactiva la tecla y los modificadores
                     unregister_code(KC_F15);
@@ -587,8 +589,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case DOWN_10:
             if (record->event.pressed) {
                 // KC_DOWN 10 veces
-                for (int i = 0; i < 15; i++) {
-                    tap_code(KC_DOWN);
+                for (int i = 0; i < 8; i++) {
+                    tap_code16(MS_WHLD);
                 }
             }
             return false;
@@ -596,8 +598,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case UP_10:
             if (record->event.pressed) {
                 // KC_UP 10 veces
-                for (int i = 0; i < 15; i++) {
-                    tap_code(KC_UP);
+                for (int i = 0; i < 8; i++) {
+                    tap_code16(MS_WHLU);
                 }
             }
             return false;
@@ -2057,9 +2059,9 @@ TG(_FAST), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                 
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(KC_S,SHIFT_2),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, KC_UP,
+LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, KC_UP,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,CTL_GUI),                TO(_BASE), KC_LCTL, LT(_DEV,KC_SPACE)
                                                          // `----------------------------------'                       `---------------------------------'
@@ -2071,9 +2073,9 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, LT(SEL_ALL,KC_SPACE), KC_LALT,          
 // ,--------------------------------------------------------.                                      ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), KC_T, LT(_NUMB,KC_F), XXXXXXX, XXXXXXX,                         XXXXXXX, XXXXXXX, KC_H, LT(0,D_Q), LT(0,L_K), KC_RALT,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), PASTE, LT(KC_S, SHIFT_2),         XXXXXXX, XXXXXXX , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
+LT(_MOVE_H,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), PASTE, LT(SEL_ALL,KC_SPACE),         XXXXXXX, XXXXXXX , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                                         HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
+TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                          HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------+--------|
                          LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		        TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                      `--------------------------'
@@ -2171,12 +2173,12 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B), XXXXXXX, KC_LALT  ,                   
     ),
 
     // _FAST Ly 9
-    //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)
+    //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)  A(KC_UP),  A(KC_DOWN)
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX,  A(KC_UP),  A(KC_DOWN), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
+           XXXXXXX, CS_F15_HOLD ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-         UP_10, DOWN_10, MS_WHLU, MS_WHLD, CS_F15_HOLD, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
+           XXXXXXX ,  MS_WHLD , UP_10, DOWN_10, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
          TO(_BASE), XXXXXXX, C(KC_SPACE), MS_BTN1, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
