@@ -2044,7 +2044,7 @@ LT(_MOVE_H, TG_0), LT(_NEW, _ALFA), MS_DOWN, MS_UP, PASTE, LT(SEL_ALL,KC_SPACE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 TG(_FAST), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                              LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), TG(_AI),                           MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
+                              LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), KC_LGUI,                           MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 
