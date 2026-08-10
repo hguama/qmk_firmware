@@ -41,6 +41,7 @@ enum layer_names {
     _NUMB,         // 5
     _BOOK,         // 6
     _BOOK_2,       // 7
+    _MOUSE_KEY,       // 8
     _MOVE_H,       // 8
     _FAST,       // 9
     _MOVE_WIN,     // 10
@@ -296,10 +297,11 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _ALFA:    layer_name = "LAYER_ALFA"; break;
         case _NUMB:    layer_name = "LAYER_NUMB"; break;
         case _MODE:    layer_name = "LAYER_MODE"; break;
-        case _COMMIT:  layer_name = "LAYER_COMMIT"; break;
-        case _NEW: layer_name = "LAYER_NEW"; break;
+        case _MOVE_WIN:  layer_name = "LAYER_MOVEWIN"; break;
+        case _AI: layer_name = "LAYER_AI"; break;
         case _FAST: layer_name = "LAYER_FAST"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
+        case _MOUSE_KEY: layer_name = "LAYER_MOUSE_KEY"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
 
@@ -1414,7 +1416,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 1) {
                     // TAP simple: enviar
-                    layer_invert(_MOVE); // tap - toggle _MOVE layer
+                    layer_invert(_MOVE_WIN); // tap - toggle _MOVE layer
                     return false;
                 }
             } else {
@@ -1850,7 +1852,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;*/
 
-        case LT(_NEW, _ALFA):
+        case LT(_NEW, _MOUSE_KEY):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _DEL
@@ -1861,7 +1863,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
                 if (record->tap.count == 1) {
                     // TAP simple: enviar
-                    layer_invert(_ALFA); // tap - toggle _MOVE layer
+                    layer_invert(_MOUSE_KEY); // tap - toggle _MOVE layer
                     return false;
                 }
             } else {
@@ -2016,7 +2018,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //eliminar SHIFT_TOGGLE ALT_SHIFT  LT(KC_F22, TG_F22)
-//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0 _MOVE_H
+//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0 _MOUSE_KEY
 
 
 //tdq
@@ -2034,17 +2036,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 
-//LT(KC_S, SHIFT_2)
+//LT(KC_S, SHIFT_2) LT(_MOUSE_KEY, TG_0),   LT(_RUN,MS_BTN2) LT\(_MOVE_H\, TG_0\)
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, OSL(_AI), MOUSE_HOLD , QK_BOOT,                 QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, MOUSE_HOLD, XXXXXXX, QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H, TG_0), LT(_NEW, _ALFA), MS_DOWN, MS_UP, PASTE, LT(SEL_ALL,KC_SPACE),                         SLEEP, PASTE, MS_LEFT, MS_RGHT, MS_BTN1, LT(_RUN,MS_BTN2),
+LT(_MOVE_H, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, PASTE, LT(SEL_ALL,KC_SPACE),                 SLEEP, PASTE, XXXXXXX, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-TG(_FAST), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                           HIBERNATE, TG(_MODE), KC_PGDN , KC_PGUP , MS_WHLR, MS_WHLL,
+OSL(_AI), LT(CUT,COPY), C(KC_SPACE), OSL(_AI), KC_TAB, G(KC_D),                                           HIBERNATE, TG(_MODE), MS_BTN1 , MS_BTN2 , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                              LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), KC_LGUI,                           MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
+                              LT(_MOVE_WIN, KC_ENT), LT(0,CTL_GUI), KC_LGUI,                                MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 
@@ -2053,7 +2055,7 @@ TG(_FAST), LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                 
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, KC_UP,
+LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -2075,17 +2077,19 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                       
                          // `--------------------------------'                                      `--------------------------'
     ),
 
-    //_DEV Ly 2
-    [_DEV] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, LT(0,MULTICURSOR), A(KC_J), S(A(KC_J)), LT(0,FOLDING), XXXXXXX,             XXXXXXX, C(S(KC_U)), A(KC_F12), LT(0,PROJECT_VIEW), LT(0,NEW_FILE), XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           C(KC_D), LT(0,COMM), TD(TDQ_FIND), LT(0,REFACTOR), LT(0,INFOPARM), XXXXXXX,          XXXXXXX, LT(0,NAV_ERROR), TD(TDQ_GOTO), C(A(KC_LEFT)), C(A(KC_RIGHT)), C(S(KC_F12)),
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           A(KC_Q), C(A(KC_T)), TD(TDQ_REPLACE), TD(TDQ_OVERRIDE), XXXXXXX, QK_BOOT,            QK_BOOT, XXXXXXX, LT(0,USAGES), LT(0,LAST_EDIT), C(KC_F12), LT(0,RECENT_LOC),
-        // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------+--------|
-                                      LT(0,FULL_SCREEN), XXXXXXX, XXXXXXX,                      TO(_BASE), XXXXXXX, LT(0,EVERYW_ACT)
-                                      // `------------------------------'                        `--------------------------'
+
+    //_MOUSE_KEY Ly 3
+    [_MOUSE_KEY] = LAYOUT_split_3x6_3(
+    // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+     XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+    MS_BTN2, TO(_BASE),MS_DOWN, MS_UP, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_LEFT, MS_RGHT, XXXXXXX, XXXXXXX,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+     XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN2, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     XXXXXXX, _______,  _______,                           TO(_BASE),   XXXXXXX, XXXXXXX
+                                    // `----------------------'                             `--------------------------'
+
     ),
 
     //_DEL Ly 3
@@ -2155,14 +2159,14 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                       
 
     // _MOVE_H Ly 8 LT(0,SPLIT_WIN) C(S(KC_M)) KC_F20
     [_MOVE_H] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, LGUI(KC_UP), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, C(S(KC_V)), G(KC_V), C(KC_F), KC_F5, XXXXXXX,                                 XXXXXXX, XXXXXXX,  S(KC_TAB), XXXXXXX, XXXXXXX,  C(S(KC_L)),
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_F11, KC_PSCR, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, C(KC_L), C(KC_I), XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       MS_BTN2, KC_PSCR, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
+       // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
+                                      XXXXXXX, XXXXXXX, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                      // `------------------------'                              `--------------------------'
     ),
 
@@ -2172,7 +2176,7 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                       
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, CS_F15_HOLD ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX ,  MS_WHLD , UP_10, DOWN_10, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
+           XXXXXXX ,  MS_WHLD , DOWN_10 , UP_10, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, A(KC_UP), XXXXXXX, A(KC_DOWN),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
          TO(_BASE), XXXXXXX, C(KC_SPACE), MS_BTN1, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -2183,11 +2187,11 @@ TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                       
     // _MOVE_WIN Ly 10 C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), MS_WHLR, MS_WHLL, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+       C(S(KC_F12)), A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       MS_WHLU, C(S(KC_TAB)), C(KC_TAB), MS_WHLD, A(KC_UP), XXXXXXX,                    XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+       TO(_BASE), C(S(KC_TAB)), C(KC_TAB), C(KC_F), KC_F5, XXXXXXX,                           XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-      MS_BTN3, G(C(KC_LEFT)), G(C(KC_RIGHT)), C(KC_T), C(G(KC_D)), XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX,
+       LGUI(KC_UP), KC_F11, G(KC_V), KC_PSCR, XXXXXXX, XXXXXXX,                                    XXXXXXX,  C(G(KC_D)), C(KC_T), G(C(KC_RIGHT)),   G(C(KC_LEFT)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
@@ -2562,6 +2566,10 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 uint8_t layer = get_highest_layer(layer_state);
 
  switch (layer) {
+         case _MOUSE_KEY:
+             rgb_matrix_set_color(8, RGB_BLUE);  // R, G, B
+             break;
+
          case _MOVE:
              rgb_matrix_set_color(8, RGB_YELLOW);  // R, G, B
              break;
@@ -2578,7 +2586,7 @@ uint8_t layer = get_highest_layer(layer_state);
              rgb_matrix_set_color(8, RGB_PURPLE);
              break;
 
-         case _COMMIT:
+         case _MOVE_WIN:
              rgb_matrix_set_color(8, RGB_ORANGE);
              break;
 
@@ -2713,7 +2721,7 @@ uint8_t layer = get_highest_layer(state);
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-            case _COMMIT:
+            case _MOVE_WIN:
                 //rgblight_set_layer_state(14, true); // COMMIT LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
@@ -2729,6 +2737,11 @@ uint8_t layer = get_highest_layer(state);
                 break;
 
       		 case _MOVE:
+                //rgblight_set_layer_state(17, true); // MOUSE_2 LY
+                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
+                break;
+
+            case _MOUSE_KEY:
                 //rgblight_set_layer_state(17, true); // MOUSE_2 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
