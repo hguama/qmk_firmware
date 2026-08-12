@@ -158,6 +158,7 @@ enum {
     TDQ_FIND,
     TDQ_REPLACE,
     TDQ_OVERRIDE,
+    TDQ_ESC,
 };
 
 
@@ -225,6 +226,7 @@ void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
 void tdq_find_finished(tap_dance_state_t *state, void *user_data);
 void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
+void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 
 
 // Alternate repeat key: Alt + Repeat invierte la acción
@@ -1986,6 +1988,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
     [TDQ_REPLACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_replace_finished, x_reset),
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
+    [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
 };
 
 // ============================================================================
@@ -2040,7 +2043,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  LT(_DEL,KC_ESC), ALT_TAB, MOUSE_HOLD, LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, PASTE, LT(SEL_ALL,KC_SPACE),                 SLEEP, PASTE, MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
@@ -2511,6 +2514,29 @@ void tdq_override_finished(tap_dance_state_t *state, void *user_data) {
             tap_code16(C(S(KC_T)));
             break;
 */
+
+        default:
+            break;
+    }
+}
+
+void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
+    xtap_state.state = cur_dance(state);
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP:
+            // Escape
+            tap_code(KC_ESC);
+            break;
+
+        case TD_SINGLE_HOLD:
+            // Recorte de pantalla (Win+Shift+S)
+            tap_code16(G(S(KC_S)));
+            break;
+
+        case TD_DOUBLE_TAP:
+            // Buscar (Ctrl+F)
+            tap_code16(C(KC_F));
+            break;
 
         default:
             break;
