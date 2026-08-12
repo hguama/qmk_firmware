@@ -110,3 +110,14 @@ TD(TDQ_NUEVO)   // en lugar de una tecla normal en el layout
 | `TD_DOUBLE_TAP` | Buscar (Ctrl+F) | `C(KC_F)` |
 
 **Uso:** Reemplaza `KC_ESC` en la capa `_BASE`.
+
+> ⚠️ **Nota — no usar `on_each_tap` para acelerar el tap simple**
+>
+> Si en el futuro se quiere hacer el primer tap más rápido usando `on_each_tap`,
+> tener en cuenta que **la primera tecla se envía al presionar**, antes de saber
+> si será un doble tap. Por eso, al hacer doble tap, la acción del primer tap
+> (`KC_ESC`) se envía igual antes de la acción del doble tap (`Ctrl+F`).
+>
+> Esto tiene un efecto colateral molesto: en JetBrains, ese `ESC` anticipado
+> **quita la selección de la palabra**, por lo que `Ctrl+F` no busca la palabra
+> seleccionada. Se revirtió a `on_dance_finished` (ESC con delay) por este motivo.
