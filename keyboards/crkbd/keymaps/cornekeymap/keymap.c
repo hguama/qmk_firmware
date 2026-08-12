@@ -159,6 +159,7 @@ enum {
     TDQ_OVERRIDE,
     TDQ_ESC,
     TDQ_PASTE,
+    TDQ_MOUSE_HOLD,
 };
 
 
@@ -228,6 +229,7 @@ void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
+void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data);
 
 
 // Alternate repeat key: Alt + Repeat invierte la acción
@@ -314,6 +316,17 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
 
+// Helper: alterna el clic izquierdo sostenido (lógica original de MOUSE_HOLD)
+static void toggle_mouse_hold(void) {
+    mouse_held = !mouse_held;
+    if (mouse_held) {
+        register_code(MS_BTN1);
+    } else {
+        unregister_code(MS_BTN1);
+        tap_code(MS_BTN1);
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 
@@ -339,14 +352,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
         case MOUSE_HOLD:
             if (record->event.pressed) {
-                mouse_held = !mouse_held; // Cambiamos el estado de la bandera primero
-
-                if (mouse_held) {
-                    register_code(MS_BTN1);
-                } else {
-                    unregister_code(MS_BTN1);
-                    tap_code(MS_BTN1);
-                }
+                toggle_mouse_hold();
             }
             return false;
 
@@ -1953,6 +1959,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
+    [TDQ_MOUSE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_hold_finished, x_reset),
 };
 
 // ============================================================================
@@ -2003,12 +2010,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //LT(KC_S, SHIFT_2) LT(_MOUSE_KEY, TG_0),   LT(_RUN,MS_BTN2) LT\(_MOVE_H\, TG_0\)
-//LT(_AI, TG_0)TDQ_ESC  TDQ_ESC 
+//LT(_AI, TG_0)TDQ_ESC  TDQ_ESC
 
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
@@ -2493,18 +2500,13 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_SINGLE_HOLD:
-            // Recorte de pantalla (Win+Shift+S)
-            tap_code16(G(S(KC_S)));
+            // Minimizar todo (Win+D)
+            tap_code16(G(KC_D));
             break;
 
         case TD_DOUBLE_TAP:
-            // Buscar (Ctrl+F)
-            tap_code16(C(KC_F));
-            break;
-
-        case TD_DOUBLE_HOLD:
-            // Pantalla completa (F11)
-            tap_code(KC_F11);
+            // Clic derecho
+            tap_code16(MS_BTN2);
             break;
 
         default:
@@ -2526,13 +2528,36 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_DOUBLE_TAP:
-            // Buscar (Ctrl+F)
-            tap_code16(C(KC_F));
+            // Pantalla completa (F11)
+            tap_code(KC_F11);
             break;
 
         case TD_DOUBLE_HOLD:
             // Portapapeles (Win+V)
             tap_code16(G(KC_V));
+            break;
+
+        default:
+            break;
+    }
+}
+
+void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
+    xtap_state.state = cur_dance(state);
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP:
+            // Alternar clic izquierdo sostenido (misma lógica que MOUSE_HOLD)
+            toggle_mouse_hold();
+            break;
+
+        case TD_SINGLE_HOLD:
+            // Imprimir pantalla
+            tap_code(KC_PSCR);
+            break;
+
+        case TD_DOUBLE_TAP:
+            // Buscar palabra (Ctrl+F)
+            tap_code16(C(KC_F));
             break;
 
         default:

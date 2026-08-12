@@ -106,9 +106,8 @@ TD(TDQ_NUEVO)   // en lugar de una tecla normal en el layout
 | Estado | Acción | Keycode |
 |--------|--------|---------|
 | `TD_SINGLE_TAP` | Escape | `KC_ESC` |
-| `TD_SINGLE_HOLD` | Recorte de pantalla (Win+Shift+S) | `G(S(KC_S))` |
-| `TD_DOUBLE_TAP` | Buscar (Ctrl+F) | `C(KC_F)` |
-| `TD_DOUBLE_HOLD` | Pantalla completa | `KC_F11` |
+| `TD_SINGLE_HOLD` | Minimizar todo (Win+D) | `G(KC_D)` |
+| `TD_DOUBLE_TAP` | Clic derecho | `MS_BTN2` |
 
 **Uso:** Reemplaza `KC_ESC` en la capa `_BASE`.
 
@@ -138,7 +137,7 @@ Reemplaza el antiguo keycode personalizado `PASTE` (que solo hacía `Ctrl+V`).
 |--------|--------|---------|
 | `TD_SINGLE_TAP` | Pegar | `Ctrl+V` (`C(KC_V)`) |
 | `TD_SINGLE_HOLD` | Recargar página | `KC_F5` |
-| `TD_DOUBLE_TAP` | Buscar | `Ctrl+F` (`C(KC_F)`) |
+| `TD_DOUBLE_TAP` | Pantalla completa | `KC_F11` |
 | `TD_DOUBLE_HOLD` | Portapapeles | `Win+V` (`G(KC_V)`) |
 
 **Uso:** Reemplaza `PASTE` en las capas `_BASE`, `_MOVE` y `_ALFA`.
@@ -146,3 +145,24 @@ Reemplaza el antiguo keycode personalizado `PASTE` (que solo hacía `Ctrl+V`).
 **Nota:** Se eliminó el keycode `PASTE` del enum `custom_keycodes` y sus
 handlers en `process_record_user`. También se quitaron dos bloques muertos
 que lo usaban como tap keycode: `LT(MS_ACL2, PASTE)` y `LT(_FAST, PASTE)`.
+
+---
+
+## TDQ_MOUSE_HOLD — Tap Dance para sostener clic (2026-08-12)
+
+Replica el comportamiento del keycode `MOUSE_HOLD` en el tap, y agrega
+acciones extra. **Aún no reemplaza a `MOUSE_HOLD`** en los layouts.
+
+**Estados:**
+
+| Estado | Acción | Keycode |
+|--------|--------|---------|
+| `TD_SINGLE_TAP` | Alternar clic izquierdo sostenido | `toggle_mouse_hold()` |
+| `TD_SINGLE_HOLD` | Imprimir pantalla | `KC_PSCR` |
+| `TD_DOUBLE_TAP` | Buscar palabra | `Ctrl+F` (`C(KC_F)`) |
+
+**Nota sobre el uso:** El `tap` hace lo mismo que `MOUSE_HOLD`: registra
+`MS_BTN1` sostenido. El usuario normalmente lo libera presionando `MS_BTN1`
+(no la misma tecla), por lo que la lógica de `MS_BTN1` en `process_record_user`
+se mantiene intacta. Se extrajo la lógica a `toggle_mouse_hold()` para que
+`MOUSE_HOLD` y `TDQ_MOUSE_HOLD` (tap) queden sincronizados.
