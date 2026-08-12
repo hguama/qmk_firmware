@@ -136,7 +136,6 @@ enum custom_keycodes {
     C_X,             // Tecla personalizada TAP: C | HOLD: X
     P_ENIE,          // Tecla personalizada TAP: P | HOLD: Ñ
     COPY,            // Tecla personalizada para copy
-    PASTE,           // Tecla personalizada para paste
     CTRL_Z,          // Keycode para usar en LT(_BOOK, CTRL_Z)
 };
 
@@ -159,6 +158,7 @@ enum {
     TDQ_REPLACE,
     TDQ_OVERRIDE,
     TDQ_ESC,
+    TDQ_PASTE,
 };
 
 
@@ -227,6 +227,7 @@ void tdq_find_finished(tap_dance_state_t *state, void *user_data);
 void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
 void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
+void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 
 
 // Alternate repeat key: Alt + Repeat invierte la acción
@@ -1363,12 +1364,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
  
 
-        case PASTE:
-            if (record->event.pressed) {
-                tap_code16(C(KC_V));
-            }
-            break;
-
        //todo: para eliminar
         case LT(MS_ACL0, COPY):
             if (record->event.pressed) {
@@ -1384,24 +1379,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
                 // Al soltar la tecla, desactivar MS_ACL0
                 unregister_code(MS_ACL0);
-            }
-            return false;
-
-            //todo: para eliminar
-        case LT(MS_ACL2, PASTE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Activar MS_ACL1
-                    register_code(MS_ACL2);
-                    return false;
-                } else {
-                    // TAP: Ejecutar PASTE (Ctrl+V)
-                    tap_code16(C(KC_V));
-                    return false;
-                }
-            } else {
-                // Al soltar la tecla, desactivar MS_ACL1
-                unregister_code(MS_ACL2);
             }
             return false;
 
@@ -1925,20 +1902,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-
-        case LT(_FAST, PASTE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Activar capa _FAST
-                    return true; // QMK maneja el HOLD automáticamente
-                } else {
-                    // TAP: Ctrl+V para pegar
-                    tap_code16(C(KC_V));
-                    return false;
-                }
-            }
-            return true;
-
         }//END SWITCH
     return true;
 };
@@ -1989,6 +1952,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_REPLACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_replace_finished, x_reset),
     [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
+    [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
 };
 
 // ============================================================================
@@ -2039,15 +2003,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //LT(KC_S, SHIFT_2) LT(_MOUSE_KEY, TG_0),   LT(_RUN,MS_BTN2) LT\(_MOVE_H\, TG_0\)
-//LT(_AI, TG_0)
+//LT(_AI, TG_0)TDQ_ESC  TDQ_ESC 
+
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, PASTE, LT(SEL_ALL,KC_SPACE),                 SLEEP, PASTE, MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
+LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-MS_BTN2, LT(CUT,COPY), C(KC_SPACE), TG(_AI), KC_TAB, XXXXXXX,                                           HIBERNATE, G(KC_D), MS_BTN2 , MS_BTN2 , MS_WHLR, MS_WHLL,
+MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, XXXXXXX,                                           HIBERNATE, G(KC_D), MS_BTN2 , MS_BTN2 , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                  LT(_AI, KC_ENT), LT(0,CTL_GUI), KC_LGUI,                                MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
@@ -2058,7 +2023,7 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), TG(_AI), KC_TAB, XXXXXXX,                   
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, PASTE, LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
+LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -2072,14 +2037,13 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
 // ,--------------------------------------------------------.                                      ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), KC_T, LT(_NUMB,KC_F), XXXXXXX, QK_BOOT,                         QK_BOOT, XXXXXXX, KC_H, LT(0,D_Q), LT(0,L_K), KC_RALT,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), PASTE, LT(SEL_ALL,KC_SPACE),         XXXXXXX, XXXXXXX , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
+LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),         XXXXXXX, XXXXXXX , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                          HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
 // |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------+--------|
                          LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		        TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                      `--------------------------'
     ),
-
 
     // _AI (movido aquí desde posición 17)
     [_AI] = LAYOUT_split_3x6_3(
@@ -2536,6 +2500,39 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP:
             // Buscar (Ctrl+F)
             tap_code16(C(KC_F));
+            break;
+
+        case TD_DOUBLE_HOLD:
+            // Pantalla completa (F11)
+            tap_code(KC_F11);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
+    xtap_state.state = cur_dance(state);
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP:
+            // Pegar (Ctrl+V)
+            tap_code16(C(KC_V));
+            break;
+
+        case TD_SINGLE_HOLD:
+            // Recargar página (F5)
+            tap_code(KC_F5);
+            break;
+
+        case TD_DOUBLE_TAP:
+            // Buscar (Ctrl+F)
+            tap_code16(C(KC_F));
+            break;
+
+        case TD_DOUBLE_HOLD:
+            // Portapapeles (Win+V)
+            tap_code16(G(KC_V));
             break;
 
         default:

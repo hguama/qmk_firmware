@@ -108,6 +108,7 @@ TD(TDQ_NUEVO)   // en lugar de una tecla normal en el layout
 | `TD_SINGLE_TAP` | Escape | `KC_ESC` |
 | `TD_SINGLE_HOLD` | Recorte de pantalla (Win+Shift+S) | `G(S(KC_S))` |
 | `TD_DOUBLE_TAP` | Buscar (Ctrl+F) | `C(KC_F)` |
+| `TD_DOUBLE_HOLD` | Pantalla completa | `KC_F11` |
 
 **Uso:** Reemplaza `KC_ESC` en la capa `_BASE`.
 
@@ -121,3 +122,27 @@ TD(TDQ_NUEVO)   // en lugar de una tecla normal en el layout
 > Esto tiene un efecto colateral molesto: en JetBrains, ese `ESC` anticipado
 > **quita la selección de la palabra**, por lo que `Ctrl+F` no busca la palabra
 > seleccionada. Se revirtió a `on_dance_finished` (ESC con delay) por este motivo.
+
+---
+
+## TDQ_PASTE — Tap Dance para pegar (2026-08-12)
+
+Reemplaza el antiguo keycode personalizado `PASTE` (que solo hacía `Ctrl+V`).
+
+**Archivos modificados:**
+- `keymap.c` — enum, forward declaration, función, tap_dance_actions, layouts (_BASE, _MOVE, _ALFA)
+
+**Estados:**
+
+| Estado | Acción | Keycode |
+|--------|--------|---------|
+| `TD_SINGLE_TAP` | Pegar | `Ctrl+V` (`C(KC_V)`) |
+| `TD_SINGLE_HOLD` | Recargar página | `KC_F5` |
+| `TD_DOUBLE_TAP` | Buscar | `Ctrl+F` (`C(KC_F)`) |
+| `TD_DOUBLE_HOLD` | Portapapeles | `Win+V` (`G(KC_V)`) |
+
+**Uso:** Reemplaza `PASTE` en las capas `_BASE`, `_MOVE` y `_ALFA`.
+
+**Nota:** Se eliminó el keycode `PASTE` del enum `custom_keycodes` y sus
+handlers en `process_record_user`. También se quitaron dos bloques muertos
+que lo usaban como tap keycode: `LT(MS_ACL2, PASTE)` y `LT(_FAST, PASTE)`.
