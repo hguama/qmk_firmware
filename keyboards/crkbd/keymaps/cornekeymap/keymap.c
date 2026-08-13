@@ -81,9 +81,6 @@ enum custom_keycodes {
     CHATGPT,
     SEL_WORD_PARAGRAPH,
     ALT_TAB,
-    F_W,
-    V_B,
-    M_Y,
     DEL_WORD,
     DEL_LINE,
     SEL_W_ALL,
@@ -127,13 +124,6 @@ enum custom_keycodes {
     DOWN_10,
     UP_10,
     PIPE_M,
-    ESC_W,           // Tecla personalizada TAP: ESC | HOLD: W
-    T_F,           // Tecla personalizada TAP: TAB | HOLD: F
-    H_J,             // Tecla personalizada TAP: H | HOLD: J
-    D_Q,             // Tecla personalizada TAP: D | HOLD: Q
-    L_K,             // Tecla personalizada TAP: L | HOLD: K
-    G_Z,             // Tecla personalizada TAP: G | HOLD: Z
-    C_X,             // Tecla personalizada TAP: C | HOLD: X
     P_ENIE,          // Tecla personalizada TAP: P | HOLD: Ñ
     COPY,            // Tecla personalizada para copy
     CTRL_Z,          // Keycode para usar en LT(_BOOK, CTRL_Z)
@@ -988,42 +978,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
 
 
-        case LT(0,V_B):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_B);
-                    return false;
-                } else {
-                    tap_code(KC_V);
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,M_Y):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_Y);
-                    return false;
-                } else {
-                    tap_code(KC_M);
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,F_W):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_W);
-                    return false;
-                } else {
-                    tap_code(KC_F);
-                    return false;
-                }
-            }
-            return false;
-
         case OPEN_QUEST: // ¿
             if (record->event.pressed) {
                 SEND_STRING(
@@ -1609,90 +1563,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(0,ESC_W):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_W); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_ESC); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,T_F):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_F); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_T); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,H_J):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_J); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_H); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,D_Q):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_Q); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_D); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,L_K):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_K); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_L); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,G_Z):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_Z); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_G); //TAP
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,C_X):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_X); //HOLD
-                    return false;
-                } else {
-                    tap_code(KC_C); //TAP
-                    return false;
-                }
-            }
-            return false;
-
         case LT(0, P_ENIE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -2035,8 +1905,7 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
     ),
 
 
-    //_ALFA ly 1  LT(0,T_F) LT(_DEL,TG_0)
-    // LT(0,G_Z), LT(0,C_X), LT(0,V_B) LT(0,D_Q), LT(0,L_K) LT(0,M_Y) LT(0,ESC_W)
+    //_ALFA ly 1  LT(_DEL,TG_0)
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
   KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                        QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
