@@ -2039,14 +2039,14 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
     ),
 
 
-    //_ALFA ly 1  LT(0,T_F)
+    //_ALFA ly 1  LT(0,T_F) LT(_DEL,TG_0)
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
-  TG_ALFA, LT(0,ESC_W), KC_T, KC_F, KC_Z, QK_BOOT,                                                     QK_BOOT, KC_X, KC_H, LT(0,D_Q), LT(0,L_K), KC_K,
+  KC_Z, LT(0,ESC_W), KC_T, KC_F, KC_Z, QK_BOOT,                                                        QK_BOOT, KC_X, KC_H, LT(0,D_Q), LT(0,L_K), KC_K,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
-LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      XXXXXXX, KC_Q , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
+LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      XXXXXXX, KC_Q , LT(_BASE,KC_O), LT(_SYMB,KC_S), TO(_BASE), KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
- KC_B, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                                HIBERNATE, KC_Y,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
+  KC_B, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                                HIBERNATE, KC_Y,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------+--------|
                          LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		           TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                         `--------------------------'
