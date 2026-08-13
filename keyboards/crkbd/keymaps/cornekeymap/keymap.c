@@ -2015,7 +2015,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, XXXXXXX, KC_LSFT, MS_WHLD, MS_WHLU, XXXXXXX,
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, KC_T, KC_T, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
@@ -2039,17 +2039,17 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
     ),
 
 
-    //_ALFA ly 1  LT(0,T_F) H_Ja
+    //_ALFA ly 1  LT(0,T_F)
     [_ALFA] = LAYOUT_split_3x6_3(
-// ,--------------------------------------------------------.                                      ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LT(0,ESC_W), KC_T, LT(_NUMB,KC_F), XXXXXXX, QK_BOOT,                         QK_BOOT, XXXXXXX, KC_H, LT(0,D_Q), LT(0,L_K), KC_RALT,
-// |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_BASE,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),         XXXXXXX, XXXXXXX , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
-// |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                          HIBERNATE, XXXXXXX,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
-// |--------+--------+--------+--------+--------+-----------|                                      |--------+--------+--------+--------+--------+--------+--------|
-                         LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		        TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
-                         // `--------------------------------'                                      `--------------------------'
+// ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
+  TG_ALFA, LT(0,ESC_W), KC_T, KC_F, KC_Z, QK_BOOT,                                                     QK_BOOT, KC_X, KC_H, LT(0,D_Q), LT(0,L_K), KC_K,
+// |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
+LT(_AI,KC_A), LT(_DEL,TG_0), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      XXXXXXX, KC_Q , LT(_BASE,KC_O), LT(_SYMB,KC_S), KC_R, KC_N,
+// |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
+ KC_B, LT(0,G_Z), LT(0,C_X), LT(0,V_B),KC_TAB, G(KC_D),                                                HIBERNATE, KC_Y,  KC_U, LT(0,M_Y), LT(0,P_ENIE), KC_J,
+// |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------+--------|
+                         LSFT_T(KC_ENT), C(KC_Z),  LT(0,CTL_GUI),                     		           TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
+                         // `--------------------------------'                                         `--------------------------'
     ),
 
     // _AI (movido aquí desde posición 17)
