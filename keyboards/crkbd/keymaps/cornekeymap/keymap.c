@@ -44,8 +44,6 @@ enum layer_names {
     _FAST    = 11,
     _MOVE_WIN = 12,
     _RUN     = 14,
-    _MODE    = 15,
-    _COMMIT  = 16,
     _MOUSE_KEY = 17,  // movido aquí desde 3
 };
 
@@ -60,7 +58,6 @@ enum custom_keycodes {
     SHIFT_2,
     CLOSE_WIN,
     SEL_ALL,
-	TO_NUMB,
     UNDO_WIN,
     AMP_DOUBLE,
     NOT_EQUAL,
@@ -80,7 +77,6 @@ enum custom_keycodes {
     COMM,
     SHIFT_TOGGLE,
     TG_0,
-    TG_6,
     SLEEP,
     HIBERNATE,
     ASTRISK_PLUS,
@@ -248,7 +244,6 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
     switch (layer) {
         case _ALFA:    layer_name = "LAYER_ALFA"; break;
         case _NUMB:    layer_name = "LAYER_NUMB"; break;
-        case _MODE:    layer_name = "LAYER_MODE"; break;
         case _MOVE_WIN:  layer_name = "LAYER_MOVEWIN"; break;
         case _AI: layer_name = "LAYER_AI"; break;
         case _FAST: layer_name = "LAYER_FAST"; break;
@@ -338,13 +333,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_LCTL);
             }
             return false;
-
-        case TO_NUMB:
-            if (record->event.pressed) {
-                clear_all();        // Limpia mods y estados activos
-                layer_move(_NUMB);  // Mueve exclusivamente a la capa NUMB
-            }
-            return false; // Ya manejamos la acción, no continuar
 
             // Para pruebas con teclado
         case MS_ACL0_TOGGLE:
@@ -996,20 +984,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(0,TG_6):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    return true; //hold
-                } else {
-                    clear_all();
-                    layer_invert(_COMMIT); //tap
-                    return false;
-                }
-            }
-            return true;
-
-
-		case LT(_DEL, KC_PERC):
+        case LT(_DEL, KC_PERC):
    				 if (record->event.pressed) {
         			if (record->tap.count == 0) {
             			// HOLD (sin taps): mover exclusivamente a _DEL
@@ -1338,7 +1313,7 @@ LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 _______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, _______, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), KC_LCTL, KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
@@ -1475,32 +1450,6 @@ XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XX
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                         C(KC_F2), _______,  _______,                             TO(_BASE), XXXXXXX, XXXXXXX
                                         // `----------------------'                              `--------------------------'
-    ),
-
-    // _MODE Ly 13 -move for games
-    [_MODE] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, XXXXXXX, TG(_COMMIT), TO_NUMB, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_DOWN, KC_UP, XXXXXXX, XXXXXXX,                          XXXXXXX, XXXXXXX, KC_LEFT, KC_RIGHT, KC_DOWN, KC_UP,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, TG(_MODE), TG(_MODE), XXXXXXX, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_ENT, XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, KC_SPACE
-                                         // `---------------------'                             `--------------------------'
-    ),
-
-    // _COMMIT Ly 14     MS_ACL0_TOGGLE
-    [_COMMIT] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, KC_ESC, C(KC_K), A(KC_0), XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, XXXXXXX, C(KC_Z), XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           MS_ACL2, MS_ACL1, S(KC_F7), KC_F7, XXXXXXX, C(KC_S),                                 SLEEP, XXXXXXX, MS_WHLL, MS_WHLD, MS_WHLR, MS_WHLU,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, XXXXXXX, MS_ACL0, XXXXXXX, LT(SEL_ALL,KC_SPACE),                                  HIBERNATE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     C(A(KC_R)),  XXXXXXX, XXXXXXX,                             TO(_BASE), XXXXXXX, TO(_BASE)
-                                     // `-------------------------'                             `--------------------------'
     ),
 
     // _MOUSE_KEY (movido aquí desde posición 3)
@@ -1812,10 +1761,6 @@ uint8_t layer = get_highest_layer(layer_state);
              rgb_matrix_set_color(8, 128, 128, 128);
              break;
 
-         case _MODE:
-             rgb_matrix_set_color(8, RGB_PURPLE);
-             break;
-
          case _MOVE_WIN:
              rgb_matrix_set_color(8, RGB_PURPLE);
              break;
@@ -1921,16 +1866,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 //    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
 //    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
 
-/*
-    rgblight_set_layer_state(1, false);  // _ALFA LY OFF
-    rgblight_set_layer_state(5, false);  // _NUMB LY OFF
-    rgblight_set_layer_state(13, false); // _MODE LY OFF
-    rgblight_set_layer_state(14, false); // _COMMIT LY OFF
-    rgblight_set_layer_state(16, false); // _NEW LY OFF
-    rgblight_set_layer_state(17, false); // _NEW LY OFF
-*/
-
-
 uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
@@ -1941,11 +1876,6 @@ uint8_t layer = get_highest_layer(state);
 
             case _NUMB:
                 // rgblight_set_layer_state(5, true); // NUMBERS LY
-                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
-                break;
-
-            case _MODE:
-                //rgblight_set_layer_state(13, true); // MODE   LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
