@@ -66,12 +66,9 @@ enum custom_keycodes {
     SEL_ALL,
 	TO_NUMB,
     UNDO_WIN,
-    ALT_SHIFT,
     AMP_DOUBLE,
-    OPEN_QUEST,
     NOT_EQUAL,
     MS_ACL0_TOGGLE,
-    TRIPLE_WHLD,
     EQUAL_DBL,
     DOUBLE_PIPE,
     ALT_TAB,
@@ -291,6 +288,18 @@ static void toggle_mouse_hold(void) {
     }
 }
 
+// Helper: envía "¿" (Alt+0191)
+static void send_inverted_question_mark(void) {
+    SEND_STRING(
+        SS_DOWN(X_LALT)
+        SS_TAP(X_KP_0)
+        SS_TAP(X_KP_1)
+        SS_TAP(X_KP_9)
+        SS_TAP(X_KP_1)
+        SS_UP(X_LALT)
+    );
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 
@@ -350,16 +359,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false; // Ya manejamos la acción, no continuar
 
-        case ALT_SHIFT:
-            if (record->event.pressed) {
-                register_code(KC_LALT);
-                register_code(KC_LSFT);
-            } else {
-                unregister_code(KC_LSFT);
-                unregister_code(KC_LALT);
-            }
-            return false;
-
             // Para pruebas con teclado
         case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
@@ -402,15 +401,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     tap_code16(KC_EQUAL);  // TAP: =
                     return false;
                 }
-            }
-            return false;
-
-        case TRIPLE_WHLD:
-            if (record->event.pressed) {
-                for (int i = 0; i < 8; i++) {
-                    tap_code16_delay(MS_WHLD,10);
-                }
-                tap_code16(KC_ENT);
             }
             return false;
 
@@ -481,14 +471,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     // HOLD: ¿
-                    SEND_STRING(
-                        SS_DOWN(X_LALT)
-                        SS_TAP(X_KP_0)
-                        SS_TAP(X_KP_1)
-                        SS_TAP(X_KP_9)
-                        SS_TAP(X_KP_1)
-                        SS_UP(X_LALT)
-                    );
+                    send_inverted_question_mark();
                     return false;
                 } else {
                     // TAP: ?
@@ -754,19 +737,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case OPEN_QUEST: // ¿
-            if (record->event.pressed) {
-                SEND_STRING(
-                    SS_DOWN(X_LALT)
-                    SS_TAP(X_KP_0)
-                    SS_TAP(X_KP_1)
-                    SS_TAP(X_KP_9)
-                    SS_TAP(X_KP_1)
-                    SS_UP(X_LALT)
-                );
-            }
-            break;
-
         // Evaluar si se necesita (JetBrains)
         case LT(0,SPLIT_WIN):   // HOLD: F17 (SPLIT DOWN) | TAP: F16 (SPLIT RIGHT)
             if (record->event.pressed) {
@@ -933,9 +903,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          case LT(_AI, TG_0):
              if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _DEL
+                    // HOLD (sin taps): mover exclusivamente a _AI
                     del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_AI);                       // dejamos _DEL sola (prioridad)
+                    layer_move(_AI);                       // dejamos _AI sola (prioridad)
                     del_layer_active = true;
                     return false;
                 }
@@ -956,9 +926,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(_RUN, MS_BTN2):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _DEL
+                    // HOLD (sin taps): mover exclusivamente a _RUN
                     del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_RUN);                       // dejamos _DEL sola (prioridad)
+                    layer_move(_RUN);                       // dejamos _RUN sola (prioridad)
                     del_layer_active = true;
                     return false;
                 }
@@ -1110,9 +1080,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(_BASE,KC_I):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _BASE
+                    // HOLD (sin taps): mover exclusivamente a _MOVE
                     base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOVE);                       // dejamos _BASE sola (prioridad)
+                    layer_move(_MOVE);                       // dejamos _MOVE sola (prioridad)
                     base_layer_active = true;
                     return false;
                 }
@@ -1134,9 +1104,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(_BASE,KC_O):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _BASE
+                    // HOLD (sin taps): mover exclusivamente a _MOVE
                     base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOVE);                       // dejamos _BASE sola (prioridad)
+                    layer_move(_MOVE);                       // dejamos _MOVE sola (prioridad)
                     base_layer_active = true;
                     return false;
                 }
@@ -1276,29 +1246,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-/*        case LT(KC_F22, _ALFA):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Activar MS_ACL0
-                    register_code(MS_ACL0);
-                    return false;
-                } else {
-                    // TAP: Ejecutar COPY (Ctrl+C)
-                    layer_invert(_ALFA);
-                    return false;
-                }
-            } else {
-                // Al soltar la tecla, desactivar MS_ACL0
-                unregister_code(MS_ACL0);
-            }
-            return false;*/
-
         case LT(_NEW, _MOUSE_KEY):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _DEL
+                    // HOLD (sin taps): mover exclusivamente a _NEW
                     del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_NEW);                       // dejamos _DEL sola (prioridad)
+                    layer_move(_NEW);                       // dejamos _NEW sola (prioridad)
                     del_layer_active = true;
                     return false;
                 }
@@ -1323,7 +1276,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     register_code(MS_ACL0);
                     return false;
                 } else {
-                    // TAP: Ejecutar COPY (Ctrl+C)
+                    // TAP: Espacio
                     tap_code(KC_SPACE);
                     return false;
                 }
@@ -1336,7 +1289,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(KC_S, SHIFT_2):
             if (record->event.pressed) {
                 if (record->tap.count > 0) {
-                    // TAP: Presiona Control una vez
+                    // TAP: Ctrl+S
                     tap_code16(C(KC_S));
                     return false;
                 } else {
@@ -1432,9 +1385,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //
 
 
-//eliminar SHIFT_TOGGLE ALT_SHIFT  LT(KC_F22, TG_F22)
-//  CTL_GUI MS_WHLR)  LT(_DEV,KC_SPACE) TD(TDQ_SEL), KC_F15 WIN_D MS_ACL0 _MOUSE_KEY
-
+//
+//
 
 //tdq
 //
