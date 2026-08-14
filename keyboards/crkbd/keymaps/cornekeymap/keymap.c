@@ -41,7 +41,6 @@ enum layer_names {
     _NUMB    = 7,
     _BOOK    = 8,
     _BOOK_2  = 9,
-    _MOVE_H  = 10,
     _FAST    = 11,
     _MOVE_WIN = 12,
     _RUN     = 14,
@@ -87,7 +86,6 @@ enum custom_keycodes {
     ASTRISK_PLUS,
     MARKER_B,
     MARKER_2,
-    C_END_HOME,
     QUESTION,
     DOWN_10,
     UP_10,
@@ -749,25 +747,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(_MOVE_H,_MOVE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    return true; // hold - will activate _AI layer
-                } else {
-                    clear_all();
-
-                    // If CAPS is on, turn it off
-                    if (host_keyboard_led_state().caps_lock) {
-                        tap_code(KC_CAPS);
-                    }
-
-                    layer_invert(_MOVE); // tap - toggle _MOVE layer
-                    return false;
-                }
-            }
-            return true;
-
-
         case LT(0, UNDO_WIN):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1140,21 +1119,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-        case LT(_MOVE_H, COPY):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Activar capa _MOVE_H
-                    return true; // QMK maneja el HOLD automáticamente
-                } else {
-                    // TAP: Ctrl+C para copiar
-					 clear_all();
-                   	 tap_code16(C(KC_C));
-
-                    return false;
-                }
-            }
-            return true;
-
         case LT(SEL_ALL, KC_SPACE):
             if (record->event.pressed) {
                 // 1. LÓGICA DE HOLD (Seleccionar Todo)
@@ -1352,7 +1316,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 
-//LT(KC_S, SHIFT_2) LT(_MOUSE_KEY, TG_0),   LT(_RUN,MS_BTN2) LT\(_MOVE_H\, TG_0\)
 //LT(_AI, TG_0)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)
 
 
@@ -1373,7 +1336,7 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-LT(_MOVE_H,_MOVE), MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
+_______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, TG(_MODE), LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
@@ -1470,19 +1433,6 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
           A(KC_H), XXXXXXX, A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, XXXXXXX,  _______,                               TO(_BASE),   XXXXXXX, XXXXXXX
-                                     // `------------------------'                              `--------------------------'
-    ),
-
-    // _MOVE_H Ly 8 LT(0,SPLIT_WIN) C(S(KC_M)) KC_F20
-    [_MOVE_H] = LAYOUT_split_3x6_3(
-       // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                      XXXXXXX, XXXXXXX, _______,                                TO(_BASE), XXXXXXX, LT(0,C_END_HOME)
                                      // `------------------------'                              `--------------------------'
     ),
 
