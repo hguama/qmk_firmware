@@ -15,7 +15,7 @@ la revisión del keymap. Cada tarea debe completarse y luego marcarse.
 
 ## 1. Revisar capas obsoletas (JetBrains)
 
-**Estado:** 🔄 En progreso
+**Estado:** ✅ Completada
 
 **Descripción:** Muchas capas fueron creadas pensando en flujos de trabajo con
 JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
@@ -34,17 +34,17 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 | `_NUMB` | 7 | ✅ Se queda | Números |
 | `_BOOK` | 8 | ✅ Se queda | Marcadores |
 | `_BOOK_2` | 9 | ✅ Se queda | Marcadores |
-| `_MOVE_H` | 10 | 🗑️ Eliminar | Vacía + keycode huérfano |
+| `_MOVE_H` | 10 | ❌ Eliminada | Vacía + keycode huérfano |
 | `_FAST` | 11 | ✅ Se queda | Scroll rápido |
 | `_MOVE_WIN` | 12 | ✅ Se queda | Ventanas |
-| `_MOVE_L` | 13 | 🗑️ Eliminar | Mover líneas de código |
+| `_MOVE_L` | 13 | ❌ Eliminada | Mover líneas de código |
 | `_RUN` | 14 | ✅ Se queda | Ejecutar (Flutter/Java) |
-| `_MODE` | 15 | 🗑️ Eliminar | Juego/navegación |
-| `_COMMIT` | 16 | 🗑️ Eliminar | Git obsoleto |
+| `_MODE` | 15 | ❌ Eliminada | Juego/navegación |
+| `_COMMIT` | 16 | ❌ Eliminada | Git obsoleto |
 | `_MOUSE_KEY` | 17 | ✅ Se queda | Mouse con teclado |
 | `_NEW` | 18 | ❌ Eliminada | Not used |
 
-**Acción:** Eliminar las 3 capas restantes marcadas 🗑️ (`_MOVE_H`, `_MODE`, `_COMMIT`).
+**Acción:** ✅ Completada. Se eliminaron `_MOVE_H`, `_MOVE_L`, `_MODE` y `_COMMIT` (además de `_DEV` y `_NEW`).
 
 ---
 
