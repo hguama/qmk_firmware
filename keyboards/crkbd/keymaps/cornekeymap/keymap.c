@@ -35,16 +35,16 @@ enum layer_names {
     _BASE    = 0,
     _MOVE    = 1,
     _ALFA    = 2,
-    _AI      = 3,  // movido aquí desde 17 para que LT() funcione (LT solo soporta capas 0-15)
-    _DEL     = 5,
-    _SYMB    = 6,
-    _NUMB    = 7,
-    _BOOK    = 8,
-    _BOOK_2  = 9,
-    _FAST    = 11,
-    _MOVE_WIN = 12,
-    _RUN     = 14,
-    _MOUSE_KEY = 17,  // movido aquí desde 3
+    _AI      = 3,
+    _DEL     = 4,
+    _SYMB    = 5,
+    _NUMB    = 6,
+    _BOOK    = 7,
+    _BOOK_2  = 8,
+    _FAST    = 9,
+    _MOVE_WIN = 10,
+    _RUN     = 11,
+    _MOUSE_KEY = 12,
 };
 
 
@@ -943,18 +943,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case TG(2):
-            if (!record->event.pressed) {
-                clear_all();
-            }
-            break;
-
-        case TG(6):
-            if (!record->event.pressed) {
-                clear_all();
-            }
-            break;
-
         case KC_ESC:
             if (record->event.pressed) {
                 clear_all();
@@ -1790,36 +1778,19 @@ const rgblight_segment_t PROGMEM my_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {0, 0, HSV_OFF}
 );
 
-// _alfa_layer ly1
+// _alfa_layer ly2
 const rgblight_segment_t PROGMEM _alfa_layer[] = RGBLIGHT_LAYER_SEGMENTS(
     {9,1, HSV_BLUE}
 //    {8,1, HSV_RED} //PLAN B
 );
 
-// _numb_layer ly5
+// _numb_layer ly6
 const rgblight_segment_t PROGMEM _numb_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_WHITE}
     //    {4,2, HSV_RED} //PLAN B
 );
 
-// _mode_layer ly13
-const rgblight_segment_t PROGMEM _mode_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_PURPLE}
-    //    {4,2, HSV_RED} //PLAN B
-);
-
-// _commit_layer ly14
-const rgblight_segment_t PROGMEM _commit_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_RED}
-//        {4,2, HSV_RED} //PLAN B
-);
-
-// __NEW_layer ly16
-const rgblight_segment_t PROGMEM __NEW_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-        {9,1, HSV_YELLOW}
-);
-
-// _move_layer ly17
+// _move_layer ly1
 const rgblight_segment_t PROGMEM _move_layer[] = RGBLIGHT_LAYER_SEGMENTS(
         {9,1, HSV_BLUE}
 );
@@ -1827,25 +1798,19 @@ const rgblight_segment_t PROGMEM _move_layer[] = RGBLIGHT_LAYER_SEGMENTS(
 
 /*
 const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-    NULL,               // 0
-    NULL,
-    _alfa_layer,        // 1
-    NULL,               // 2
-    NULL,               // 3
-    NULL,               // 4
-    _numb_layer,        // 5
-    NULL,               // 6
-    NULL,               // 7
-    NULL,               // 8
-    NULL,               // 9
-    NULL,               // 10
-    NULL,               // 11
-    NULL,               // 12
-    _mode_layer,        // 13
-    _commit_layer,      // 14
-    NULL,               // 15
-    __NEW_layer,     // 16
-    _move_layer      // 17
+    NULL,               // 0 _BASE
+    _move_layer,        // 1 _MOVE
+    _alfa_layer,        // 2 _ALFA
+    NULL,               // 3 _AI
+    NULL,               // 4 _DEL
+    NULL,               // 5 _SYMB
+    _numb_layer,        // 6 _NUMB
+    NULL,               // 7 _BOOK
+    NULL,               // 8 _BOOK_2
+    NULL,               // 9 _FAST
+    NULL,               // 10 _MOVE_WIN
+    NULL,               // 11 _RUN
+    NULL                // 12 _MOUSE_KEY
 );
 */
 
@@ -1863,39 +1828,36 @@ void keyboard_post_init_user(void) {
 
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-//    rgblight_set_layer_state(INDEX_LIGHT, layer_state_cmp(state, _LAYER));
-//    rgblight_set_layer_state(5, layer_state_cmp(state, 5));
-
 uint8_t layer = get_highest_layer(state);
 
         switch (layer) {
             case _ALFA:
-                 //rgblight_set_layer_state(1, true); // ALFA LY
+                 //rgblight_set_layer_state(2, true); // ALFA LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _NUMB:
-                // rgblight_set_layer_state(5, true); // NUMBERS LY
+                // rgblight_set_layer_state(6, true); // NUMBERS LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _MOVE_WIN:
-                //rgblight_set_layer_state(14, true); // COMMIT LY
+                //rgblight_set_layer_state(10, true); // MOVE_WIN LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _FAST:
-                //rgblight_set_layer_state(16, true); // MOUSE_1 LY
+                //rgblight_set_layer_state(9, true); // FAST LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
-      		 case _MOVE:
-                //rgblight_set_layer_state(17, true); // MOUSE_2 LY
+            case _MOVE:
+                //rgblight_set_layer_state(1, true); // MOVE LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
             case _MOUSE_KEY:
-                //rgblight_set_layer_state(17, true); // MOUSE_2 LY
+                //rgblight_set_layer_state(12, true); // MOUSE_KEY LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 
