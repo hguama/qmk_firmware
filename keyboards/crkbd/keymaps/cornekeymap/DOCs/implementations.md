@@ -160,6 +160,7 @@ acciones extra. **Aún no reemplaza a `MOUSE_HOLD`** en los layouts.
 | `TD_SINGLE_TAP` | Alternar clic izquierdo sostenido | `toggle_mouse_hold()` |
 | `TD_SINGLE_HOLD` | Imprimir pantalla | `KC_PSCR` |
 | `TD_DOUBLE_TAP` | Buscar palabra | `Ctrl+F` (`C(KC_F)`) |
+| `TD_DOUBLE_HOLD` | Captura de ventana activa | `Alt+Print Screen` (`A(KC_PSCR)`) |
 
 **Nota sobre el uso:** El `tap` hace lo mismo que `MOUSE_HOLD`: registra
 `MS_BTN1` sostenido. El usuario normalmente lo libera presionando `MS_BTN1`

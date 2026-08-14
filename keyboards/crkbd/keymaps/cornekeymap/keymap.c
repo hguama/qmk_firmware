@@ -1954,6 +1954,11 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             tap_code16(C(KC_F));
             break;
 
+        case TD_DOUBLE_HOLD:
+            // Captura de ventana activa (Alt+Print Screen)
+            tap_code16(A(KC_PSCR));
+            break;
+
         default:
             break;
     }

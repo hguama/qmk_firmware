@@ -34,7 +34,7 @@ Guía visual para **practicar y memorizar** los Tap Dances (TDQ) implementados.
 |-----|-----|------|-----------|------------------|
 | 🟦 <span style="color:#3182ce">**TDQ_ESC**</span> | `Esc` <sub>(escape)</sub> | `Win+D` <sub>(minimizar todo)</sub> | `Clic derecho` <sub>(menú contextual)</sub> | — |
 | 🟩 <span style="color:#38a169">**TDQ_PASTE**</span> | `Ctrl+V` <sub>(pegar)</sub> | `F5` <sub>(recargar página)</sub> | `F11` <sub>(pantalla completa)</sub> | `Win+V` <sub>(portapapeles)</sub> |
-| 🟧 <span style="color:#dd6b20">**TDQ_MOUSE_HOLD**</span> | `Sostener clic` <sub>(clic izquierdo fijo)</sub> | `Impr Pant` <sub>(captura de pantalla)</sub> | `Ctrl+F` <sub>(buscar palabra)</sub> | — |
+| 🟧 <span style="color:#dd6b20">**TDQ_MOUSE_HOLD**</span> | `Sostener clic` <sub>(clic izquierdo fijo)</sub> | `Impr Pant` <sub>(captura de pantalla)</sub> | `Ctrl+F` <sub>(buscar palabra)</sub> | `Alt+Impr Pant` <sub>(ventana activa)</sub> |
 
 ---
 
@@ -64,3 +64,4 @@ Guía visual para **practicar y memorizar** los Tap Dances (TDQ) implementados.
 | **Tap** | Sostener clic izquierdo | `toggle_mouse_hold()` |
 | **Hold** | Captura de pantalla | `Impr Pant` |
 | **Doble tap** | Buscar palabra | `Ctrl+F` |
+| **Doble tap + hold** | Captura de ventana activa | `Alt+Impr Pant` |
