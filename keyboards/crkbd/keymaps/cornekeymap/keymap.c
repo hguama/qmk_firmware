@@ -44,12 +44,10 @@ enum layer_names {
     _MOVE_H  = 10,
     _FAST    = 11,
     _MOVE_WIN = 12,
-    _MOVE_L  = 13,
     _RUN     = 14,
     _MODE    = 15,
     _COMMIT  = 16,
     _MOUSE_KEY = 17,  // movido aquí desde 3
-    _NEW     = 18
 };
 
 
@@ -1224,29 +1222,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-        case LT(_NEW, _MOUSE_KEY):
-            if (record->event.pressed) {
-                if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _NEW
-                    del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_NEW);                       // dejamos _NEW sola (prioridad)
-                    del_layer_active = true;
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple: enviar
-                    layer_invert(_MOUSE_KEY); // tap - toggle _MOVE layer
-                    return false;
-                }
-            } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (del_layer_active) {
-                    layer_move(del_prev_layer);
-                    del_layer_active = false;
-                }
-            }
-            return true;
-
         case LT(MS_ACL0, KC_SPACE):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1385,7 +1360,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, KC_T, KC_T, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, TG_0), LT(_NEW, _MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
+LT(_AI, TG_0), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                           HIBERNATE, G(KC_D), MS_BTN2 , MS_BTN2 , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -1393,7 +1368,7 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
                                 // `---------------------'                                                  `--------------------------'
 ),
 
-    //_BASE Layer   _FAST  _MOVE_L _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
+    //_BASE Layer   _FAST _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
@@ -1530,7 +1505,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
         XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-       TO(_BASE), C(S(KC_F12)),  C(S(KC_TAB)), C(KC_TAB), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, XXXXXXX, MO(_MOVE_L), XXXXXXX, XXXXXXX,
+       TO(_BASE), C(S(KC_F12)),  C(S(KC_TAB)), C(KC_TAB), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
        LGUI(KC_UP), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                    XXXXXXX,  C(G(KC_D)), C(KC_T), G(C(KC_RIGHT)),   G(C(KC_LEFT)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -1538,19 +1513,6 @@ XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XX
                                      // `------------------------'                               `--------------------------'
     ),
 
-
-// _MOVE_L Ly 11
-[_MOVE_L] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-// |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           A(S(KC_UP)), C(S(KC_DOWN)), A(S(KC_DOWN)), C(S(KC_UP)), XXXXXXX , XXXXXXX,           XXXXXXX, XXXXXXX , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, RM_SATD, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     XXXXXXX, XXXXXXX,  _______,                                TO(_BASE),   XXXXXXX, XXXXXXX
-                                     // `------------------------'                               `--------------------------'
-    ),
 
     // _RUN  Ly 12
     [_RUN] = LAYOUT_split_3x6_3(
@@ -1605,19 +1567,7 @@ XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XX
 
     ),
 
-    // _NEW Ly 16 not used
-    //C(S(KC_F13)), C(S(KC_F14)) mirror
-    [_NEW] = LAYOUT_split_3x6_3(
-        // ,-----------------------------------------------------.                                     ,-----------------------------------------------------.
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F17)), C(S(KC_F18)), XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, CTL_CLICK, XXXXXXX, XXXXXXX,                                           XXXXXXX, XXXXXXX, C(S(KC_F15)), C(S(KC_F16)), XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------|
-        XXXXXXX,XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX  ,                                         XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX, XXXXXXX,
-        // |--------+--------+--------+--------+--------+--------|                                     |--------+--------+--------+--------+--------+--------+--------|
-                                        XXXXXXX, XXXXXXX, XXXXXXX,                                        TO(_BASE), XXXXXXX, XXXXXXX
-                                       // `---------------------'                                       `--------------------------'
-    ),
+
 
 
 
@@ -2051,11 +2001,6 @@ uint8_t layer = get_highest_layer(state);
 
             case _MOVE_WIN:
                 //rgblight_set_layer_state(14, true); // COMMIT LY
-                send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
-                break;
-
-      		 case _NEW:
-                //rgblight_set_layer_state(16, true); // MOUSE_1 LY
                 send_layer_status_with_at("", state); // <--- Agregamos 'state' aquí
                 break;
 

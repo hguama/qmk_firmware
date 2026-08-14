@@ -167,3 +167,46 @@ acciones extra. **Aún no reemplaza a `MOUSE_HOLD`** en los layouts.
 (no la misma tecla), por lo que la lógica de `MS_BTN1` en `process_record_user`
 se mantiene intacta. Se extrajo la lógica a `toggle_mouse_hold()` para que
 `MOUSE_HOLD` y `TDQ_MOUSE_HOLD` (tap) queden sincronizados.
+
+---
+
+## Patrón: Tap alterna capa / Hold capa momentánea
+
+Lógica reutilizable para una tecla que en **tap** enciende/apaga una capa
+(`layer_invert`) y en **hold** se mueve temporalmente a otra capa
+(`layer_move` + restaurar la anterior al soltar).
+
+### Referencia protegida
+
+La tecla `LT(_AI, TG_0)` en `_BASE` es la referencia viva de este patrón:
+
+```c
+case LT(_AI, TG_0):
+    if (record->event.pressed) {
+        if (record->tap.count == 0) {
+            // HOLD: mover momentáneamente a _AI
+            del_prev_layer = biton32(layer_state);
+            layer_move(_AI);
+            del_layer_active = true;
+            return false;
+        }
+        if (record->tap.count == 1) {
+            // TAP: alternar capa
+            layer_invert(_MOVE_WIN);
+            return false;
+        }
+    } else {
+        // RELEASE: restaurar capa previa
+        if (del_layer_active) {
+            layer_move(del_prev_layer);
+            del_layer_active = false;
+        }
+    }
+    return true;
+```
+
+### Uso
+
+Para crear una tecla nueva, copiar el patrón y cambiar:
+- `_AI` por la capa a la que se va en el hold
+- `_MOVE_WIN` por la capa que se alterna en el tap

@@ -28,7 +28,7 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 | `_MOVE` | 1 | ✅ Se queda | Navegación |
 | `_ALFA` | 2 | ✅ Se queda | Escritura |
 | `_AI` | 3 | ✅ Se queda | Atajos IA |
-| `_DEV` | 4 | 🗑️ Eliminar | Capa fantasma |
+| `_DEV` | 4 | ❌ Eliminada | Capa fantasma |
 | `_DEL` | 5 | ✅ Se queda | Borrar |
 | `_SYMB` | 6 | ✅ Se queda | Símbolos |
 | `_NUMB` | 7 | ✅ Se queda | Números |
@@ -42,10 +42,9 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 | `_MODE` | 15 | 🗑️ Eliminar | Juego/navegación |
 | `_COMMIT` | 16 | 🗑️ Eliminar | Git obsoleto |
 | `_MOUSE_KEY` | 17 | ✅ Se queda | Mouse con teclado |
-| `_NEW` | 18 | 🗑️ Eliminar | Not used |
+| `_NEW` | 18 | ❌ Eliminada | Not used |
 
-**Acción:** Eliminar las 6 capas marcadas 🗑️ (`_DEV`, `_MOVE_H`, `_NEW`,
-`_MOVE_L`, `_MODE`, `_COMMIT`).
+**Acción:** Eliminar las 3 capas restantes marcadas 🗑️ (`_MOVE_H`, `_MODE`, `_COMMIT`).
 
 ---
 
