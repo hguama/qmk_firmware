@@ -76,7 +76,7 @@ enum custom_keycodes {
     CODE_COMPLET,
     COMM,
     SHIFT_TOGGLE,
-    TG_0,
+    MOVE_WIN_TG,
     SLEEP,
     HIBERNATE,
     ASTRISK_PLUS,
@@ -137,20 +137,19 @@ static uint16_t f22_toggle_timer = 0;
 static bool space_repeat_active = false;
 
 
-// Helper: mover temporalmente a una capa exclusiva y restaurar la previa al soltar.
-static uint8_t prev_layer = _BASE;
-static bool exclusive_layer_active = false;
+// Helper: guardar la capa actual, mover a otra y restaurar la guardada al soltar.
+static uint8_t saved_layer = _BASE;
+static bool has_saved_layer = false;
 
-static void layer_move_exclusive(uint8_t target) {
-    prev_layer = biton32(layer_state);
-    layer_move(target);
-    exclusive_layer_active = true;
+static void save_current_layer(void) {
+    saved_layer = biton32(layer_state);
+    has_saved_layer = true;
 }
 
-static void layer_restore_previous(void) {
-    if (exclusive_layer_active) {
-        layer_move(prev_layer);
-        exclusive_layer_active = false;
+static void restore_saved_layer(void) {
+    if (has_saved_layer) {
+        layer_move(saved_layer);
+        has_saved_layer = false;
     }
 }
 
@@ -853,21 +852,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
  
 
             // layer_invert(_MOVE); // tap - toggle _MOVE layer
-         case LT(_AI, TG_0):
+         case LT(_AI, MOVE_WIN_TG):
              if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _AI
-                    layer_move_exclusive(_AI);
+                    // HOLD: guardar la capa actual y mover a _AI
+                    save_current_layer();
+                    layer_move(_AI);
                     return false;
                 }
                 if (record->tap.count == 1) {
-                    // TAP simple: alternar la capa _MOVE_WIN
+                    // TAP: alternar la capa _MOVE_WIN
                     layer_invert(_MOVE_WIN);
                     return false;
                 }
             } else {
-                // RELEASE: restaurar la capa previa
-                layer_restore_previous();
+                // RELEASE: restaurar la capa guardada
+                restore_saved_layer();
             }
             return true;
 
@@ -935,29 +935,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             clear_all();
             break;
 
-        case LT(_DEL,TG_0):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    return true; //hold
-                } else {
-                    clear_all();
-
-					// Si CAPS está activado, lo apagamos
-    				if (host_keyboard_led_state().caps_lock) {
-        				tap_code(KC_CAPS);
-    				}
-
-                    layer_invert(_ALFA); //tap
-                    return false;
-                }
-            }
-            return true;
-
         case LT(_DEL, KC_PERC):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _DEL
-                    layer_move_exclusive(_DEL);
+                    // HOLD: guardar la capa actual y mover a _DEL
+                    save_current_layer();
+                    layer_move(_DEL);
                     return false;
                 }
                 if (record->tap.count == 1) {
@@ -966,8 +949,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 }
             } else {
-                // RELEASE: restaurar la capa previa
-                layer_restore_previous();
+                // RELEASE: restaurar la capa guardada
+                restore_saved_layer();
             }
             return true;
 
@@ -1208,7 +1191,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 
-//LT(_AI, TG_0)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)
+//LT(_AI, MOVE_WIN_TG)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)
 
 
 // _BASE Ly 0
@@ -1216,7 +1199,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, KC_T, KC_T, MS_WHLD, MS_WHLU, XXXXXXX,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, TG_0), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
+LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                 SLEEP, TD(TDQ_PASTE), MS_BTN1, XXXXXXX, TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                           HIBERNATE, G(KC_D), MS_BTN2 , MS_BTN2 , MS_WHLR, MS_WHLL,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -1238,7 +1221,7 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
     ),
 
 
-    // _ALFA Ly 2  LT(_DEL,TG_0)
+    // _ALFA Ly 2
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
   KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                        QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
