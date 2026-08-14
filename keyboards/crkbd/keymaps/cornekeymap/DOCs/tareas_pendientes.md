@@ -15,18 +15,37 @@ la revisión del keymap. Cada tarea debe completarse y luego marcarse.
 
 ## 1. Revisar capas obsoletas (JetBrains)
 
-**Estado:** ⬜ Pendiente
+**Estado:** 🔄 En progreso
 
 **Descripción:** Muchas capas fueron creadas pensando en flujos de trabajo con
 JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 
-**Capas candidatas a revisar:**
-- `_DEV` — capa fantasma (referenciada pero sin keymap definido)
-- `_RUN` — posiblemente obsoleta
-- Otras capas que ya no se utilicen
+**Clasificación actual:**
 
-**Acción:** Clasificar cada capa en "en uso", "obsoleta" o "a evaluar", y
-eliminar las que ya no aporten.
+| Capa | Índice | Decisión | Nota |
+|------|--------|----------|------|
+| `_BASE` | 0 | ✅ Se queda | Principal |
+| `_MOVE` | 1 | ✅ Se queda | Navegación |
+| `_ALFA` | 2 | ✅ Se queda | Escritura |
+| `_AI` | 3 | ✅ Se queda | Atajos IA |
+| `_DEV` | 4 | 🗑️ Eliminar | Capa fantasma |
+| `_DEL` | 5 | ✅ Se queda | Borrar |
+| `_SYMB` | 6 | ✅ Se queda | Símbolos |
+| `_NUMB` | 7 | ✅ Se queda | Números |
+| `_BOOK` | 8 | ✅ Se queda | Marcadores |
+| `_BOOK_2` | 9 | ✅ Se queda | Marcadores |
+| `_MOVE_H` | 10 | 🗑️ Eliminar | Vacía + keycode huérfano |
+| `_FAST` | 11 | ✅ Se queda | Scroll rápido |
+| `_MOVE_WIN` | 12 | ✅ Se queda | Ventanas |
+| `_MOVE_L` | 13 | 🗑️ Eliminar | Mover líneas de código |
+| `_RUN` | 14 | ✅ Se queda | Ejecutar (Flutter/Java) |
+| `_MODE` | 15 | 🗑️ Eliminar | Juego/navegación |
+| `_COMMIT` | 16 | 🗑️ Eliminar | Git obsoleto |
+| `_MOUSE_KEY` | 17 | ✅ Se queda | Mouse con teclado |
+| `_NEW` | 18 | 🗑️ Eliminar | Not used |
+
+**Acción:** Eliminar las 6 capas marcadas 🗑️ (`_DEV`, `_MOVE_H`, `_NEW`,
+`_MOVE_L`, `_MODE`, `_COMMIT`).
 
 ---
 
