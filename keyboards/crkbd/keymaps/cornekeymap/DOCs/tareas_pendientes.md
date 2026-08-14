@@ -48,7 +48,7 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 
 ### 1.1 Reordenar índices de capas (contiguos)
 
-**Estado:** ⬜ Pendiente
+**Estado:** ✅ Aplicado (pendiente verificación)
 
 **Objetivo:** Compactar los índices del `enum layer_names` para que queden
 0..12 sin huecos. Hoy hay huecos en los índices 4, 10, 13, 15 y 16.
@@ -91,8 +91,27 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
   con cualquier capa. Hoy `_MOUSE_KEY = 17` no puede usarse con `LT()`
   (límite de 15).
 
-**Acción:** Reordenar el enum, limpiar/convertir `TG(2)`/`TG(6)` y
-actualizar el bloque RGBLIGHT comentado. Luego validar con `qmk compile`.
+**Acción:** ✅ Hecho. Se reordenó el enum a 0..12, se eliminaron los
+handlers muertos `TG(2)`/`TG(6)` y se actualizó el bloque RGBLIGHT
+comentado.
+
+### 1.2 Compilar y probar capas reordenadas (para el usuario)
+
+**Estado:** ⬜ Pendiente (usuario)
+
+**Descripción:** Compilar el firmware y verificar que las capas cuyos
+índices se movieron siguen funcionando.
+
+**Pruebas:**
+1. `qmk compile -kb crkbd/rev1 -km cornekeymap` (ajusta la revisión a tu
+   placa si no es `rev1`).
+2. Flashear y probar:
+   - `_DEL` (borrar caracteres): antes índice 5 → ahora 4.
+   - `_MOUSE_KEY` (mouse con teclado): antes índice 17 → ahora 12.
+3. Verificar que las luces RGB indicadoras muestren el color correcto en
+   cada capa.
+
+**Resultado esperado:** ambas capas se activan y responden normalmente.
 
 ---
 
