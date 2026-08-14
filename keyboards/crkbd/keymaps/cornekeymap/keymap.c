@@ -56,8 +56,7 @@ enum layer_names {
 
 //Macro enum
 enum custom_keycodes {
-    GUI_E = SAFE_RANGE,
-    CS_F15_HOLD,
+    CS_F15_HOLD = SAFE_RANGE,
     CTL_CLICK,
     TG_F22,
     CUT,
@@ -72,45 +71,20 @@ enum custom_keycodes {
     OPEN_QUEST,
     NOT_EQUAL,
     MS_ACL0_TOGGLE,
-    Z_UNDO,
     TRIPLE_WHLD,
     EQUAL_DBL,
     DOUBLE_PIPE,
-    VOICE_A,
-    VOICE,
-    CHATGPT,
-    SEL_WORD_PARAGRAPH,
     ALT_TAB,
     DEL_WORD,
     DEL_LINE,
-    SEL_W_ALL,
     LLAMBDA,
     DOUBLE_COLON,
     LBRC2,
-    PGUP_CTRLPG,
-    PGDW_CTRLPG,
-    PAGE_PARAGRAPH_UP,
-    PAGE_PARAGRAPH_DOWN,
-    EVERYW_ACT,
-    PROJECT_VIEW,
-    NEW_FILE,
     SPLIT_WIN,
-    FULL_SCREEN,
-    MAX_MIN_WIN,
-    NAV_ERROR,
-    MOUSE_PRESSED_CLICK,
     MOUSE_HOLD,          // Mantiene el clic derecho del mouse sostenido
     SHOW_QUICK_ENT,
     CODE_COMPLET,
-    INFOPARM,
     COMM,
-    FOLDING,
-    MULTICURSOR,
-    EDIT_OCCURR,
-    LAST_EDIT,
-    RECENT_LOC,
-    USAGES,
-    REFACTOR,
     SHIFT_TOGGLE,
     TG_0,
     TG_6,
@@ -386,7 +360,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            //todo: para eliminar
+            // Para pruebas con teclado
         case MS_ACL0_TOGGLE:
             if (record->event.pressed) {
                 ms_acl0_active = !ms_acl0_active; // Cambia el estado
@@ -418,18 +392,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 
-        case LT(0,GUI_E):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(KC_LGUI);
-                    return false;
-                } else {
-                    tap_code(KC_E);
-                    return false;
-                }
-            }
-            return false;
-
         case LT(0,EQUAL_DBL):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -438,32 +400,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     return false;
                 } else {
                     tap_code16(KC_EQUAL);  // TAP: =
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,SEL_W_ALL):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Ctrl+A
-                    tap_code16(C(KC_A));
-                    return false;
-                } else {
-                    // TAP: Ctrl+W
-                    tap_code16(C(KC_W));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(12,Z_UNDO):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(C(KC_Y));
-                    return false;
-                } else {
-                    tap_code16(C(KC_Z));
                     return false;
                 }
             }
@@ -485,20 +421,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false; // evita que se procese por defecto
 
-
-        case LT(0, VOICE_A):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Ctrl + Win + S
-                    tap_code16(C(G(KC_S)));
-                    return false;
-                } else {
-                    // TAP: Alt + Shift + B
-                    tap_code16(A(S(KC_B)));
-                    return false;
-                }
-            }
-            return false;
 
         case LT(0, ASTRISK_PLUS):
             if (record->event.pressed) {
@@ -605,50 +527,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code16(KC_GT);
             }
             return false;
-
-        case LT(0,VOICE):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(G(KC_SPC)); // Solo cambia idioma a español
-                    return false;
-                } else {
-                    // TAP: Activar/Desactivar dictado y cambiar idioma
-                    if (!voice_mode) {
-                        tap_code16(G(KC_SPC));
-                        tap_code16(G(KC_H));   // Activar dictado
-                        voice_mode = true;
-                    } else {
-                        tap_code16(G(KC_SPC));
-                        tap_code(KC_ESC);      // Detener dictado
-                        voice_mode = false;
-                    }
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,CHATGPT):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // TAP: 3 TABs + ENTER
-                    tap_code_delay(KC_ENT, 80);
-                    tap_code_delay(KC_TAB, 80);
-                    tap_code_delay(KC_TAB, 80);
-                    tap_code_delay(KC_ENT, 80);
-                    return false;
-                }
-                /*
-                else {
-                    // HOLD: 2 TABs + ENTER
-                    tap_code_delay(KC_TAB, 80);
-                    tap_code_delay(KC_TAB, 80);
-                    tap_code_delay(KC_ENT, 80);
-                    return false;
-                }
-                */
-            }
-            return false;
-
 
         case LT(0,DOUBLE_COLON):
             if (record->event.pressed) {
@@ -876,108 +754,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        case LT(0, PGUP_CTRLPG):   // TAP = Ctrl+PgUp | HOLD = PgUp
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: PAGE UP
-                    tap_code(KC_PGUP);
-                } else {
-                    // TAP: CTRL + PAGE UP
-                    tap_code16(C(KC_PGUP));
-                }
-                return false; // Bloquea comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, PGDW_CTRLPG):   // TAP = Ctrl+PgDn | HOLD = PgDn
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: PAGE DOWN
-                    tap_code(KC_PGDN);
-                } else {
-                    // TAP: CTRL + PAGE DOWN
-                    tap_code16(C(KC_PGDN));
-                }
-                return false;
-            }
-            return true;
-
-        case LT(0,PAGE_PARAGRAPH_UP):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD para PAGE_PARAGRAPH_UP
-                    tap_code16(A(KC_PGUP));
-                    tap_code(KC_DOWN);
-                    tap_code(KC_END);
-                    return false;
-                } else {
-                    tap_code16(A(KC_PGUP));
-                    return false;
-                }
-            }
-            return false;
-
-
-        case LT(0,PAGE_PARAGRAPH_DOWN):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD para PAGE_PARAGRAPH_DOWN
-                    tap_code16(A(KC_PGDN));
-                    tap_code(KC_UP);
-                    tap_code(KC_END);
-                    return false;
-                } else {
-                    tap_code16(A(KC_PGDN));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0, SEL_WORD_PARAGRAPH):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: seleccionar párrafo (ejecutar inmediatamente)
-                    tap_code16_delay(KC_END, 10);
-                    tap_code16_delay(KC_HOME, 10);
-                    tap_code16_delay(KC_HOME, 30);
-                    tap_code16(S(A(KC_PGDN))); // Shift + Alt + PgDn
-                    return false;
-                } else {
-                    // TAP: seleccionar palabra
-                    tap_code16_delay(C(KC_LEFT), 10);
-                    tap_code16_delay(C(S(KC_RIGHT)), 10);
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0, EVERYW_ACT):   // HOLD: Ctrl+Shift+A | TAP: F14
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Ctrl+Shift+A
-                    tap_code16(C(S(KC_A)));
-                } else {
-                    // TAP: F14
-                    tap_code16(KC_F14);
-                }
-                return false; // Bloquea comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, NAV_ERROR):   // HOLD: Shift+F2 | TAP: F2
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Shift+F2
-                    tap_code16(S(KC_F2));
-                } else {
-                    // TAP: F2
-                    tap_code(KC_F2);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-
         case OPEN_QUEST: // ¿
             if (record->event.pressed) {
                 SEND_STRING(
@@ -991,32 +767,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 
-        case LT(0, PROJECT_VIEW):   // HOLD: Alt+F1 | TAP: Alt+1
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Alt+F1 (PROJECT SELECT IN)
-                    tap_code16(A(KC_F1));
-                } else {
-                    // TAP: Alt+1 (PROJECT)
-                    tap_code16(A(KC_1));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, NEW_FILE):   // HOLD: F15 (NEW CLASS) | TAP: Alt+Insert (NEW FILE)
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: NEW CLASS
-                    tap_code16(KC_F15);
-                } else {
-                    // TAP: NEW FILE
-                    tap_code16(A(KC_INS));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
+        // Evaluar si se necesita (JetBrains)
         case LT(0,SPLIT_WIN):   // HOLD: F17 (SPLIT DOWN) | TAP: F16 (SPLIT RIGHT)
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1031,72 +782,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
 
 
-        case LT(0, FULL_SCREEN):   // HOLD: F19 (ZEN MODE) | TAP: F18 (FULL SCREEN)
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: ZEN MODE
-                    tap_code16(KC_F19);
-                } else {
-                    // TAP: FULL SCREEN
-                    tap_code16(KC_F18);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, MAX_MIN_WIN):   // HOLD: RGUI+Down (MIN WIN) | TAP: RGUI+Up (MAX WIN)
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: MIN WIN
-                    tap_code16(RGUI(KC_DOWN));
-                } else {
-                    // TAP: MAX WIN
-                    tap_code16(RGUI(KC_UP));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, LAST_EDIT):   // HOLD: F13 | TAP: Ctrl+Shift+Backspace
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: F13
-                    tap_code(KC_F13);
-                } else {
-                    // TAP: Ctrl+Shift+Backspace
-                    tap_code16_delay(C(S(KC_BSPC)), 30);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-
-
-        case LT(0,RECENT_LOC):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(C(S(KC_E)));
-                    return false;
-                } else {
-                    tap_code16(C(KC_E));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0, USAGES):   // HOLD: Alt+F7 | TAP: Ctrl+Alt+F7
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Alt+F7
-                    tap_code16(A(KC_F7));
-                } else {
-                    // TAP: Ctrl+Alt+F7
-                    tap_code16(C(A(KC_F7)));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
+        // Evaluar si se necesita (JetBrains)
         case LT(0,COMM):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1112,19 +798,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         shift_active = false;
                     }
                     tap_code16(LCTL(KC_SLSH));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,MOUSE_PRESSED_CLICK):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code(MS_BTN1);
-                    return false;
-                } else {
-                    tap_code(MS_BTN1);
-                    register_code(MS_BTN1);
                     return false;
                 }
             }
@@ -1194,70 +867,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(0, INFOPARM):   // HOLD: Alt+Q | TAP: Ctrl+P
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Alt+Q (view method context info)
-                    tap_code16(A(KC_Q));
-                } else {
-                    // TAP: Ctrl+P (view info parameter)
-                    tap_code16(LCTL(KC_P));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, FOLDING):   // HOLD: Ctrl+Shift+Keypad- (contrae todos) | TAP: F22 (desplegar 1 región)
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: contrae todos (ejemplo comentado)
-                    // tap_code16(LCTL(LSFT(KC_KP_MINUS)));
-                } else {
-                    // TAP: desplegar 1 región
-                    tap_code16(KC_F22);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, MULTICURSOR):   // HOLD: Alt+Shift+G | TAP: Alt+Shift+Insert
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: multicursor ends of line
-                    tap_code16(LALT(LSFT(KC_G)));
-                } else {
-                    // TAP: multicursor
-                    tap_code16(LALT(LSFT(KC_INS)));
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0, EDIT_OCCURR):   // HOLD: Ctrl+F3 | TAP: F3
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Selecciona la ocurrencia a buscar
-                    tap_code16(C(KC_F3));
-                } else {
-                    // TAP: Busca ocurrencias, se desplaza de 1 en 1
-                    tap_code16(KC_F3);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
-
-        case LT(0,REFACTOR):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(LSFT(KC_F6));  // Rename
-                    return false;
-                } else {
-                    tap_code16(LCTL(LALT(LSFT(KC_T))));  // Refactor This
-                    return false;
-                }
-            }
-            return false;
-
         case LT(_AI,SHIFT_TOGGLE): // TAP: Toggle Shift | HOLD: Capa _AI
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1319,24 +928,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false; // Importante para que no procese la tecla original
             break;
  
-
-       //todo: para eliminar
-        case LT(MS_ACL0, COPY):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Activar MS_ACL0
-                    register_code(MS_ACL0);
-                    return false;
-                } else {
-                    // TAP: Ejecutar COPY (Ctrl+C)
-                    tap_code16(C(KC_C));
-                    return false;
-                }
-            } else {
-                // Al soltar la tecla, desactivar MS_ACL0
-                unregister_code(MS_ACL0);
-            }
-            return false;
 
             // layer_invert(_MOVE); // tap - toggle _MOVE layer
          case LT(_AI, TG_0):
@@ -1420,7 +1011,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            //todo: para eliminar
+            // Para pruebas con teclado
         case LT(MS_ACL2, KC_ENT):
             if (record->event.pressed) {
                 if (!record->tap.count) {
@@ -1756,21 +1347,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
                 // Al soltar la tecla, soltamos Shift por si estaba activo
                 unregister_code(KC_LSFT);
-            }
-            return false;
-
-            //todo: para eliminar
-       case LT(MS_WHLU, MS_WHLD):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: Scroll up
-                    tap_code(MS_WHLU);
-                    return false;
-                } else {
-                    // TAP: Scroll down
-                    tap_code(MS_WHLD);
-                    return false;
-                }
             }
             return false;
 
