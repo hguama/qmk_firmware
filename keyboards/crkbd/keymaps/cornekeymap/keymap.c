@@ -1282,6 +1282,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //LT(_AI, TG_0)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)
 
 
+// _BASE Ly 0
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), LT(_AI, KC_ENT), QK_BOOT,                            QK_BOOT, KC_T, KC_T, MS_WHLD, MS_WHLU, XXXXXXX,
@@ -1294,7 +1295,7 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
                                 // `---------------------'                                                  `--------------------------'
 ),
 
-    //_BASE Layer   _FAST _BOOK LT(_SYMB,KC_RIGHT) LT(_SYMB,KC_DOWN)
+    // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
@@ -1308,7 +1309,7 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
     ),
 
 
-    //_ALFA ly 1  LT(_DEL,TG_0)
+    // _ALFA Ly 2  LT(_DEL,TG_0)
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
   KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                        QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
@@ -1321,7 +1322,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                          // `--------------------------------'                                         `--------------------------'
     ),
 
-    // _AI (movido aquí desde posición 17)
+    // _AI Ly 3
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
          XXXXXXX, A(KC_0), A(KC_2), XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
@@ -1334,7 +1335,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                        // `---------------------'                               `--------------------------'
     ),
 
-    //_DEL Ly 3
+    // _DEL Ly 4
     [_DEL] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
@@ -1347,7 +1348,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                     // `----------------------'                                  `--------------------------'
 ),
 
-    // _SYMB Ly 4
+    // _SYMB Ly 5
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------o-------------------.                ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,             XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
@@ -1360,7 +1361,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                          // `----------------------'                                `--------------------------'
     ),
 
-    // _NUMB Ly 5
+    // _NUMB Ly 6
     [_NUMB] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
@@ -1373,7 +1374,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                      // `---------------------------------'                      `--------------------------'
     ),
 
-    // _BOOK Ly 6
+    // _BOOK Ly 7
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
            XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
@@ -1386,7 +1387,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                            // `--------------------------'                     `--------------------------'
     ),
 
-    // _BOOK_2 Ly 7
+    // _BOOK_2 Ly 8
     [_BOOK_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
@@ -1427,7 +1428,7 @@ XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XX
     ),
 
 
-    // _RUN  Ly 12
+    // _RUN Ly 11
     [_RUN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX,  A(S(KC_F10)), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1440,7 +1441,7 @@ XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XX
                                         // `----------------------'                              `--------------------------'
     ),
 
-    // _MOUSE_KEY (movido aquí desde posición 3)
+    // _MOUSE_KEY Ly 12
     [_MOUSE_KEY] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
      XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,

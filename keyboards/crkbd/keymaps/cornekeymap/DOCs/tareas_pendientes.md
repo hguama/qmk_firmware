@@ -48,15 +48,15 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 
 ### 1.1 Reordenar índices de capas (contiguos)
 
-**Estado:** ✅ Aplicado (pendiente verificación)
+**Estado:** ✅ Completada
 
 **Objetivo:** Compactar los índices del `enum layer_names` para que queden
 0..12 sin huecos. Hoy hay huecos en los índices 4, 10, 13, 15 y 16.
 
-**Mapeo propuesto:**
+**Mapeo final:**
 
-| Capa | Índice actual | Índice propuesto |
-|------|---------------|------------------|
+| Capa | Índice anterior | Índice final |
+|------|-----------------|--------------|
 | `_BASE` | 0 | 0 |
 | `_MOVE` | 1 | 1 |
 | `_ALFA` | 2 | 2 |
@@ -97,7 +97,10 @@ comentado.
 
 ### 1.2 Compilar y probar capas reordenadas (para el usuario)
 
-**Estado:** ⬜ Pendiente (usuario)
+**Estado:** ✅ Completada
+
+**Resultado:** Pruebas exitosas (`_DEL` y `_MOUSE_KEY` funcionan
+correctamente).
 
 **Descripción:** Compilar el firmware y verificar que las capas cuyos
 índices se movieron siguen funcionando.
