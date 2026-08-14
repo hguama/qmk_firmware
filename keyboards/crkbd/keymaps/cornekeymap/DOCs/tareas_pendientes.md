@@ -46,6 +46,54 @@ JetBrains/IntelliJ. Con el uso de IA, algunas pueden ser innecesarias.
 
 **Acción:** ✅ Completada. Se eliminaron `_MOVE_H`, `_MOVE_L`, `_MODE` y `_COMMIT` (además de `_DEV` y `_NEW`).
 
+### 1.1 Reordenar índices de capas (contiguos)
+
+**Estado:** ⬜ Pendiente
+
+**Objetivo:** Compactar los índices del `enum layer_names` para que queden
+0..12 sin huecos. Hoy hay huecos en los índices 4, 10, 13, 15 y 16.
+
+**Mapeo propuesto:**
+
+| Capa | Índice actual | Índice propuesto |
+|------|---------------|------------------|
+| `_BASE` | 0 | 0 |
+| `_MOVE` | 1 | 1 |
+| `_ALFA` | 2 | 2 |
+| `_AI` | 3 | 3 |
+| `_DEL` | 5 | 4 |
+| `_SYMB` | 6 | 5 |
+| `_NUMB` | 7 | 6 |
+| `_BOOK` | 8 | 7 |
+| `_BOOK_2` | 9 | 8 |
+| `_FAST` | 11 | 9 |
+| `_MOVE_WIN` | 12 | 10 |
+| `_RUN` | 14 | 11 |
+| `_MOUSE_KEY` | 17 | 12 |
+
+**Análisis de riesgo (bajo):**
+
+- ✅ El código vivo usa **nombres** de enum (`LT(_AI, ...)`, `MO(_DEL)`,
+  `TG(_MOVE)`, etc.), no números fijos; se actualizan solos al reordenar.
+- ✅ El orden relativo se conserva (solo se compacta), así que la prioridad
+  entre capas no cambia.
+- ✅ `_BASE` sigue en el índice 0, por lo que la capa por defecto guardada
+  en EEPROM no se ve afectada.
+- ⚠️ Quedan **índices fijos en código muerto** que conviene limpiar/convertir:
+  - `case TG(2):` y `case TG(6):` en `process_record_user` no están en
+    ningún layout (código muerto). `TG(2)` apunta a `_ALFA` (se mantiene),
+    pero `TG(6)` pasaría de `_SYMB` a `_NUMB` si se usara. Eliminar o
+    convertir a `TG(_SYMB)`/`TG(_ALFA)`.
+  - Bloque RGBLIGHT comentado (`my_rgb_layers[]` y
+    `rgblight_set_layer_state(N, ...)`) usa índices fijos; no afecta en
+    runtime pero conviene actualizarlo por si se reactiva.
+- ✅ Beneficio: todas las capas quedarían ≤ 12, así que `LT()` funcionaría
+  con cualquier capa. Hoy `_MOUSE_KEY = 17` no puede usarse con `LT()`
+  (límite de 15).
+
+**Acción:** Reordenar el enum, limpiar/convertir `TG(2)`/`TG(6)` y
+actualizar el bloque RGBLIGHT comentado. Luego validar con `qmk compile`.
+
 ---
 
 ## 2. Refactorizar helper de capa momentánea
