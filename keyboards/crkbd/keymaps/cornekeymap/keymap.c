@@ -137,12 +137,22 @@ static uint16_t f22_toggle_timer = 0;
 static bool space_repeat_active = false;
 
 
-// para LT(_DEL, KC_PERC)
-static uint8_t del_prev_layer = _BASE;
-static bool del_layer_active = false;
+// Helper: mover temporalmente a una capa exclusiva y restaurar la previa al soltar.
+static uint8_t prev_layer = _BASE;
+static bool exclusive_layer_active = false;
 
-static uint8_t base_prev_layer = _ALFA;
-static bool base_layer_active = false;
+static void layer_move_exclusive(uint8_t target) {
+    prev_layer = biton32(layer_state);
+    layer_move(target);
+    exclusive_layer_active = true;
+}
+
+static void layer_restore_previous(void) {
+    if (exclusive_layer_active) {
+        layer_move(prev_layer);
+        exclusive_layer_active = false;
+    }
+}
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
@@ -847,48 +857,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
              if (record->event.pressed) {
                 if (record->tap.count == 0) {
                     // HOLD (sin taps): mover exclusivamente a _AI
-                    del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_AI);                       // dejamos _AI sola (prioridad)
-                    del_layer_active = true;
+                    layer_move_exclusive(_AI);
                     return false;
                 }
                 if (record->tap.count == 1) {
-                    // TAP simple: enviar
-                    layer_invert(_MOVE_WIN); // tap - toggle _MOVE layer
+                    // TAP simple: alternar la capa _MOVE_WIN
+                    layer_invert(_MOVE_WIN);
                     return false;
                 }
             } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (del_layer_active) {
-                    layer_move(del_prev_layer);
-                    del_layer_active = false;
-                }
+                // RELEASE: restaurar la capa previa
+                layer_restore_previous();
             }
             return true;
-
-        case LT(_RUN, MS_BTN2):
-            if (record->event.pressed) {
-                if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _RUN
-                    del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_RUN);                       // dejamos _RUN sola (prioridad)
-                    del_layer_active = true;
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple: enviar
-                    tap_code16(MS_BTN2);
-                    return false;
-                }
-            } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (del_layer_active) {
-                    layer_move(del_prev_layer);
-                    del_layer_active = false;
-                }
-            }
-            return true;
-
 
         case TG_ALFA:
             if (record->event.pressed) {
@@ -973,72 +954,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
 
         case LT(_DEL, KC_PERC):
-   				 if (record->event.pressed) {
-        			if (record->tap.count == 0) {
-            			// HOLD (sin taps): mover exclusivamente a _DEL
-            			del_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-            			layer_move(_DEL);                       // dejamos _DEL sola (prioridad)
-            			del_layer_active = true;
-            			return false;
-        			}
-				if (record->tap.count == 1) {
-					// TAP simple: enviar %
-					tap_code16(KC_PERC);
-					return false;
-					}
-				} else {
-					// RELEASE: si activamos la capa, restauramos la previa
-					if (del_layer_active) {
-						layer_move(del_prev_layer);
-						del_layer_active = false;
-						}
-				}
-			return true;
-
-        case LT(_BASE,KC_I):
             if (record->event.pressed) {
                 if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _MOVE
-                    base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOVE);                       // dejamos _MOVE sola (prioridad)
-                    base_layer_active = true;
+                    // HOLD (sin taps): mover exclusivamente a _DEL
+                    layer_move_exclusive(_DEL);
                     return false;
                 }
                 if (record->tap.count == 1) {
-                    // TAP simple: enviar F
-                    tap_code(KC_I);
+                    // TAP simple: enviar %
+                    tap_code16(KC_PERC);
                     return false;
                 }
             } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (base_layer_active) {
-                    layer_move(base_prev_layer);
-                    base_layer_active = false;
-                }
-            }
-            return true;
-
-
-        case LT(_BASE,KC_O):
-            if (record->event.pressed) {
-                if (record->tap.count == 0) {
-                    // HOLD (sin taps): mover exclusivamente a _MOVE
-                    base_prev_layer = biton32(layer_state); // guarda la capa activa más alta
-                    layer_move(_MOVE);                       // dejamos _MOVE sola (prioridad)
-                    base_layer_active = true;
-                    return false;
-                }
-                if (record->tap.count == 1) {
-                    // TAP simple: enviar F
-                    tap_code(KC_O);
-                    return false;
-                }
-            } else {
-                // RELEASE: si activamos la capa, restauramos la previa
-                if (base_layer_active) {
-                    layer_move(base_prev_layer);
-                    base_layer_active = false;
-                }
+                // RELEASE: restaurar la capa previa
+                layer_restore_previous();
             }
             return true;
 

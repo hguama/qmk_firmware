@@ -120,24 +120,42 @@ correctamente).
 
 ## 2. Refactorizar helper de capa momentánea
 
-**Estado:** ⬜ Pendiente
+**Estado:** ✅ Completada
 
-**Descripción:** Hay dos patrones repetidos que hacen lo mismo:
-- `del_prev_layer` / `del_layer_active` (4 teclas)
-- `base_prev_layer` / `base_layer_active` (2 teclas)
+**Descripción:** Se extrajo el patrón repetido de "guardar capa previa →
+mover a capa exclusiva → restaurar al soltar" a dos funciones helper:
+- `layer_move_exclusive(target)`
+- `layer_restore_previous()`
 
-**Teclas involucradas:**
-| Tecla | Capa objetivo |
-|-------|---------------|
-| `LT(_AI, TG_0)` | `_AI` |
-| `LT(_RUN, MS_BTN2)` | `_RUN` |
-| `LT(_NEW, _MOUSE_KEY)` | `_NEW` |
-| `LT(_DEL, KC_PERC)` | `_DEL` |
-| `LT(_BASE, KC_I)` | `_MOVE` |
-| `LT(_BASE, KC_O)` | `_MOVE` |
+**Resultado:**
+- Se refactorizaron las 2 teclas vivas que usaban el patrón:
+  - `LT(_AI, TG_0)` → `_AI`
+  - `LT(_DEL, KC_PERC)` → `_DEL`
+- Se eliminaron los handlers muertos que no estaban en ningún layout:
+  - `LT(_RUN, MS_BTN2)` → `_RUN`
+  - `LT(_BASE, KC_I)` → `_MOVE`
+  - `LT(_BASE, KC_O)` → `_MOVE`
+- Se eliminaron las variables muertas `base_prev_layer`/`base_layer_active`.
+- Se corrigió el comentario de `LT(_AI, TG_0)` (togglea `_MOVE_WIN`, no `_MOVE`).
 
-**Acción:** Extraer a funciones helper (ej. `layer_move_momentary()` y
-`layer_restore_previous()`) y refactorizar las 6 teclas.
+### 2.1 Probar las dos teclas vivas (para el usuario)
+
+**Estado:** ⬜ Pendiente (usuario)
+
+**Descripción:** Compilar y verificar que las dos teclas refactorizadas
+siguen funcionando.
+
+**Pruebas:**
+1. `qmk compile -kb crkbd/rev1 -km cornekeymap`
+2. Flashear y probar:
+   - `LT(_AI, TG_0)` (en `_BASE`, fila 2 col 0):
+     - HOLD: entra a `_AI` y vuelve a la capa previa al soltar.
+     - TAP: alterna `_MOVE_WIN`.
+   - `LT(_DEL, KC_PERC)` (en `_NUMB`, fila 2 col 1):
+     - HOLD: entra a `_DEL` y vuelve a la capa previa al soltar.
+     - TAP: escribe `%`.
+
+**Resultado esperado:** ambas teclas se comportan como antes del refactor.
 
 ---
 
