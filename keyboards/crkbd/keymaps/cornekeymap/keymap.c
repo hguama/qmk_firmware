@@ -114,10 +114,6 @@ enum custom_keycodes {
 enum {
     TDQ_SEL,
     TDQ_BOOKMARK,
-    TDQ_GOTO,
-    TDQ_FIND,
-    TDQ_REPLACE,
-    TDQ_OVERRIDE,
     TDQ_ESC,
     TDQ_PASTE,
     TDQ_MOUSE_HOLD,
@@ -184,10 +180,6 @@ void x_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
-void tdq_goto_finished(tap_dance_state_t *state, void *user_data);
-void tdq_find_finished(tap_dance_state_t *state, void *user_data);
-void tdq_replace_finished(tap_dance_state_t *state, void *user_data);
-void tdq_override_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data);
@@ -1347,11 +1339,7 @@ void matrix_scan_user(void) {
 
 tap_dance_action_t tap_dance_actions[] = {
     [TDQ_SEL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_sel_finished, x_reset),
-    [TDQ_GOTO] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_goto_finished, x_reset),
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
-    [TDQ_FIND] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_find_finished, x_reset),
-    [TDQ_REPLACE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_replace_finished, x_reset),
-    [TDQ_OVERRIDE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_override_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
     [TDQ_MOUSE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_hold_finished, x_reset),
@@ -1786,102 +1774,6 @@ void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
                             break;
 
         default: break;
-    }
-}
-
-void tdq_goto_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:  tap_code16(C(KC_B)); break; //go to definition
-        case TD_SINGLE_HOLD: tap_code16(C(A(KC_B))); break;//go to implemetation
-        case TD_DOUBLE_TAP:  tap_code16(C(S(KC_B))); break;//Go to Type Declaration
-        case TD_DOUBLE_HOLD: tap_code16(C(S(KC_T))); break;//go to test
-        case TD_TRIPLE_HOLD: tap_code16(C(KC_U));  break;//Go to Super Method / Class
-
-        default: break;
-    }
-}
-
-
-void tdq_find_finished(tap_dance_state_t *state, void *user_data) {
-        xtap_state.state = cur_dance(state);
-
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP: //ctrl f //find normal.
-            tap_code16(C(KC_F));
-            break;
-
-        case TD_SINGLE_HOLD: //ctrl f + ctrl alt e //search on selection
-                tap_code16_delay(LCTL(KC_F), 10);  // Ctrl + F
-                tap_code16(LCTL(LALT(KC_E)));       // Ctrl + Alt + E
-            break;
-
-        case TD_DOUBLE_TAP: //find on 1 word
-                tap_code16_delay(C(KC_LEFT), 10);
-                tap_code16_delay(C(S(KC_RIGHT)), 10);
-                tap_code16_delay(C(KC_F), 10);
-            break;
-
-        case TD_DOUBLE_HOLD: //ctrl shift f //find in files
-                tap_code16_delay(C(KC_LEFT), 10);
-                tap_code16_delay(C(S(KC_RIGHT)), 10);
-                tap_code16(LCTL(LSFT(KC_F)));
-            break;
-        default:
-            break;
-    }
-}
-
-void tdq_replace_finished(tap_dance_state_t *state, void *user_data) {
-        xtap_state.state = cur_dance(state);
-
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP: //ctrl R //replace normal.
-            tap_code16(C(KC_R));
-            break;
-
-        /*case TD_SINGLE_HOLD: //ctrl R + ctrl alt e //search on selection
-                tap_code16_delay(LCTL(KC_R), 10);  // Ctrl + R
-                tap_code16(LCTL(LALT(KC_E)));       // Ctrl + Alt + E
-            break;*/
-
-        case TD_DOUBLE_TAP: //replace on 1 word
-                tap_code16_delay(C(KC_LEFT), 10);
-                tap_code16_delay(C(S(KC_RIGHT)), 10);
-                tap_code16_delay(C(KC_R), 10);
-            break;
-
-        case TD_DOUBLE_HOLD: //ctrl shift R //replace in files
-                tap_code16_delay(C(KC_LEFT), 10);
-                tap_code16_delay(C(S(KC_RIGHT)), 10);
-                tap_code16(LCTL(LSFT(KC_R)));
-            break;
-        default:
-            break;
-    }
-}
-
-void tdq_override_finished(tap_dance_state_t *state, void *user_data) {
-        xtap_state.state = cur_dance(state);
-
-    switch (xtap_state.state) {
-
-        case TD_SINGLE_TAP: //implement interface
-                tap_code16(LCTL(KC_I));
-            break;
-
-        case TD_SINGLE_HOLD: //override
-            tap_code16(LCTL(KC_O));
-            break;
-
-/*
-        case TD_DOUBLE_TAP://create test
-            tap_code16(C(S(KC_T)));
-            break;
-*/
-
-        default:
-            break;
     }
 }
 
