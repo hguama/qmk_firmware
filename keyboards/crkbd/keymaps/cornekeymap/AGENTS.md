@@ -1,14 +1,13 @@
 # Instrucciones para agentes de IA
 
-> ⚠️ **Leer antes de modificar este keymap.**
+> ⚠️ Leer antes de trabajar en este proyecto.
 
-Antes de depurar errores o implementar nuevas funcionalidades en este
-keymap, consulta primero la documentación en la carpeta [`DOCs/`](DOCs/):
+Las skills están en `~/.agents/skills/`. Si vas a gestionar el plan de
+trabajo, usa la skill `tareas` (`~/.agents/skills/task-manager/SKILL.md`) — si no
+se activa sola, leerla directamente desde ahí antes de continuar.
 
-| Archivo | Cuándo leerlo |
-|---------|---------------|
-| [`DOCs/fixes.md`](DOCs/fixes.md) | Si estás depurando un error o comportamiento extraño |
-| [`DOCs/implementations.md`](DOCs/implementations.md) | Si vas a implementar una funcionalidad nueva |
+## Propio de este proyecto
 
-Si el problema o la tarea ya están documentados allí, aplica la solución
-descrita. No re-diagnostiques problemas ya resueltos.
+- [`tasks/tap_dance_guide.md`](tasks/tap_dance_guide.md) — referencia de
+  usuario sobre los tap dances del keymap. No hace falta leerla para
+  trabajar, solo si necesitas entender ese comportamiento.
