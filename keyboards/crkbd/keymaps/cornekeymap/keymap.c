@@ -1517,12 +1517,21 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:
-            // Escape
+            // Escape: si cancelabas una captura con el clic sostenido enganchado,
+            // hay que soltarlo aquí también, si no se queda pegado hasta el próximo MS_BTN1.
+            if (mouse_held) {
+                unregister_code(MS_BTN1);
+                mouse_held = false;
+            }
             tap_code(KC_ESC);
             break;
 
         case TD_SINGLE_HOLD:
-            // Minimizar todo (Win+D)
+            // Minimizar todo (Win+D): mismo caso, libera el clic sostenido si quedó pegado.
+            if (mouse_held) {
+                unregister_code(MS_BTN1);
+                mouse_held = false;
+            }
             tap_code16(G(KC_D));
             break;
 
@@ -1573,8 +1582,21 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_SINGLE_HOLD:
-            // Imprimir pantalla
+            // Imprimir pantalla + engancha el clic izquierdo sostenido.
+            // El clic queda sostenido aunque sueltes la tecla (no se libera en x_reset):
+            // sostén un momento -> suelta -> mueve el mouse para seleccionar la captura ->
+            // toca la tecla una vez (TD_SINGLE_TAP -> toggle_mouse_hold) para soltar el clic.
             tap_code(KC_PSCR);
+            wait_ms(300); // espera a que Windows abra el overlay de Recorte de pantalla y le dé foco
+            // Limpieza incondicional: sin importar lo que diga mouse_held (podría estar
+            // desincronizado de lo que de verdad tiene registrado el sistema), garantizamos
+            // que el botón quede "arriba" antes de presionarlo de nuevo, para asegurar un
+            // flanco de clic realmente nuevo.
+            unregister_code(MS_BTN1);
+            mouse_held = false;
+            wait_ms(50); // deja que el sistema procese el "soltar" antes de mandar un "presionar" nuevo
+            register_code(MS_BTN1);
+            mouse_held = true;
             break;
 
         case TD_DOUBLE_TAP:
