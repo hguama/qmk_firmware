@@ -1582,6 +1582,10 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_SINGLE_HOLD:
+            // TEMPORAL: clic izquierdo suelto antes que nada, como el "desatasque" manual
+            // que ya te funciona (clic con el teclado), por si el botón quedó pegado por
+            // fuera de este ciclo.
+            tap_code(MS_BTN1);
             // Imprimir pantalla + engancha el clic izquierdo sostenido.
             // El clic queda sostenido aunque sueltes la tecla (no se libera en x_reset):
             // sostén un momento -> suelta -> mueve el mouse para seleccionar la captura ->
