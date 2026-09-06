@@ -49,46 +49,65 @@ enum layer_names {
 
 
 //Macro enum
+// ============================================================================
+// TECLAS PERSONALIZADAS (custom keycodes), organizadas por categoría.
+// El orden no afecta a QMK: cada nombre recibe un valor único automáticamente.
+// ============================================================================
 enum custom_keycodes {
-    CS_F15_HOLD = SAFE_RANGE,
-    CTL_CLICK,
-    TG_F22,
-    CUT,
-    TG_ALFA,
-    SHIFT_2,
-    CLOSE_WIN,
-    SEL_ALL,
-    UNDO_WIN,
-    AMP_DOUBLE,
-    NOT_EQUAL,
-    MS_ACL0_TOGGLE,
-    EQUAL_DBL,
-    DOUBLE_PIPE,
-    ALT_TAB,
-    DEL_WORD,
-    DEL_LINE,
-    LLAMBDA,
-    DOUBLE_COLON,
-    LBRC2,
-    SPLIT_WIN,
-    MOUSE_HOLD,          // Mantiene el clic derecho del mouse sostenido
-    SHOW_QUICK_ENT,
-    CODE_COMPLET,
-    COMM,
-    SHIFT_TOGGLE,
-    MOVE_WIN_TG,
-    SLEEP,
-    HIBERNATE,
-    ASTRISK_PLUS,
-    MARKER_B,
-    MARKER_2,
-    QUESTION,
-    DOWN_10,
-    UP_10,
-    PIPE_M,
-    P_ENIE,          // Tecla personalizada TAP: P | HOLD: Ñ
-    COPY,            // Tecla personalizada para copy
-    CTRL_Z,          // Keycode para usar en LT(_BOOK, CTRL_Z)
+    // ---- LETRAS ESPECIALES --------------------------------------------------
+    P_ENIE = SAFE_RANGE,  // TAP: P | HOLD: ñ (Ñ con Shift) — capa _ALFA
+
+    // ---- PUNTUACIÓN Y OPERADORES (símbolos que escribe) ----------------------
+    AMP_DOUBLE,           // &&  (doble ampersand) — capa _SYMB
+    DOUBLE_PIPE,          // ||  (doble pipe) — capa _SYMB
+    PIPE_M,               // |>  (pipe + mayor que) — capa _SYMB
+    QUESTION,             // TAP: ? | HOLD: ¿ (interrogación invertida) — capa _SYMB
+    NOT_EQUAL,            // TAP: != | HOLD: ¡ (exclamación invertida) — capa _SYMB
+    EQUAL_DBL,            // TAP: = | HOLD: == — capas _SYMB/_NUMB
+    DOUBLE_COLON,         // TAP: : | HOLD: :: — capa _SYMB
+    LBRC2,                // TAP: [ | HOLD: ] — capa _SYMB
+    LLAMBDA,              // TAP: -> | HOLD: <- — capa _SYMB
+    ASTRISK_PLUS,         // TAP: * | HOLD: + — capas _SYMB/_NUMB
+
+    // ---- EDICIÓN DE TEXTO (copiar, cortar, borrar, seleccionar, deshacer) ----
+    COPY,                 // LT(CUT,COPY): TAP = Ctrl+C (copiar) — capas _BASE/_MOVE
+    CUT,                  // LT(CUT,COPY): HOLD = Ctrl+X (cortar) — capas _BASE/_MOVE
+    CTRL_Z,               // LT(_BOOK, CTRL_Z): TAP = Ctrl+Z (deshacer) | HOLD = capa _BOOK — TODO: no se usa en ninguna capa, evaluar eliminación
+    SEL_ALL,              // LT(SEL_ALL,KC_SPACE): HOLD = Ctrl+A (seleccionar todo) | TAP = espacio | doble+HOLD = repetir espacio
+    DEL_WORD,             // Borra la palabra completa (Ctrl+←, Ctrl+Shift+→, Supr) — capa _DEL
+    DEL_LINE,             // Borra la línea completa (Inicio, Shift+Fin, Supr) — capa _DEL
+    UNDO_WIN,             // TAP: Ctrl+Z (deshacer) | HOLD: tecla Windows — capas _BASE/_MOVE/_ALFA
+    SHIFT_2,              // LT(KC_S, SHIFT_2): TAP = Ctrl+S (guardar) | HOLD = Shift sostenido — TODO: no se usa en ninguna capa, evaluar eliminación
+
+    // ---- MOUSE Y SCROLL ------------------------------------------------------
+    MOUSE_HOLD,           // Mantiene el clic izquierdo sostenido (toggle) — capa _MOVE
+    CTL_CLICK,            // Ctrl + clic izquierdo (abrir enlace en pestaña nueva) — capa _BASE
+    MS_ACL0_TOGGLE,       // Toggle de aceleración del mouse (MS_ACL0) — pruebas — TODO: Esta tecla la necesito para unas pruebas.
+    DOWN_10,              // Rueda hacia abajo (8 ticks) — capa _FAST
+    UP_10,                // Rueda hacia arriba (8 ticks) — capa _FAST
+
+    // ---- VENTANAS Y SISTEMA ---------------------------------------------------
+    ALT_TAB,              // Alt+Tab (cambiar de ventana) — capas _BASE/_MOVE
+    CLOSE_WIN,            // LT(KC_F4, CLOSE_WIN): TAP = Ctrl+W (cerrar pestaña) | HOLD = Alt+F4 (cerrar ventana)
+    SPLIT_WIN,            // TAP: F16 (split derecha) | HOLD: F17 (split abajo) — JetBrains — TODO: no se usa en ninguna capa, evaluar eliminación
+    SLEEP,                // Suspender equipo (Win+X → U → S) — capas _BASE/_MOVE
+    HIBERNATE,            // Hibernar equipo (Win+X → U → H) — capas _BASE/_MOVE
+    CS_F15_HOLD,          // Mantiene Ctrl+Shift+F15 (remapeo externo, ej. PowerToys) — capa _FAST
+    TG_F22,               // F22: tap corto = toggle | hold largo = momentáneo (remapeo externo) — TODO: Esta tecla la necesito para unas pruebas
+
+    // ---- CAPAS Y MODIFICADORES --------------------------------------------------
+    TG_ALFA,              // Alterna entre la capa de ratón (_MOVE) y la alfabética (_ALFA)
+    MOVE_WIN_TG,          // TAP: toggle _MOVE_WIN | HOLD: capa _AI (guarda y restaura al soltar) — capa _BASE
+    SHIFT_TOGGLE,         // Bloqueo de Shift (toggle; se suelta solo tras 10 s) — SE QUEDA: plantilla de toggle con auto-release; ALT_TAB usa el mismo patrón (20 s)
+
+    // ---- IDE / IA (JetBrains y asistentes de código) -----------------------------
+    SHOW_QUICK_ENT,       // TAP: Alt+Enter (acción rápida) | HOLD: Ctrl+F1 (descripción de error) — capa _MOVE — TODO: evaluar eliminación (¿usas JetBrains?)
+    CODE_COMPLET,         // TAP: Ctrl+Espacio (autocompletado básico) | HOLD: Ctrl+Shift+Espacio (avanzado) — capa _MOVE — TODO: evaluar eliminación (¿usas JetBrains?)
+    COMM,                 // TAP: Ctrl+/ (comentar línea) | HOLD: Ctrl+Shift+/ (comentar bloque) — TODO: sin uso en capas; preservar por posible uso en otras apps Se queda.
+
+    // ---- MARCADORES / BOOKMARKS ---------------------------------------------------
+    MARKER_B,             // LT(_BOOK_2, MARKER_B): TAP = Ctrl+Shift+F21 | HOLD = capa _BOOK_2 — capa _BOOK
+    MARKER_2,             // LT(_BOOK_2, MARKER_2): TAP = Ctrl+2 | HOLD = capa _BOOK_2 — capa _BOOK
 };
 
 // --- COMBOS DESACTIVADOS (no usados, LT(KC_F22, _ALFA) no existe en ninguna capa) ---
@@ -1210,11 +1229,11 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, TD(TDQ_SEL), LT(_RUN,KC_HOME), LSFT_T(KC_END), XXXXXXX,
+LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 _______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                            HIBERNATE, XXXXXXX, _______, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), KC_LCTL, KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
@@ -1316,13 +1335,13 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)  A(KC_UP),  A(KC_DOWN)
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX, CS_F15_HOLD ,MS_WHLU, KC_BSPC, XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, XXXXXXX, MS_WHLU, DOWN_10, XXXXXXX,
+        C(KC_S), CS_F15_HOLD ,MS_WHLU, KC_BSPC, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, KC_BSPC, MS_WHLU, CS_F15_HOLD, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
           MS_WHLL, MS_WHLD, UP_10, DOWN_10, MS_WHLR, XXXXXXX,                                   XXXXXXX, MS_WHLR, DOWN_10, UP_10, MS_WHLD, MS_WHLL,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-          XXXXXXX, KC_HOME, KC_END, C(KC_SPACE), XXXXXXX, XXXXXXX,                             XXXXXXX, XXXXXXX, MS_WHLU, MS_WHLD, XXXXXXX, XXXXXXX,
+         KC_HOME, KC_END, C(KC_SPACE), LT(SEL_ALL,KC_SPACE), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(SEL_ALL,KC_SPACE), KC_END, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                        TO(_BASE), XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, TO(_BASE)
+                                       TO(_BASE), LT(0,UNDO_WIN), C(KC_Y),                     TO(_BASE), XXXXXXX, TO(_BASE)
                                        // `----------------------'                              `--------------------------'
     ),
 
