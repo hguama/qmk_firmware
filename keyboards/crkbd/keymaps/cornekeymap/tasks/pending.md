@@ -92,6 +92,33 @@ qué se queda el resto, incluidas las de pruebas de mouse.
 
 </details>
 
+<details>
+<summary>[ ] ⬜ <b>Tarea 11</b> · Confirmar Alt+Tab con el pulgar derecho (espacio → Enter) — ⚠️ riesgo medio · agente</summary>
+
+**Riesgo:** ⚠️ medio — toca el espacio (uso diario) y el estado compartido de
+`ALT_TAB`; un error se nota al instante y se revierte fácil.
+
+**Descripción:** Con la izquierda el pulgar confirma la ventana con Enter; con
+la derecha el pulgar es espacio y no confirma. Idea de Hero: mientras `ALT_TAB`
+está activo, el tap de espacio manda Enter (efecto espejo).
+
+**Sugerencia de implementación:** en `process_record_user`, en los `case` de
+espacio (`KC_SPACE`, `LT(MS_ACL0, KC_SPACE)`, `LT(SEL_ALL, KC_SPACE)`), si
+`is_alt_tab_active` y es tap: soltar `KC_LALT`, bajar el flag, avisar `AT_OFF`
+y mandar `KC_ENT`. Solo el tap se redirige; el hold conserva su conducta. Así
+Alt no queda pegado tras confirmar.
+
+**Pruebas:**
+
+1. `qmk compile -kb crkbd/rev1 -km cornekeymap`
+2. Flashear y probar: `ALT_TAB` con la derecha + pulgar confirma la ventana;
+   espacio normal intacto; Alt no queda pegado tras confirmar.
+
+**Resultado esperado:** el pulgar derecho confirma igual que el izquierdo y
+fuera del modo ventana nada cambia.
+
+</details>
+
 ---
 
 ## 📖 Convenciones
