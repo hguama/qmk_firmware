@@ -1021,7 +1021,7 @@ LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                            HIBERNATE, KC_ENT, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_Y),                                 MO(_BOOK_2), MO(_BOOK), LT(MS_ACL0,KC_SPACE)
+                                 LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_Y),                                 MO(_BOOK_2), LT(_BOOK, KC_ENT), KC_SPACE
                                 // `---------------------'                                                  `--------------------------'
 ),
 
