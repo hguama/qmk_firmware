@@ -44,75 +44,51 @@ del enum en la Tarea 1, así que un `case` que la nombre no debería compilar.
 ## 🕒 En cola
 
 <details>
-<summary>[ ] ⬜ <b>Tarea 4</b> · Evaluar keycodes de prueba de teclado — △ riesgo bajo · Hero</summary>
+<summary>[ ] ⬜ <b>Tarea 3</b> · Limpieza única de teclas (9 fuera, resto se queda) — ⚠️ riesgo medio · agente</summary>
 
-**Riesgo:** △ bajo — solo decidir; eliminar viene después.
+**Riesgo:** ⚠️ medio — incluye el reemplazo de `MOUSE_HOLD` en un layout de uso
+diario con lógica compartida con `MS_BTN1`.
 
-**Descripción:** Se conservaron 2 keycodes marcados como "para pruebas con
-teclado".
+**Decisión Hero (2026-09-06):** una sola tarea de limpieza. Absorbe las Tareas
+4, 5, 5.1, 7, 9 y 10 (números retirados, no se reusan).
 
-| Keycode | Nota |
-|---------|------|
-| `MS_ACL0_TOGGLE` | Toggle de aceleración de mouse |
-| `LT(MS_ACL2, KC_ENT)` | Mouse + Enter |
+**Descripción:** Salen 9 teclas muertas o reemplazadas y queda registrado por
+qué se queda el resto, incluidas las de pruebas de mouse.
 
-**Acción:** Hero confirma si siguen siendo útiles. Si no, se abre la Tarea 4.1
-para eliminarlos.
+| Tecla | Por qué se elimina |
+|-------|--------------------|
+| ❌ `SPLIT_WIN` | JetBrains sin uso en capas; ya no se usa JetBrains |
+| ❌ `SHOW_QUICK_ENT` | JetBrains (`Alt+Enter`/`Ctrl+F1`); ya no se usa |
+| ❌ `CODE_COMPLET` | JetBrains (autocompletado); ya no se usa |
+| ❌ `SHIFT_TOGGLE` | Patrón duplicado con `ALT_TAB`; sin uso en capas |
+| ❌ `TG_F22` | Pruebas de remapeo externo sin dueño; lógica frágil |
+| ❌ `LT(KC_F22, KC_ENT)` | Pruebas F22/Enter con comentario rancio; fuera del enum |
+| ❌ `CTRL_Z` | Sin uso; `Ctrl+Z` ya cubierto por `UNDO_WIN` y `C(KC_Z)` |
+| ❌ `SHIFT_2` | Sin uso; `Ctrl+S` ya existe como `C(KC_S)` en `_FAST` |
+| ❌ `MOUSE_HOLD` | Duplicada: el tap de `TD(TDQ_MOUSE_HOLD)` hace lo mismo + 3 gestos |
 
-</details>
+| Tecla(s) | Por qué se queda(n) |
+|----------|---------------------|
+| ✅ `P_ENIE`, `AMP_DOUBLE`, `DOUBLE_PIPE`, `PIPE_M`, `QUESTION`, `NOT_EQUAL`, `EQUAL_DBL`, `DOUBLE_COLON`, `LBRC2`, `LLAMBDA`, `ASTRISK_PLUS` | En uso en `_SYMB`/`_NUMB`/`_ALFA` |
+| ✅ `COPY`, `CUT`, `SEL_ALL`, `DEL_WORD`, `DEL_LINE`, `UNDO_WIN`, `CTL_CLICK` | En uso (edición de texto) |
+| ✅ `DOWN_10`, `UP_10`, `ALT_TAB`, `CLOSE_WIN`, `SLEEP`, `HIBERNATE`, `CS_F15_HOLD`, `TG_ALFA`, `MOVE_WIN_TG`, `MARKER_B`, `MARKER_2` | En uso (mouse, sistema, capas, marcadores) |
+| ✅ `COMM` | Comodín de comentarios para otras apps |
+| ✅ `MS_ACL0_TOGGLE`, `LT(MS_ACL2, KC_ENT)` | Pruebas de mouse: se necesitan después |
+| ✅ `TDQ_SEL`, `TDQ_ESC`, `TDQ_PASTE`, `TDQ_MOUSE_HOLD`, `TDQ_BOOKMARK` | Tap dances vivos; `TDQ_SEL` reservado para el futuro reemplazo del espacio |
 
-<details>
-<summary>[ ] ⬜ <b>Tarea 3</b> · Evaluar keycodes conservados de JetBrains — △ riesgo bajo · Hero</summary>
+**Alcance al eliminar:**
+- JetBrains: enum + `case` de las 3 y sus comentarios TODO.
+- `SHIFT_TOGGLE`: enum + 2 `case` + `shift_active`/`shift_toggle_timer` + bloques en `matrix_scan_user`/`clear_all` + los 4 `if (shift_active)` de `COMM`.
+- F22: enum `TG_F22` + 2 `case` + comentarios muertos de combos (`:113, :227-228`); `C(KC_F22)` de `_BOOK` intacto.
+- `CTRL_Z`/`SHIFT_2`: enum + 2 `case`.
+- `MOUSE_HOLD`: sustituir por `TD(TDQ_MOUSE_HOLD)` en `_MOVE` y eliminar el keycode, sin tocar `toggle_mouse_hold()` ni el `case MS_BTN1`.
+- Actualizar README y anotar las líneas en `completed.md` al cerrar.
+- `SEL_ALL = SAFE_RANGE + 14` quedó fijo en el enum: se usa como layer en `LT()` y renumerarlo colisiona con `MS_ACL0` (lo vimos en la compilación).
 
-**Riesgo:** △ bajo — solo decidir; eliminar viene después.
-
-**Descripción:** Durante la limpieza se conservaron 2 keycodes con el comentario
-"Evaluar si se necesita (JetBrains)".
-
-| Keycode | Nota |
-|---------|------|
-| `COMM` | Atajo de comentarios |
-| `SPLIT_WIN` | División de ventanas |
-
-**Acción:** Hero prueba si los usa. Si no, se abre la Tarea 3.1 para eliminarlos.
-
-</details>
-
-<details>
-<summary>[ ] ⬜ <b>Tarea 5</b> · Reemplazar MOUSE_HOLD por TDQ_MOUSE_HOLD — ⚠️ riesgo medio · agente</summary>
-
-**Riesgo:** ⚠️ medio — toca layouts de una tecla de uso diario y comparte lógica
-con `MS_BTN1` en `process_record_user`.
-
-**Descripción:** El tap dance `TDQ_MOUSE_HOLD` ya existe y replica el
-comportamiento de `MOUSE_HOLD` en el tap, pero el keycode original sigue vivo en
-el código y en los layouts.
-
-**Por qué es el más riesgoso de los pendientes:** `MOUSE_HOLD` se libera
-presionando `MS_BTN1`, no la misma tecla. Esa interacción vive en
-`process_record_user` y la comparten ambos keycodes a través de
-`toggle_mouse_hold()`. Al retirar el original hay que confirmar que la lógica de
-liberación sigue intacta.
-
-**Acción:** sustituir `MOUSE_HOLD` por `TD(TDQ_MOUSE_HOLD)` en los layouts y
-eliminar el keycode una vez confirmado.
-
-</details>
-
-<details>
-<summary>[ ] ⬜ <b>Tarea 5.1</b> · Probar el reemplazo de MOUSE_HOLD — △ riesgo bajo · Hero</summary>
-
-**Riesgo:** △ bajo — verificación. **Depende de:** Tarea 5.
-
-**Pruebas:**
-
-1. `qmk compile -kb crkbd/rev1 -km cornekeymap`
-2. Flashear y probar los cuatro gestos: tap (sostener clic izquierdo), hold
-   (Impr Pant), doble tap (`Ctrl+F`), doble tap + hold (`Alt+Impr Pant`).
-3. Confirmar que el clic sostenido se libera con `MS_BTN1`, como antes.
-
-**Resultado esperado:** el comportamiento diario no cambia y los tres gestos
-extra funcionan.
+- [x] Eliminar las 9 teclas según el alcance y sustituir `MOUSE_HOLD` en `_MOVE`
+- [x] Actualizar README (tablas de estado y categorías)
+- [x] Compilar con `qmk compile -kb crkbd/rev1 -km cornekeymap` (.hex OK 2026-09-06, 24.126/28.672)
+- [ ] 👤 Flashear y probar: 4 gestos de `TDQ_MOUSE_HOLD` + liberación con `MS_BTN1`; `ALT_TAB`, `COMM`, espacio y `Ctrl+Z` intactos
 
 </details>
 

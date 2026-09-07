@@ -72,15 +72,13 @@ enum custom_keycodes {
     // ---- EDICIÓN DE TEXTO (copiar, cortar, borrar, seleccionar, deshacer) ----
     COPY,                 // LT(CUT,COPY): TAP = Ctrl+C (copiar) — capas _BASE/_MOVE
     CUT,                  // LT(CUT,COPY): HOLD = Ctrl+X (cortar) — capas _BASE/_MOVE
-    CTRL_Z,               // LT(_BOOK, CTRL_Z): TAP = Ctrl+Z (deshacer) | HOLD = capa _BOOK — TODO: no se usa en ninguna capa, evaluar eliminación
-    SEL_ALL,              // LT(SEL_ALL,KC_SPACE): HOLD = Ctrl+A (seleccionar todo) | TAP = espacio | doble+HOLD = repetir espacio
+    SEL_ALL = SAFE_RANGE + 14, // LT(SEL_ALL,KC_SPACE): HOLD = Ctrl+A | TAP = espacio | doble+HOLD = repetir espacio
+                                   // VALOR FIJO: se usa como layer en LT(); no renumerar (colisiona con MS_ACL0)
     DEL_WORD,             // Borra la palabra completa (Ctrl+←, Ctrl+Shift+→, Supr) — capa _DEL
     DEL_LINE,             // Borra la línea completa (Inicio, Shift+Fin, Supr) — capa _DEL
     UNDO_WIN,             // TAP: Ctrl+Z (deshacer) | HOLD: tecla Windows — capas _BASE/_MOVE/_ALFA
-    SHIFT_2,              // LT(KC_S, SHIFT_2): TAP = Ctrl+S (guardar) | HOLD = Shift sostenido — TODO: no se usa en ninguna capa, evaluar eliminación
 
     // ---- MOUSE Y SCROLL ------------------------------------------------------
-    MOUSE_HOLD,           // Mantiene el clic izquierdo sostenido (toggle) — capa _MOVE
     CTL_CLICK,            // Ctrl + clic izquierdo (abrir enlace en pestaña nueva) — capa _BASE
     MS_ACL0_TOGGLE,       // Toggle de aceleración del mouse (MS_ACL0) — pruebas — TODO: Esta tecla la necesito para unas pruebas.
     DOWN_10,              // Rueda hacia abajo (8 ticks) — capa _FAST
@@ -89,20 +87,15 @@ enum custom_keycodes {
     // ---- VENTANAS Y SISTEMA ---------------------------------------------------
     ALT_TAB,              // Alt+Tab (cambiar de ventana) — capas _BASE/_MOVE
     CLOSE_WIN,            // LT(KC_F4, CLOSE_WIN): TAP = Ctrl+W (cerrar pestaña) | HOLD = Alt+F4 (cerrar ventana)
-    SPLIT_WIN,            // TAP: F16 (split derecha) | HOLD: F17 (split abajo) — JetBrains — TODO: no se usa en ninguna capa, evaluar eliminación
     SLEEP,                // Suspender equipo (Win+X → U → S) — capas _BASE/_MOVE
     HIBERNATE,            // Hibernar equipo (Win+X → U → H) — capas _BASE/_MOVE
     CS_F15_HOLD,          // Mantiene Ctrl+Shift+F15 (remapeo externo, ej. PowerToys) — capa _FAST
-    TG_F22,               // F22: tap corto = toggle | hold largo = momentáneo (remapeo externo) — TODO: Esta tecla la necesito para unas pruebas
 
     // ---- CAPAS Y MODIFICADORES --------------------------------------------------
     TG_ALFA,              // Alterna entre la capa de ratón (_MOVE) y la alfabética (_ALFA)
     MOVE_WIN_TG,          // TAP: toggle _MOVE_WIN | HOLD: capa _AI (guarda y restaura al soltar) — capa _BASE
-    SHIFT_TOGGLE,         // Bloqueo de Shift (toggle; se suelta solo tras 10 s) — SE QUEDA: plantilla de toggle con auto-release; ALT_TAB usa el mismo patrón (20 s)
 
     // ---- IDE / IA (JetBrains y asistentes de código) -----------------------------
-    SHOW_QUICK_ENT,       // TAP: Alt+Enter (acción rápida) | HOLD: Ctrl+F1 (descripción de error) — capa _MOVE — TODO: evaluar eliminación (¿usas JetBrains?)
-    CODE_COMPLET,         // TAP: Ctrl+Espacio (autocompletado básico) | HOLD: Ctrl+Shift+Espacio (avanzado) — capa _MOVE — TODO: evaluar eliminación (¿usas JetBrains?)
     COMM,                 // TAP: Ctrl+/ (comentar línea) | HOLD: Ctrl+Shift+/ (comentar bloque) — TODO: sin uso en capas; preservar por posible uso en otras apps Se queda.
 
     // ---- MARCADORES / BOOKMARKS ---------------------------------------------------
@@ -110,15 +103,6 @@ enum custom_keycodes {
     MARKER_2,             // LT(_BOOK_2, MARKER_2): TAP = Ctrl+2 | HOLD = capa _BOOK_2 — capa _BOOK
 };
 
-// --- COMBOS DESACTIVADOS (no usados, LT(KC_F22, _ALFA) no existe en ninguna capa) ---
-//enum combo_events {
-// CB_CENTER,
-// CB_SUP_DER,
-// CB_SUP_IZQ,
-// CB_INF_DER,
-// CB_INF_IZQ
-//
-//};
 
 //Tap Dance enum
 enum {
@@ -151,8 +135,6 @@ typedef struct {//for quad
 //Vars
 
 // static uint16_t timer_key;
-static uint16_t shift_toggle_timer = 0;
-static uint16_t f22_toggle_timer = 0;
 static bool space_repeat_active = false;
 
 
@@ -177,8 +159,6 @@ uint16_t alt_tab_timer = 0;
 static bool alt_tab_pressed = false;
 static bool alt_tab_hold_done = false;
 
-static bool shift_active = false;
-static bool f22_active = false;
 
 bool ms_acl0_active = false;
 
@@ -224,13 +204,6 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 }
 
 
-// --- COMBOS DESACTIVADOS (no usados, LT(KC_F22, _ALFA) no existe en ninguna capa) ---
-//const uint16_t PROGMEM cb_ctrl_z[] = {LT(KC_F22, _ALFA), MS_BTN1, COMBO_END};
-//const uint16_t PROGMEM cb_ctrl_z2[] = {MS_UP, MS_LEFT, COMBO_END};
-//
-//combo_t key_combos[] = {
-// [CB_CENTER]   = COMBO(cb_ctrl_z, LCTL(KC_Z)),
-//};
 
 //general functions
 void clear_all(void) {
@@ -244,10 +217,6 @@ void clear_all(void) {
          send_layer_status_with_at("AT_OFF",layer_state);
        }
 
-    if (shift_active) {
-       unregister_code(KC_LSFT);
-       shift_active = false;
-       }
 
     if (voice_mode) {
        tap_code16(G(KC_SPC));
@@ -287,7 +256,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
 
-// Helper: alterna el clic izquierdo sostenido (lógica original de MOUSE_HOLD)
+// Helper: alterna el clic izquierdo sostenido (usado por TD(TDQ_MOUSE_HOLD) y MS_BTN1)
 static void toggle_mouse_hold(void) {
     mouse_held = !mouse_held;
     if (mouse_held) {
@@ -333,17 +302,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false; // Evita que QMK procese la tecla de forma predeterminada
 
-        case MOUSE_HOLD:
-            if (record->event.pressed) {
-                toggle_mouse_hold();
-            }
-            return false;
-
-
         case MS_BTN1:
             if (record->event.pressed) {
                 if (mouse_held) {
-                    // Si el clic estaba enganchado por MOUSE_HOLD, lo soltamos inmediatamente
+                    // Si el clic estaba enganchado (clic sostenido), lo soltamos inmediatamente
                     unregister_code(MS_BTN1);
                     tap_code(MS_BTN1);
                     mouse_held = false;
@@ -448,21 +410,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return true;
-
-        case LT(_BOOK, CTRL_Z):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: MO(_BOOK)
-                    return true; // Permite que QMK maneje el layer tap
-                } else {
-                    // TAP: Ctrl+Z
-                    tap_code16(C(KC_Z));
-                    return false;
-                }
-            }
-            return true;
-
-
 
         case LT(0, QUESTION):
             if (record->event.pressed) {
@@ -727,36 +674,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
-        // Evaluar si se necesita (JetBrains)
-        case LT(0,SPLIT_WIN):   // HOLD: F17 (SPLIT DOWN) | TAP: F16 (SPLIT RIGHT)
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: SPLIT DOWN
-                    tap_code16(KC_F17);
-                } else {
-                    // TAP: SPLIT RIGHT
-                    tap_code16(KC_F16);
-                }
-                return false; // Bloquea el comportamiento por defecto
-            }
-            return true;
 
 
         // Evaluar si se necesita (JetBrains)
         case LT(0,COMM):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    if (shift_active) {
-                        unregister_code(KC_LSFT);
-                        shift_active = false;
-                    }
                     tap_code16(LCTL(LSFT(KC_SLSH)));
                     return false;
                 } else {
-                    if (shift_active) {
-                        unregister_code(KC_LSFT);
-                        shift_active = false;
-                    }
                     tap_code16(LCTL(KC_SLSH));
                     return false;
                 }
@@ -780,95 +706,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
 
-
-        case LT(0,SHOW_QUICK_ENT):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(LCTL(KC_F1));  // HOLD: CTRL + F1
-                    return false;
-                } else {
-                    // TAP: ALT + ENTER (si no fue HOLD)
-                    tap_code16(LALT(KC_ENT));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(0,CODE_COMPLET):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD - code completion adv
-                    tap_code16(LCTL(LSFT(KC_SPACE)));
-                    return false;
-                } else {
-                    // TAP - code completion basic
-                    tap_code16(LCTL(KC_SPACE));
-                    return false;
-                }
-            }
-            return false;
-
-        case LT(_AI,SHIFT_TOGGLE): // TAP: Toggle Shift | HOLD: Capa _AI
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD: ir a capa _AI
-                    return true; // QMK maneja el HOLD automáticamente
-                } else {
-                    // TAP: Toggle Shift
-                    shift_active = !shift_active;
-                    if (shift_active) {
-                        register_code(KC_LSFT);   // Activa Shift
-						shift_toggle_timer = timer_read();
-                    } else {
-                        unregister_code(KC_LSFT); // Desactiva Shift
-                    }
-                    return false;
-                }
-            }
-            return true;
-
-        case SHIFT_TOGGLE:
-            if (record->event.pressed) {
-                    shift_active = !shift_active;
-                    if (shift_active) {
-                        register_code(KC_LSFT);   // Activa Shift
-						shift_toggle_timer = timer_read();
-                    } else {
-                        unregister_code(KC_LSFT); // Desactiva Shift
-                    }
-
-            }
-            break;
-
-        case LT(KC_F22, TG_F22):
-            if (record->event.pressed) {
-                // Guardamos el tiempo en que se presionó
-                f22_toggle_timer = timer_read();
-                // Registramos la tecla inmediatamente para que se sienta reactivo
-                register_code(KC_F22);
-            } else {
-                // Al soltar, verificamos cuánto tiempo pasó
-                if (timer_elapsed(f22_toggle_timer) < TAPPING_TERM) {
-                    // FUE UN TOQUE CORTO: Comportamiento Toggle
-                    // Si ya estaba activo por el register_code de arriba, lo dejamos.
-                    // Si queremos apagarlo después de un segundo toque, invertimos el estado.
-                    if (f22_active) {
-                        unregister_code(KC_F22);
-                        f22_active = false;
-                    } else {
-                        f22_active = true;
-                        // No hacemos unregister porque queremos que se quede prendido
-                    }
-                } else {
-                    // FUE UNA PULSACIÓN LARGA: Comportamiento Momentary
-                    // Simplemente soltamos la tecla y nos aseguramos que el estado toggle sea falso
-                    unregister_code(KC_F22);
-                    f22_active = false;
-                }
-            }
-            return false; // Importante para que no procese la tecla original
-            break;
- 
 
             // layer_invert(_MOVE); // tap - toggle _MOVE layer
          case LT(_AI, MOVE_WIN_TG):
@@ -909,20 +746,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(KC_F22, KC_ENT):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    // HOLD → F22 DOWN real
-                    register_code(KC_F22);
-                } else {
-                    // TAP → alternar capa
-                    tap_code(KC_ENT);
-                }
-            } else {
-                // RELEASE → F22 UP real
-                unregister_code(KC_F22);
-            }
-            return false;
 
             // Para pruebas con teclado
         case LT(MS_ACL2, KC_ENT):
@@ -1097,23 +920,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case LT(KC_S, SHIFT_2):
-            if (record->event.pressed) {
-                if (record->tap.count > 0) {
-                    // TAP: Ctrl+S
-                    tap_code16(C(KC_S));
-                    return false;
-                } else {
-                    // HOLD: Mantiene Shift presionado
-                    register_code(KC_LSFT);
-                    return false;
-                }
-            } else {
-                // Al soltar la tecla, soltamos Shift por si estaba activo
-                unregister_code(KC_LSFT);
-            }
-            return false;
-
         }//END SWITCH
     return true;
 };
@@ -1123,13 +929,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for  macro
 void matrix_scan_user(void) {
 
-	//para shift_toggle
-    if (shift_active) {
-        if (timer_elapsed(shift_toggle_timer) > 10000) {  // 10 segundos
-            unregister_code(KC_LSFT);
-            shift_active = false;
-        }
-    }
 
 	//para alt_tab
     if (alt_tab_pressed && !alt_tab_hold_done) {
@@ -1229,11 +1028,11 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), MOUSE_HOLD, QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
+LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, LT(_NUMB,KC_TAB), TD(TDQ_MOUSE_HOLD), QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 _______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, LT(0,SHOW_QUICK_ENT), LT(0,CODE_COMPLET), KC_INS,
+TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, XXXXXXX, XXXXXXX, KC_INS,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), KC_LCTL, KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
@@ -1596,7 +1395,7 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);
     switch (xtap_state.state) {
         case TD_SINGLE_TAP:
-            // Alternar clic izquierdo sostenido (misma lógica que MOUSE_HOLD)
+            // Alternar clic izquierdo sostenido
             toggle_mouse_hold();
             break;
 

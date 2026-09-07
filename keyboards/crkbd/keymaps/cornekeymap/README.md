@@ -4,37 +4,20 @@ Inventario de las teclas custom del keymap, organizado por categoría.
 
 **Convención:** las teclas con `TAP | HOLD` hacen una cosa al tocar rápido y otra al mantener presionada.
 
-> ⚠️ Las teclas marcadas con ⚠️ tienen una **evaluación pendiente**: ver [Estado de las teclas](#estado-de-las-teclas).
-
 ---
 
 ## 📌 Estado de las teclas
 
-**✅ Se quedan:**
+**Limpieza Tarea 3 (2026-09-06):** se eliminaron `SPLIT_WIN`, `SHOW_QUICK_ENT`, `CODE_COMPLET`, `SHIFT_TOGGLE`, `TG_F22`, `LT(KC_F22, KC_ENT)`, `CTRL_Z`, `SHIFT_2` y `MOUSE_HOLD` (este último reemplazado por `TD(TDQ_MOUSE_HOLD)` en `_MOVE`).
+
+**✅ Se quedan (sin uso en capas, con motivo):**
 
 | Keycode        | Razón |
 |----------------|-------|
 | `COMM`         | Posible uso en otras apps (sin uso en capas por ahora) |
-| `SHIFT_TOGGLE` | Plantilla de toggle con auto-release (10 s); `ALT_TAB` usa el mismo patrón (20 s) |
-
-**🔬 Para pruebas (no están en capas):**
-
-| Keycode          | Razón |
-|------------------|-------|
-| `MS_ACL0_TOGGLE` | Pruebas con teclado (aceleración del mouse) |
-| `TG_F22`         | Pruebas (toggle/momentáneo de F22, remapeo externo) |
-
-**⚠️ Pendientes de evaluar (posible eliminación):**
-
-| Keycode          | Razón |
-|------------------|-------|
-| `SHOW_QUICK_ENT` | ¿Se usa JetBrains? Está en `_MOVE` |
-| `CODE_COMPLET`   | ¿Se usa JetBrains? Está en `_MOVE` |
-| `CTRL_Z`         | No se usa en ninguna capa; redundante con `UNDO_WIN`/`C(KC_Z)` |
-| `SHIFT_2`        | No se usa en ninguna capa |
-| `SPLIT_WIN`      | No se usa en ninguna capa |
-
-**Fuera del enum** (cases con lógica pero sin uso en capas): `LT(KC_F22, KC_ENT)` y `LT(MS_ACL2, KC_ENT)` (pruebas).
+| `MS_ACL0_TOGGLE` | Pruebas de mouse con el teclado |
+| `LT(MS_ACL2, KC_ENT)` | Pruebas de mouse con el teclado (fuera del enum) |
+| `TDQ_SEL`      | Reservado: futuro reemplazo de `LT(SEL_ALL, KC_SPACE)` |
 
 ---
 
@@ -53,7 +36,7 @@ Inventario de las teclas custom del keymap, organizado por categoría.
 | `PIPE_M`       |     | `\|>`    | `_SYMB`      |
 | `QUESTION`     | `?` | `¿`      | `_SYMB`      |
 | `NOT_EQUAL`    | `!=`| `¡`      | `_SYMB`      |
-| `EQUAL_DBL`    | `=` | `==`     | `_SYMB` `_NUMB` |
+| `EQUAL_DBL`    | `=` | `==`     | `_SYMB` |
 | `DOUBLE_COLON` | `:` | `::`     | `_SYMB`      |
 | `LBRC2`        | `[` | `]`      | `_SYMB`      |
 | `LLAMBDA`      | `->`| `<-`     | `_SYMB`      |
@@ -65,18 +48,15 @@ Inventario de las teclas custom del keymap, organizado por categoría.
 |------------|-----|-------------|-------|
 | `COPY`     | `Ctrl+C` copiar | `Ctrl+X` cortar (junto con `CUT`) | `_BASE` `_MOVE` |
 | `CUT`      | — (capa del LT) | `Ctrl+X` cortar | `_BASE` `_MOVE` |
-| `CTRL_Z` ⚠️ | `Ctrl+Z` deshacer | capa `_BOOK` | — |
 | `SEL_ALL`  | espacio | `Ctrl+A` seleccionar todo (doble tap + hold: repite espacio) | `_BASE` `_MOVE` `_ALFA` `_FAST` |
 | `DEL_WORD` | borra la palabra completa | | `_DEL` |
 | `DEL_LINE` | borra la línea completa | | `_DEL` |
 | `UNDO_WIN` | `Ctrl+Z` deshacer | tecla Windows | `_BASE` `_MOVE` `_ALFA` `_FAST` |
-| `SHIFT_2` ⚠️ | `Ctrl+S` guardar | Shift sostenido | — |
 
 ## 4. Mouse y scroll
 
 | Keycode          | Acción | Capas |
 |------------------|--------|-------|
-| `MOUSE_HOLD`     | mantiene el clic izquierdo sostenido (toggle) | `_MOVE` |
 | `CTL_CLICK`      | `Ctrl` + clic izquierdo (abrir enlace en pestaña nueva) | `_BASE` |
 | `MS_ACL0_TOGGLE` 🔬 | toggle de aceleración del mouse | pruebas |
 | `DOWN_10`        | rueda hacia abajo (8 ticks) | `_FAST` |
@@ -88,11 +68,9 @@ Inventario de las teclas custom del keymap, organizado por categoría.
 |----------------|-----|------|-------|
 | `ALT_TAB`      | `Alt+Tab` (cambiar ventana) | | `_BASE` `_MOVE` |
 | `CLOSE_WIN`    | `Ctrl+W` cerrar pestaña | `Alt+F4` cerrar ventana | `_BASE` `_MOVE` |
-| `SPLIT_WIN` ⚠️ | `F16` split derecha | `F17` split abajo | JetBrains |
 | `SLEEP`        | suspender equipo (`Win+X → U → S`) | | `_BASE` `_MOVE` |
-| `HIBERNATE`    | hibernar equipo (`Win+X → U → H`) | | `_BASE` `_MOVE` |
+| `HIBERNATE`    | hibernar equipo (`Win+X → U → H`) | | `_BASE` `_MOVE` `_ALFA` |
 | `CS_F15_HOLD`  | mantiene `Ctrl+Shift+F15` (remapeo externo, ej. PowerToys) | | `_FAST` |
-| `TG_F22` 🔬     | `F22`: tap corto = toggle, hold largo = momentáneo (remapeo externo) | | — |
 
 ## 6. Capas y modificadores
 
@@ -100,14 +78,11 @@ Inventario de las teclas custom del keymap, organizado por categoría.
 |----------------|-----|------|-------------|
 | `TG_ALFA`      | alterna entre `_MOVE` (ratón) y `_ALFA` (letras) | | `_MOVE` |
 | `MOVE_WIN_TG`  | toggle `_MOVE_WIN` | capa `_AI` (guarda y restaura al soltar) | `_BASE` |
-| `SHIFT_TOGGLE` ✅ | bloquea Shift; se suelta solo tras 10 s (plantilla) | | — |
 
 ## 7. IDE / IA (JetBrains y código)
 
 | Keycode          | TAP | HOLD | Capa de uso |
 |------------------|-----|------|-------------|
-| `SHOW_QUICK_ENT` ⚠️ | `Alt+Enter` acción rápida | `Ctrl+F1` descripción de error | `_MOVE` |
-| `CODE_COMPLET` ⚠️ | `Ctrl+Espacio` autocompletado | `Ctrl+Shift+Espacio` avanzado | `_MOVE` |
 | `COMM` ✅         | `Ctrl+/` comentar línea | `Ctrl+Shift+/` comentar bloque | — |
 
 ## 8. Marcadores / bookmarks
