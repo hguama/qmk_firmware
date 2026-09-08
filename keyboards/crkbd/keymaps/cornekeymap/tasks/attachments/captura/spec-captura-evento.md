@@ -4,7 +4,7 @@
 
 | id | archivo | rol | estado |
 |---|---|---|---|
-| C1 | `spec-captura-evento.md` | contrato | vigente · 2026-09-08 |
+| C1 | `spec-captura-evento.md` | contrato | vigente · 2026-09-08 · enmienda §4 |
 
 ## 1. Objetivo
 
@@ -23,3 +23,9 @@ El hold de `TDQ_MOUSE_HOLD` (ImprPant + espera fija + clic sostenido) es inestab
 - Riesgos: la firma puede cambiar con updates de Windows (mitiga con 2-3 alias + red); helper apagado (cubre la red); overlay cancelado con Esc (se libera con la tecla o `MS_BTN1`, como hoy).
 - Veredicto: estable por diseño (fallback determinista). Técnica `EnumWindows` ya probada en tu máquina (313 ventanas listadas).
 - Pendiente Fase A: script de huella — Hero presiona `Win+Shift+S` una vez y el script anota clase/título, sin abrir nada solo.
+
+## 4. Hallazgo 2026-09-08: espera fija de 500ms
+
+- Hero subió la espera fija a 500ms: estable en varias pruebas (a ~300ms se notaba inestabilidad).
+- Consecuencia: el evento de Windows pasaría a aportar sobre todo velocidad, no estabilidad.
+- Decisión: no se justifica implementarlo solo por disminuir la espera; sí se justificaría si reaparece inestabilidad. En monitoreo por Hero.
