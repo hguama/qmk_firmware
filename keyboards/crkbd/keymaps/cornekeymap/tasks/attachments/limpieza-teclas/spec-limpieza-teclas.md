@@ -8,7 +8,7 @@
 
 ## 1. Objetivo
 
-Salen 9 teclas muertas o reemplazadas y queda registrado por qué se queda el resto, incluidas las de pruebas de mouse.
+Salen 10 teclas muertas o reemplazadas y queda registrado por qué se queda el resto, incluidas las de pruebas de mouse.
 
 Decisión Hero (2026-09-06): una sola tarea de limpieza. Absorbe las Tareas 4, 5, 5.1, 7, 9 y 10 (números retirados, no se reusan).
 
@@ -25,13 +25,13 @@ Decisión Hero (2026-09-06): una sola tarea de limpieza. Absorbe las Tareas 4, 5
 | ❌ `CTRL_Z` | Sin uso; `Ctrl+Z` ya cubierto por `UNDO_WIN` y `C(KC_Z)` |
 | ❌ `SHIFT_2` | Sin uso; `Ctrl+S` ya existe como `C(KC_S)` en `_FAST` |
 | ❌ `MOUSE_HOLD` | Duplicada: el tap de `TD(TDQ_MOUSE_HOLD)` hace lo mismo + 3 gestos |
+| ❌ `COMM` | Decisión Hero 2026-09-08: fuera el comodín de comentarios; sin uso en capas ni layouts |
 
 | Tecla(s) | Por qué se queda(n) |
 |----------|---------------------|
 | ✅ `P_ENIE`, `AMP_DOUBLE`, `DOUBLE_PIPE`, `PIPE_M`, `QUESTION`, `NOT_EQUAL`, `EQUAL_DBL`, `DOUBLE_COLON`, `LBRC2`, `LLAMBDA`, `ASTRISK_PLUS` | En uso en `_SYMB`/`_NUMB`/`_ALFA` |
 | ✅ `COPY`, `CUT`, `SEL_ALL`, `DEL_WORD`, `DEL_LINE`, `UNDO_WIN`, `CTL_CLICK` | En uso (edición de texto) |
 | ✅ `DOWN_10`, `UP_10`, `ALT_TAB`, `CLOSE_WIN`, `SLEEP`, `HIBERNATE`, `CS_F15_HOLD`, `TG_ALFA`, `MOVE_WIN_TG`, `MARKER_B`, `MARKER_2` | En uso (mouse, sistema, capas, marcadores) |
-| ✅ `COMM` | Comodín de comentarios para otras apps |
 | ✅ `MS_ACL0_TOGGLE`, `LT(MS_ACL2, KC_ENT)` | Pruebas de mouse: se necesitan después |
 | ✅ `TDQ_SEL`, `TDQ_ESC`, `TDQ_PASTE`, `TDQ_MOUSE_HOLD`, `TDQ_BOOKMARK` | Tap dances vivos; `TDQ_SEL` reservado para el futuro reemplazo del espacio |
 
@@ -41,5 +41,6 @@ Decisión Hero (2026-09-06): una sola tarea de limpieza. Absorbe las Tareas 4, 5
 - F22: enum `TG_F22` + 2 `case` + comentarios muertos de combos (`:113, :227-228`); `C(KC_F22)` de `_BOOK` intacto.
 - `CTRL_Z`/`SHIFT_2`: enum + 2 `case`.
 - `MOUSE_HOLD`: sustituir por `TD(TDQ_MOUSE_HOLD)` en `_MOVE` y eliminar el keycode, sin tocar `toggle_mouse_hold()` ni el `case MS_BTN1`.
+- `COMM` (2026-09-08): enum + `case LT(0,COMM)`; no estaba en ningún layout, `KC_COMM` intacto.
 - Actualizar README y anotar las líneas en `completed.md` al cerrar.
 - `SEL_ALL = SAFE_RANGE + 14` quedó fijo en el enum: se usa como layer en `LT()` y renumerarlo colisiona con `MS_ACL0` (lo vimos en la compilación).

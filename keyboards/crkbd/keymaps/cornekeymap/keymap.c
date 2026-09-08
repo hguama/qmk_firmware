@@ -95,9 +95,6 @@ enum custom_keycodes {
     TG_ALFA,              // Alterna entre la capa de ratón (_MOVE) y la alfabética (_ALFA)
     MOVE_WIN_TG,          // TAP: toggle _MOVE_WIN | HOLD: capa _AI (guarda y restaura al soltar) — capa _BASE
 
-    // ---- IDE / IA (JetBrains y asistentes de código) -----------------------------
-    COMM,                 // TAP: Ctrl+/ (comentar línea) | HOLD: Ctrl+Shift+/ (comentar bloque) — TODO: sin uso en capas; preservar por posible uso en otras apps Se queda.
-
     // ---- MARCADORES / BOOKMARKS ---------------------------------------------------
     MARKER_B,             // LT(_BOOK_2, MARKER_B): TAP = Ctrl+Shift+F21 | HOLD = capa _BOOK_2 — capa _BOOK
     MARKER_2,             // LT(_BOOK_2, MARKER_2): TAP = Ctrl+2 | HOLD = capa _BOOK_2 — capa _BOOK
@@ -675,19 +672,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
 
 
-
-        // Evaluar si se necesita (JetBrains)
-        case LT(0,COMM):
-            if (record->event.pressed) {
-                if (!record->tap.count) {
-                    tap_code16(LCTL(LSFT(KC_SLSH)));
-                    return false;
-                } else {
-                    tap_code16(LCTL(KC_SLSH));
-                    return false;
-                }
-            }
-            return false;
 
         case LT(0, UNDO_WIN):
             if (record->event.pressed) {
@@ -1409,7 +1393,7 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             // sostén un momento -> suelta -> mueve el mouse para seleccionar la captura ->
             // toca la tecla una vez (TD_SINGLE_TAP -> toggle_mouse_hold) para soltar el clic.
             tap_code(KC_PSCR);
-            wait_ms(300); // espera a que Windows abra el overlay de Recorte de pantalla y le dé foco
+            wait_ms(500); // espera a que Windows abra el overlay de Recorte de pantalla y le dé foco
             // Limpieza incondicional: sin importar lo que diga mouse_held (podría estar
             // desincronizado de lo que de verdad tiene registrado el sistema), garantizamos
             // que el botón quede "arriba" antes de presionarlo de nuevo, para asegurar un
