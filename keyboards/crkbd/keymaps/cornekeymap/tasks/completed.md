@@ -151,3 +151,15 @@ capa momentánea"*.
 **Motivo de cancelación:** no hizo falta ningún cambio de firmware. El espacio ya selecciona la ventana en el selector: una funcionalidad de PowerToys interceptaba el espacio sobre las ventanas abiertas y, al desactivarla, el flujo funciona (Alt+Tab, desplazarse, espacio selecciona).
 
 **Aprendizaje:** si el espacio hace cosas raras en el selector de ventanas, revisar PowerToys antes de tocar el firmware. Queda aquí, en el histórico de la tarea.
+
+---
+
+## Tarea 6 · Limpiar `LT(_DEV, KC_ENT)` muerto
+
+**Estado:** [x] ✅ completada · 2026-09-08
+**Dueño:** agente + Hero
+**Riesgo:** △ bajo — limpieza de código muerto
+
+**Descripción:** código muerto en `process_record_user`, fuera de todo layout. La capa `_DEV` se eliminó del enum en la Tarea 1.
+
+**Resultado:** no quedaba nada que retirar — cero menciones de `_DEV` en el código (ni enum, ni `case`, ni layouts) y compilación OK 24.126/28.672 sin tocar el firmware.
