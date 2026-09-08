@@ -1043,7 +1043,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
         XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN2, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        C(G(KC_D)), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, G(C(KC_RIGHT)), G(C(KC_LEFT)), XXXXXXX, C(G(KC_D)),
+        C(G(KC_D)), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, C(G(KC_D)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                        XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                        // `---------------------'                               `--------------------------'
