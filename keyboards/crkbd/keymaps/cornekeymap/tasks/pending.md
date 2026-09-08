@@ -1,22 +1,16 @@
 ---
 cssclasses: no-title
-active: limpieza-teclas
 ---
 
 # 🚀 cornekeymap
 
-> [!focus] **limpieza-teclas**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-progress">▶</span> <span class="num num-progress">3</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/limpieza-teclas/spec-limpieza-teclas.md)</span>
-> > [!task]+ <span class="status-progress">▶</span>**Task 3** · Limpieza única de teclas (10 fuera, resto se queda)<span class="sep">│</span><span class="risk-med">◆ medium</span><span class="sep">│</span><span class="beat">▰▰▰▰<span class="beat-hero">▱</span>▱</span><span class="sep">│</span><span class="since" data-since="2026-09-08">0d</span>
-> > Limpieza única: salen 10 teclas muertas o reemplazadas y queda registrado por qué se queda
-> > el resto. Decisión Hero 2026-09-06: absorbe 4, 5, 5.1, 7, 9 y 10. Detalle en el contrato.
-> > - [ ] 👤 Flashear y probar: 4 gestos de `TDQ_MOUSE_HOLD` + liberación con `MS_BTN1`; `ALT_TAB`, espacio y `Ctrl+Z` intactos; `COMM` eliminada
-> > - [ ] Anotar las líneas en `completed.md` al cerrar
-> >
-> > > [!desc]- completed (4)
-> > > - [x] Eliminar las 9 teclas según el alcance y sustituir `MOUSE_HOLD` en `_MOVE`
-> > > - [x] Actualizar README (tablas de estado y categorías)
-> > > - [x] Compilar con `qmk compile -kb crkbd/rev1 -km cornekeymap` (.hex OK 2026-09-06, 24.126/28.672)
-> > > - [x] Eliminar `COMM` (enum + `case LT(0,COMM)`) — decisión Hero 2026-09-08; compila OK 24.046/28.672
+> [!focus] **captura**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">12</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/captura/spec-captura-evento.md)</span>
+> > [!task]+ <span class="status-untouched">☐</span>**Task 12** · Captura en un paso: validar evento de Windows para el clic sostenido<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
+> > El hold de `TDQ_MOUSE_HOLD` es inestable por tiempos fijos. Hay que validar si Windows avisa
+> > cuando el overlay de Recortes está listo. Estrategia validada en el contrato.
+> > - [ ] Validar ventana del overlay con Python+ctypes y medir latencia del aviso `raw_hid`
+> > - [ ] Comparar contra `Win+Shift+S` y dos taps; dejar recomendación escrita
+> > - [ ] 👤 Aprobar la estrategia elegida (la implementación será la Tarea 12.1)
 
 ```button
 name 👤
@@ -86,11 +80,3 @@ class queue-filter-button qfb-toggle-first
 ```
 
 <!-- queue -->
-
-> [!block]- **captura**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">12</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/captura/spec-captura-evento.md)</span>
-> > [!task]+ <span class="status-untouched">☐</span>**Task 12** · Captura en un paso: validar evento de Windows para el clic sostenido<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
-> > El hold de `TDQ_MOUSE_HOLD` es inestable por tiempos fijos. Hay que validar si Windows avisa
-> > cuando el overlay de Recortes está listo. Estrategia validada en el contrato.
-> > - [ ] Validar ventana del overlay con Python+ctypes y medir latencia del aviso `raw_hid`
-> > - [ ] Comparar contra `Win+Shift+S` y dos taps; dejar recomendación escrita
-> > - [ ] 👤 Aprobar la estrategia elegida (la implementación será la Tarea 12.1)

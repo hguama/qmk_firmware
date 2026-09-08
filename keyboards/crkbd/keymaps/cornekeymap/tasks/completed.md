@@ -163,3 +163,19 @@ capa momentánea"*.
 **Descripción:** código muerto en `process_record_user`, fuera de todo layout. La capa `_DEV` se eliminó del enum en la Tarea 1.
 
 **Resultado:** no quedaba nada que retirar — cero menciones de `_DEV` en el código (ni enum, ni `case`, ni layouts) y compilación OK 24.126/28.672 sin tocar el firmware.
+
+---
+
+## Tarea 3 · Limpieza única de teclas (10 fuera, resto se queda)
+
+**Estado:** [x] ✅ completada · 2026-09-08
+**Dueño:** agente + Hero
+**Riesgo:** ◆ medio — tocó teclas vivas y código compartido
+
+**Descripción:** salen 10 teclas muertas o reemplazadas y queda registrado por qué se queda el resto. Decisión Hero 2026-09-06: absorbe 4, 5, 5.1, 7, 9 y 10. Decisión Hero 2026-09-08: también fuera `COMM`. Detalle en el contrato (`attachments/limpieza-teclas/spec-limpieza-teclas.md`).
+
+**Eliminadas:** `SPLIT_WIN`, `SHOW_QUICK_ENT`, `CODE_COMPLET`, `SHIFT_TOGGLE`, `TG_F22`, `LT(KC_F22, KC_ENT)`, `CTRL_Z`, `SHIFT_2`, `MOUSE_HOLD` (sustituida por `TD(TDQ_MOUSE_HOLD)` en `_MOVE`) y `COMM`.
+
+**Líneas:** commits `b6d80013` (9 teclas: `keymap.c` −215, README −43) y `fad92177` (`COMM`: enum + `case LT(0,COMM)`). Verificado cero restos en el código salvo el tap dance vivo `TDQ_MOUSE_HOLD`; `KC_COMM` y `C(KC_F22)` intactos.
+
+**Resultado:** firmware 24.046/28.672, flasheado y probado por Hero: 4 gestos de `TDQ_MOUSE_HOLD` + liberación con `MS_BTN1`; `ALT_TAB`, espacio y `Ctrl+Z` intactos.
