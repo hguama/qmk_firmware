@@ -127,3 +127,17 @@ El "mover" se hace con `layer_move()` de QMK directamente.
 capa momentánea"*.
 
 **Verificación:** pendiente en la Tarea 2.1 (sigue abierta en el plan vivo).
+
+---
+
+## Tarea 11 · Confirmar Alt+Tab con el pulgar derecho (espacio → Enter)
+
+**Estado:** [-] ❌ cancelada · 2026-09-08
+**Dueño:** agente
+**Riesgo:** ⚠️ medio — tocaba el espacio (uso diario) y el estado compartido de `ALT_TAB`
+
+**Descripción:** Con la izquierda el pulgar confirma la ventana con Enter; con la derecha el pulgar es espacio y no confirma. Se iba a implementar un espejo espacio→Enter en el firmware (solo el tap redirigido si `is_alt_tab_active`, el hold intacto).
+
+**Motivo de cancelación:** no hizo falta ningún cambio de firmware. El espacio ya selecciona la ventana en el selector: una funcionalidad de PowerToys interceptaba el espacio sobre las ventanas abiertas y, al desactivarla, el flujo funciona (Alt+Tab, desplazarse, espacio selecciona).
+
+**Aprendizaje:** si el espacio hace cosas raras en el selector de ventanas, revisar PowerToys antes de tocar el firmware. Queda aquí, en el histórico de la tarea.

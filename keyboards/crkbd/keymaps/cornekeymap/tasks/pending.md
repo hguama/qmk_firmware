@@ -101,15 +101,6 @@ class queue-filter-button qfb-toggle-first
 > > > - [x] Actualizar README (tablas de estado y categorías)
 > > > - [x] Compilar con `qmk compile -kb crkbd/rev1 -km cornekeymap` (.hex OK 2026-09-06, 24.126/28.672)
 
-> [!block]- **alt-tab**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">11</span></span>
-> > [!task]+ <span class="status-untouched">☐</span>**Task 11** · Confirmar Alt+Tab con el pulgar derecho (espacio → Enter)<span class="sep">│</span><span class="risk-med">◆ medium</span><span class="sep">│</span><span class="beat">▱▱▱<span class="beat-hero">▱</span></span>
-> > Con la izquierda el pulgar confirma con Enter; con la derecha es espacio y no confirma.
-> > Mientras `ALT_TAB` está activo, el tap de espacio manda Enter (efecto espejo).
-> > - [ ] Implementar el espejo espacio→Enter si `is_alt_tab_active` y es tap, sin tocar el hold
-> > - [ ] Compilar con `qmk compile -kb crkbd/rev1 -km cornekeymap`
-> > - [ ] Flashear y probar: confirmación con derecha, espacio normal intacto, Alt no pegado
-> > - [ ] 👤 Confirmar que el pulgar derecho confirma igual y fuera del modo nada cambia
-
 > [!block]- **captura**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">12</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/captura/spec-captura-evento.md)</span>
 > > [!task]+ <span class="status-untouched">☐</span>**Task 12** · Captura en un paso: validar evento de Windows para el clic sostenido<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
 > > El hold de `TDQ_MOUSE_HOLD` es inestable por tiempos fijos. Hay que validar si Windows avisa
