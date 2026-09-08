@@ -126,7 +126,17 @@ El "mover" se hace con `layer_move()` de QMK directamente.
 [`implementations.md`](implementations.md) → *"Patrón: Tap alterna capa / Hold
 capa momentánea"*.
 
-**Verificación:** pendiente en la Tarea 2.1 (sigue abierta en el plan vivo).
+**Verificación:** completada en la Tarea 2.1 (2026-09-08).
+
+### Tarea 2.1 · Probar las dos teclas refactorizadas
+
+**Estado:** [x] ✅ completada · 2026-09-08
+**Dueño:** Hero
+**Riesgo:** △ bajo — verificación
+
+**Pruebas realizadas:** HOLD/TAP de `LT(_AI, MOVE_WIN_TG)` y `LT(_DEL, KC_PERC)`.
+
+**Resultado:** ambas teclas se comportan igual que antes del refactor. Deuda de verificación saldada.
 
 ---
 

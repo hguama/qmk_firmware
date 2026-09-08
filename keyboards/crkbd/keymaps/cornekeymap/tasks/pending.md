@@ -4,13 +4,13 @@ cssclasses: no-title
 
 # 🚀 cornekeymap
 
-> [!focus] **verificacion**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">2.1</span></span>
-> > [!task]+ <span class="status-untouched">☐</span>**Task 2.1** · Probar las dos teclas refactorizadas<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
-> > El refactor del helper de capa momentánea está hecho pero sin verificar en el teclado.
-> > Va primero porque el trabajo sin probar se acumula como deuda silenciosa. Related to: Task 2.
-> > - [ ] Compilar con `qmk compile -kb crkbd/rev1 -km cornekeymap`
-> > - [ ] Flashear y probar HOLD/TAP de `LT(_AI, MOVE_WIN_TG)` y `LT(_DEL, KC_PERC)`
-> > - [ ] 👤 Confirmar que ambas teclas se comportan igual que antes del refactor
+> [!focus] **limpieza-dev**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">6</span></span>
+> > [!task]+ <span class="status-untouched">☐</span>**Task 6** · Limpiar `LT(_DEV, KC_ENT)` muerto<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
+> > Código muerto en `process_record_user`, fuera de todo layout. La capa `_DEV` se eliminó
+> > del enum en la Tarea 1, así que hay que confirmar qué quedó ahí antes de tocarlo.
+> > - [ ] Confirmar qué quedó en `process_record_user` tras eliminar `_DEV` del enum
+> > - [ ] Retirar el `case` muerto de `LT(_DEV, KC_ENT)`
+> > - [ ] 👤 Compilar y confirmar que no queda referencia a `_DEV`
 
 ```button
 name 👤
@@ -80,14 +80,6 @@ class queue-filter-button qfb-toggle-first
 ```
 
 <!-- queue -->
-
-> [!block]- **limpieza-dev**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">6</span></span>
-> > [!task]+ <span class="status-untouched">☐</span>**Task 6** · Limpiar `LT(_DEV, KC_ENT)` muerto<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
-> > Código muerto en `process_record_user`, fuera de todo layout. La capa `_DEV` se eliminó
-> > del enum en la Tarea 1, así que hay que confirmar qué quedó ahí antes de tocarlo.
-> > - [ ] Confirmar qué quedó en `process_record_user` tras eliminar `_DEV` del enum
-> > - [ ] Retirar el `case` muerto de `LT(_DEV, KC_ENT)`
-> > - [ ] 👤 Compilar y confirmar que no queda referencia a `_DEV`
 
 > [!block]- **limpieza-teclas**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">3</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/limpieza-teclas/spec-limpieza-teclas.md)</span>
 > > [!task]+ <span class="status-untouched">☐</span>**Task 3** · Limpieza única de teclas (9 fuera, resto se queda)<span class="sep">│</span><span class="risk-med">◆ medium</span><span class="sep">│</span><span class="beat">▰▰▰<span class="beat-hero">▱</span>▱</span>
