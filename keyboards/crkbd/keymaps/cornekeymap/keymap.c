@@ -21,6 +21,7 @@ JKL
 #include QMK_KEYBOARD_H
 //#include "rgblight.h"
 #include "raw_hid.h"
+void raw_hid_task(void); // lufa.c: bombea raw_hid entrante (QMK no le da prototipo público)
 // Conexión directa con las variables reales del motor de mouse de QMK
 #ifdef MOUSEKEY_ENABLE
 extern uint8_t mk_delay;
@@ -162,6 +163,7 @@ bool ms_acl0_active = false;
 
 bool voice_mode = false;
 static bool mouse_held = false;
+static bool capture_armed = false; // Task 12.1: hold de captura espera el aviso 'S' del watcher
 bool cs_f15_held = false; // Nueva bandera para Ctrl + Shift + F15
 
 
@@ -264,6 +266,7 @@ static void toggle_mouse_hold(void) {
         unregister_code(MS_BTN1);
         tap_code(MS_BTN1);
     }
+    send_layer_status(mouse_held ? "CAP_TGL_1" : "CAP_TGL_0"); // log: toggle manual y estado resultante
 }
 
 // Helper: envía "¿" (Alt+0191)
@@ -1004,7 +1007,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                 QK_BOOT, XXXXXXX, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TD(TDQ_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             SLEEP, TD(TDQ_PASTE), MS_BTN1, TD(TDQ_FAST), TG(_ALFA), TG(_MOVE),
+LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             SLEEP, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                            HIBERNATE, KC_ENT, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -1199,6 +1202,29 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         send_layer_status_with_at("AT_OFF", layer_state);
     }
 
+        // === MARCADOR DE VERSIÓN: prueba inequívoca de qué firmware está en la placa ===
+    else if (data[0] == 'V' || data[1] == 'V') {
+        send_layer_status("VER_CAPTURE_24262");
+    }
+
+        // === AVISO DEL WATCHER DE CAPTURA (Task 12.1) ===
+    else if ((data[0] == 'S' || data[1] == 'S') && capture_armed) {
+        // La ventana existe pero Snipping tarda en aceptar input; sin esta
+        // espera el clic se pierde (el overlay no lo registra) y queda "muerto"
+        wait_ms(150);
+        // Flanco limpio: garantiza "soltar" antes de "presionar"
+        unregister_code(MS_BTN1);
+        mouse_held = false;
+        register_code(MS_BTN1);
+        mouse_held = true;
+        capture_armed = false;
+        send_layer_status("CAP_EVT"); // log: enganchó por evento del watcher
+    }
+    else if (data[0] == 'S' || data[1] == 'S') {
+        // S recibida pero NO armada (tardía, duplicada o sin hold) — solo log, no engancha
+        send_layer_status("CAP_S_SKIP");
+    }
+
         // === NUEVA LÓGICA PARA CALIBRAR EL MOUSE ===
     else if (data[0] == 'M') {
 #ifdef MOUSEKEY_ENABLE
@@ -1341,8 +1367,7 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_DOUBLE_TAP:
-            // Clic derecho
-            tap_code16(MS_BTN2);
+             tap_code16(C(KC_F));
             break;
 
         default:
@@ -1391,26 +1416,33 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             // que ya te funciona (clic con el teclado), por si el botón quedó pegado por
             // fuera de este ciclo.
             tap_code(MS_BTN1);
-            // Imprimir pantalla + engancha el clic izquierdo sostenido.
+            // Overlay directo (determinista) + arma el enganche: el watcher avisa con 'S'
+            // cuando el overlay está listo; la red de 800ms engancha igual si no llega.
             // El clic queda sostenido aunque sueltes la tecla (no se libera en x_reset):
-            // sostén un momento -> suelta -> mueve el mouse para seleccionar la captura ->
-            // toca la tecla una vez (TD_SINGLE_TAP -> toggle_mouse_hold) para soltar el clic.
-            tap_code(KC_PSCR);
-            wait_ms(500); // espera a que Windows abra el overlay de Recorte de pantalla y le dé foco
-            // Limpieza incondicional: sin importar lo que diga mouse_held (podría estar
-            // desincronizado de lo que de verdad tiene registrado el sistema), garantizamos
-            // que el botón quede "arriba" antes de presionarlo de nuevo, para asegurar un
-            // flanco de clic realmente nuevo.
-            unregister_code(MS_BTN1);
-            mouse_held = false;
-            wait_ms(50); // deja que el sistema procese el "soltar" antes de mandar un "presionar" nuevo
-            register_code(MS_BTN1);
-            mouse_held = true;
+            // mueve el mouse para seleccionar la captura -> toca la tecla una vez
+            // (TD_SINGLE_TAP -> toggle_mouse_hold) para soltar el clic.
+            tap_code16(G(S(KC_S)));
+            send_layer_status("CAP_ARM");
+            capture_armed = true;
+            uint16_t capture_t0 = timer_read();
+            while (capture_armed && timer_elapsed(capture_t0) < 800) {
+                raw_hid_task(); // bombear USB: sin esto raw_hid_receive no corre durante la espera
+                wait_ms(20);
+            }
+            if (capture_armed) {
+                // Red: sin aviso del watcher, engancha igual (nunca peor que antes)
+                unregister_code(MS_BTN1);
+                mouse_held = false;
+                wait_ms(50);
+                register_code(MS_BTN1);
+                mouse_held = true;
+                capture_armed = false;
+                send_layer_status("CAP_NET"); // log: enganchó por red de 800ms
+            }
             break;
 
         case TD_DOUBLE_TAP:
-            // Buscar palabra (Ctrl+F)
-            tap_code16(C(KC_F));
+            tap_code16(MS_BTN2);
             break;
 
         case TD_DOUBLE_HOLD:

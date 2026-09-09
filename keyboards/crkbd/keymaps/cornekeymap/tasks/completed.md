@@ -122,9 +122,10 @@ El "mover" se hace con `layer_move()` de QMK directamente.
 - Se corrigió el comentario de `LT(_AI, MOVE_WIN_TG)`: togglea `_MOVE_WIN`,
   no `_MOVE`.
 
-**Aprendizaje guardado:** el patrón quedó como **referencia protegida** en
-[`implementations.md`](implementations.md) → *"Patrón: Tap alterna capa / Hold
-capa momentánea"*.
+**Aprendizaje:** ninguno aparte — el patrón queda documentado en el propio
+código (`save_current_layer()`/`restore_saved_layer()` y su uso en
+`LT(_AI, MOVE_WIN_TG)`/`LT(_DEL, KC_PERC)`), sin necesidad de una referencia
+protegida aparte en `implementations.md` (retirado, Task 17 de `task-manager`).
 
 **Verificación:** completada en la Tarea 2.1 (2026-09-08).
 

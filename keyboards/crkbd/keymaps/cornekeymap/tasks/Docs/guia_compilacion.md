@@ -133,3 +133,4 @@ Ruta final: `.build/crkbd_rev1_cornekeymap.hex` — es la que se abre con QMK To
 - El `.hex` canónico es `.build/crkbd_rev1_cornekeymap.hex` (ignorado por git junto con `.build/`): no se commitea, se regenera. La copia que QMK deja en la raíz se elimina para no duplicar.
 - La válvula `QMK_ALLOW_ANY_ENV` solo vive en tu `site-packages` local; si reinstalas el paquete `qmk`, hay que re-aplicar el §3.3.
 - Referencia viva del flujo en `tasks/pending.md` (Tarea 3); historial de decisiones en `tasks/completed.md` al cerrar.
+- Incidente 2026-09-09: la copia de la raíz volvió a aparecer y generó duda sobre qué flashear. Regla dura: después de cada compilación se elimina la copia de la raíz; el canónico es siempre `.build/crkbd_rev1_cornekeymap.hex`. Ojo: si compilas sin cambios, `make` no reconstruye (`.build` queda con fecha vieja) pero el CLI igual refresca la copia de la raíz — las fechas engañan; ante duda manda el hash (`Get-FileHash`), no la fecha.

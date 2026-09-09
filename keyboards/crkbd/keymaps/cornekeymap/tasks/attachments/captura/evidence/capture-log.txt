@@ -1,0 +1,55 @@
+[+     0ms 15:53:46] log iniciado
+[+    18ms 15:53:46] teclado: foostan Corne
+[+    23ms 15:53:46] watcher listo (Ctrl+C para salir)
+[+  2096ms 15:53:48] KB -> CAP_ARM
+[+  2325ms 15:53:48] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+  2491ms 15:53:48] KB -> CAP_EVT
+[+  8954ms 15:53:55] KB -> CAP_ARM
+[+  9183ms 15:53:55] OVERLAY visto -> S enviado (+2 ms deteccion)
+[+  9349ms 15:53:55] KB -> CAP_EVT
+[+ 12254ms 15:53:58] KB -> AT_ON LAYER_BASE
+[+ 12327ms 15:53:58] KB -> AT_ON LAYER_BASE
+[+ 13487ms 15:53:59] KB -> AT_ON LAYER_BASE
+[+ 13684ms 15:53:59] KB -> AT_ON LAYER_BASE
+[+ 14139ms 15:54:00] KB -> AT_OFF LAYER_BASE
+[+ 15792ms 15:54:01] KB -> CAP_ARM
+[+ 16057ms 15:54:02] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 16227ms 15:54:02] KB -> CAP_EVT
+[+ 24055ms 15:54:10] KB -> CAP_ARM
+[+ 24259ms 15:54:10] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 24430ms 15:54:10] KB -> CAP_EVT
+[+ 27738ms 15:54:13] KB -> CAP_ARM
+[+ 27982ms 15:54:14] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 28153ms 15:54:14] KB -> CAP_EVT
+[+ 30088ms 15:54:16] KB -> CAP_TGL_0
+[+ 31405ms 15:54:17] KB -> CAP_TGL_1
+[+ 33337ms 15:54:19] KB -> CAP_ARM
+[+ 33562ms 15:54:19] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 33732ms 15:54:19] KB -> CAP_EVT
+[+ 37425ms 15:54:23] KB -> CAP_ARM
+[+ 37653ms 15:54:23] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 37820ms 15:54:23] KB -> CAP_EVT
+[+ 42431ms 15:54:28] KB -> CAP_ARM
+[+ 42660ms 15:54:28] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 42826ms 15:54:28] KB -> CAP_EVT
+[+ 46659ms 15:54:32] KB -> CAP_ARM
+[+ 46891ms 15:54:33] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 47054ms 15:54:33] KB -> CAP_EVT
+[+ 52624ms 15:54:38] KB -> CAP_ARM
+[+ 52848ms 15:54:38] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 53019ms 15:54:39] KB -> CAP_EVT
+[+ 61050ms 15:54:47] KB -> CAP_ARM
+[+ 61277ms 15:54:47] OVERLAY visto -> S enviado (+1 ms deteccion)
+[+ 61445ms 15:54:47] KB -> CAP_EVT
+[+ 66798ms 15:54:52] KB -> CAP_ARM
+[+ 67012ms 15:54:53] OVERLAY visto -> S enviado (+2 ms deteccion)
+[+ 67173ms 15:54:53] KB -> CAP_EVT
+[+ 71426ms 15:54:57] KB -> CAP_ARM
+[+ 71638ms 15:54:57] OVERLAY visto -> S enviado (+2 ms deteccion)
+[+ 71801ms 15:54:57] KB -> CAP_EVT
+[+ 74052ms 15:55:00] KB -> AT_ON LAYER_BASE
+[+ 74132ms 15:55:00] KB -> AT_ON LAYER_BASE
+[+ 75584ms 15:55:01] KB -> AT_ON LAYER_BASE
+[+ 76576ms 15:55:02] KB -> AT_ON LAYER_BASE
+[+ 76751ms 15:55:02] KB -> AT_ON LAYER_BASE
+[+ 77163ms 15:55:03] KB -> AT_OFF LAYER_BASE
