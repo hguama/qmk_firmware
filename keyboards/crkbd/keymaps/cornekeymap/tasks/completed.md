@@ -222,3 +222,15 @@ protegida aparte en `implementations.md` (retirado, Task 17 de `task-manager`).
 **Motivo de cancelación:** Hero revirtió a `TG(_FAST)` a propósito (trabaja mejor así); el objetivo contradice su preferencia actual. Implementado y compilado (.hex OK 24.082/28.672, commit `6165496ae7`) pero nunca flasheado ni contrastado.
 
 **Aprendizaje:** si se retoma, el código está en `6165496ae7` (enum + action + `tdq_fast_finished`); validar con Hero si mantiene la preferencia por `TG` antes de reimplementar.
+
+---
+
+## Tarea 15 · Migrar la captura con evento al script principal
+
+**Estado:** [x] ✅ completada · 2026-09-09
+**Dueño:** agente + Hero
+**Riesgo:** ◆ medio — tocó el script de uso diario (aditivo y reversible)
+
+**Descripción:** traer la captura con evento (Task 12.1) a `layer_status_script.py` (`D:\scripts\status script`, repo `main` limpio): módulo `utils/captura/` (hilo dirigido por `CAP_ARM`, vigilancia ≤700ms, envío `S` con `Lock`) + rama `CAP_*` en el lector. Contrato en `attachments/migra-captura/spec-migracion-captura.md`.
+
+**Resultado:** validado por Hero en uso diario ("funciona perfecto"): holds por `CAP_EVT`, capas/alt-tab/wrap sin cambios. Watcher suelto retirado (se conserva el archivo, no se ejecuta). Sin commit en repo ajeno (decisión de Hero).

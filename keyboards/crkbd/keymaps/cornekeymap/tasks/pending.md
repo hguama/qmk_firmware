@@ -1,21 +1,9 @@
 ---
 cssclasses: no-title
-active: migra-captura
+active:
 ---
 
 # 🚀 cornekeymap
-
-> [!focus] **migra-captura**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-progress">▶</span> <span class="num num-progress">15</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/migra-captura/spec-migracion-captura.md)</span>
-> > [!task]+ <span class="status-progress">▶</span>**Task 15** · Migrar la captura con evento al script principal<span class="sep">│</span><span class="risk-med">◆ medium</span><span class="sep">│</span><span class="beat">▰▰▱<span class="beat-hero">▱</span></span><span class="sep">│</span><span class="since" data-since="2026-09-09">0d</span>
-> > Traer la captura con evento (Task 12.1, ya validada) al script principal: módulo que detecta
-> > el overlay y manda `S`, más rama que interpreta los `CAP_*`. Related to Task 12.1.
-> > Sin esto el watcher suelto compite por el `raw_hid` y no hay captura rápida en uso diario.
-> > - [ ] Implementar el módulo en `layer_status_script.py` (hilo overlay + rama `CAP_*` + envío `S`; repo ajeno en `main` limpio)
-> > - [ ] 👤 Contrastar holds contra el watcher y retirar el watcher suelto
-> >
-> > > [!desc]- completed (2)
-> > > - [x] Especificar el módulo — contrato en `attachments/migra-captura/spec-migracion-captura.md`
-> > > - [x] 👤 Aprobar la especificación — aprobada por Hero 2026-09-09
 
 ```button
 name 👤
