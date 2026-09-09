@@ -180,3 +180,45 @@ protegida aparte en `implementations.md` (retirado, Task 17 de `task-manager`).
 **Líneas:** commits `b6d80013` (9 teclas: `keymap.c` −215, README −43) y `fad92177` (`COMM`: enum + `case LT(0,COMM)`). Verificado cero restos en el código salvo el tap dance vivo `TDQ_MOUSE_HOLD`; `KC_COMM` y `C(KC_F22)` intactos.
 
 **Resultado:** firmware 24.046/28.672, flasheado y probado por Hero: 4 gestos de `TDQ_MOUSE_HOLD` + liberación con `MS_BTN1`; `ALT_TAB`, espacio y `Ctrl+Z` intactos.
+
+---
+
+## Tarea 12 · Captura en un paso: validar evento de Windows para el clic sostenido
+
+**Estado:** [x] ✅ completada · 2026-09-09
+**Dueño:** agente + Hero
+**Riesgo:** △ bajo — solo medición, sin tocar firmware
+
+**Descripción:** validar si Windows avisa cuando el overlay de Recortes está listo, para enganchar ahí el clic sostenido en vez de adivinar con espera fija. Detalle en el contrato (`attachments/captura/spec-captura-evento.md` §§1-5).
+
+**Resultado:** espera fija de 500ms estable (a ~300ms inestable); huella del overlay medida (`SnipOverlayRootWindow`/`Snipping Tool Overlay`/`SnippingTool.exe`, ~120ms, `evidence/overlay-probe.py`); evento recomendado como mejor técnica; estrategia aprobada por Hero → Tarea 12.1.
+
+---
+
+## Tarea 12.1 · Captura con evento: enganche rápido del clic sostenido
+
+**Estado:** [x] ✅ completada · 2026-09-09
+**Dueño:** agente + Hero
+**Riesgo:** ◆ medio — tap dance vivo + `raw_hid` + timing con Windows
+
+**Descripción:** el hold de `TDQ_MOUSE_HOLD` manda `Win+Shift+S` y arma (`capture_armed`); un watcher en PC detecta el overlay de Recortes y avisa con `S` por `raw_hid`; el firmware engancha `MS_BTN1`, con red de 800ms. Detalle en el contrato (`attachments/captura/spec-captura-evento.md` §§6-7).
+
+**Implementación:** poll-loop de 800ms con bombeo `raw_hid_task()` (sin esto la `S` nunca entraba); espera 150ms en el handler de `S` (el overlay ignoraba el clic inmediato); logs `CAP_ARM`/`CAP_EVT`/`CAP_NET` + `CAP_TGL_*`/`CAP_S_SKIP` + marcador `V`/`VER_CAPTURE_24262`; watcher con huella `SnipOverlayRootWindow` + hilo lector + log; `mouse-watch.py` para correlacionar enganche→selección.
+
+**Validación:** 25 holds en varias apps, 100% por `CAP_EVT`, 0 `CAP_NET`. Tiempos: ARM→overlay ~220ms (Windows), S→EVT ~165ms, total ~365-415ms (sentido ~850ms con tap dance). Estable según Hero.
+
+**Commits:** `83f7e7c464` (implementación+validación), `efaffa101f` (contrato as-built). Hex canónico `.build/crkbd_rev1_cornekeymap.hex` (24.390/28.672).
+
+---
+
+## Tarea 13 · Tap dance `_FAST`: tap togglea, doble tap y hold clic derecho
+
+**Estado:** [-] ❌ cancelada · 2026-09-09
+**Dueño:** agente + Hero
+**Riesgo:** ◆ medio — tocaba tecla viva de `_BASE`
+
+**Descripción:** reemplazar ambos `TG(_FAST)` de `_BASE` por tap dance `TDQ_FAST` (tap togglea `_FAST`; doble tap y hold clic derecho `MS_BTN2`).
+
+**Motivo de cancelación:** Hero revirtió a `TG(_FAST)` a propósito (trabaja mejor así); el objetivo contradice su preferencia actual. Implementado y compilado (.hex OK 24.082/28.672, commit `6165496ae7`) pero nunca flasheado ni contrastado.
+
+**Aprendizaje:** si se retoma, el código está en `6165496ae7` (enum + action + `tdq_fast_finished`); validar con Hero si mantiene la preferencia por `TG` antes de reimplementar.
