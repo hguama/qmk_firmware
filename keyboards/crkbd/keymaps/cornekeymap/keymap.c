@@ -108,6 +108,7 @@ enum {
     TDQ_ESC,
     TDQ_PASTE,
     TDQ_MOUSE_HOLD,
+    TDQ_FAST,
 };
 
 
@@ -179,6 +180,7 @@ void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data);
+void tdq_fast_finished(tap_dance_state_t *state, void *user_data);
 
 
 // Alternate repeat key: Alt + Repeat invierte la acción
@@ -945,6 +947,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
     [TDQ_MOUSE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_hold_finished, x_reset),
+    [TDQ_FAST] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_fast_finished, x_reset),
 };
 
 // ============================================================================
@@ -1001,7 +1004,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                 QK_BOOT, XXXXXXX, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             SLEEP, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
+LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TD(TDQ_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             SLEEP, TD(TDQ_PASTE), MS_BTN1, TD(TDQ_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                            HIBERNATE, KC_ENT, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -1413,6 +1416,29 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_HOLD:
             // Captura de ventana activa (Alt+Print Screen)
             tap_code16(A(KC_PSCR));
+            break;
+
+        default:
+            break;
+    }
+}
+
+void tdq_fast_finished(tap_dance_state_t *state, void *user_data) {
+    xtap_state.state = cur_dance(state);
+    switch (xtap_state.state) {
+        case TD_SINGLE_TAP:
+            // Alterna la capa _FAST (igual que TG(_FAST))
+            layer_invert(_FAST);
+            break;
+
+        case TD_SINGLE_HOLD:
+            // Clic derecho (menú contextual) al mantener
+            tap_code16(MS_BTN2);
+            break;
+
+        case TD_DOUBLE_TAP:
+            // Clic derecho (menú contextual) con doble tap
+            tap_code16(MS_BTN2);
             break;
 
         default:
