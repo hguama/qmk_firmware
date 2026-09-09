@@ -73,3 +73,12 @@ class queue-filter-button qfb-toggle-first
 ```
 
 <!-- queue -->
+
+> [!block]- **actualizar-skill**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-untouched">☐</span> <span class="num num-untouched">14</span></span>
+> > [!task]+ <span class="status-untouched">☐</span>**Task 14** · Aplicar la versión vigente de `task-manager` a este proyecto<span class="sep">│</span><span class="risk-low">△ low</span><span class="sep">│</span><span class="beat">▱▱<span class="beat-hero">▱</span></span>
+> > Este `pending.md`/`completed.md`/`fixes.md` quedó desalineado del formato vigente de la skill (Blocks,
+> > índice de `completed.md`, filtros retirados). Releer `SKILL.md` y `markdown-format.md` de `task-manager`
+> > y aplicar lo que falte.
+> > - [ ] Comparar este `pending.md`/`completed.md`/`fixes.md` contra `SKILL.md` y `markdown-format.md` vigentes, y listar las diferencias
+> > - [ ] Aplicar el formato vigente en los tres archivos
+> > - [ ] 👤 Aprobar el resultado
