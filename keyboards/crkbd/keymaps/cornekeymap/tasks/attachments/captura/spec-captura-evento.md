@@ -4,7 +4,7 @@
 
 | id | archivo | rol | estado |
 |---|---|---|---|
-| C1 | `spec-captura-evento.md` | contrato | vigente · 2026-09-08 · enmienda §4 |
+| C1 | `spec-captura-evento.md` | contrato as-built | vigente · 2026-09-09 · §§1-5 históricos, §6 lo implementado, §7 validación+commit |
 
 ## 1. Objetivo
 
@@ -37,13 +37,19 @@ El hold de `TDQ_MOUSE_HOLD` (ImprPant + espera fija + clic sostenido) es inestab
 - Comparación: (a) espera fija 500ms — estable hoy, cero código nuevo, pero congela el teclado 500ms y adivina el tiempo; (b) evento — enganche a ~150ms, sin congelar, con red de 800ms que lo deja nunca peor que hoy; cuesta watcher siempre activo + handler `S`; (c) dos taps — sin tiempos pero cambia el gesto.
 - Recomendación: la estrategia del evento es la mejor técnica (más rápida y sin congelar, con red), pero con 500ms estable hoy su prioridad es baja: implementar (12.1) si vuelve la inestabilidad o si importan esos ~350ms y el teclado responsivo. Confirma §4.
 
-## 6. Implementación 12.1 (2026-09-09, en prueba)
+## 6. Implementación final (as-built 2026-09-09)
 
-- Firmware: el hold manda `Win+Shift+S` (en vez de ImprPant) y arma (`capture_armed`); poll-loop de 800ms en tramos de 20ms — si llega `S`, el handler engancha con flanco limpio; si no, la red engancha igual. Single tap, doble tap y doble hold de `TDQ_MOUSE_HOLD` intactos.
-- Watcher (`evidence/capture-watcher.py`): vigila la huella y manda `S` por `raw_hid` (usage `0xFF60`); sin overlay no hace nada. Una `S` con overlay manual se ignora (solo engancha si está armado).
-- Conocido: durante la espera el teclado sigue congelado (típ. ~150ms en vez de 500ms fijos).
-- Fix 2026-09-09: la espera no procesaba USB (`raw_hid_receive` solo corre en el loop principal), así que el aviso `S` nunca entraba y siempre disparaba la red — se bombea `raw_hid_task()` en el poll-loop (prototipo propio, QMK no lo expone).
-- Logs: el firmware reporta `CAP_ARM` (arma), `CAP_EVT` (enganchó por evento) y `CAP_NET` (enganchó por red); el watcher los registra con reloj en consola y `capture-log.txt` para distinguir qué ruta disparó.
-- Flasheo: el canónico es `.build/crkbd_rev1_cornekeymap.hex` (la copia de la raíz se elimina; ver `Docs/guia_compilacion.md` §6).
-- Fix 2026-09-09 (watcher ciego): el lector cortaba `data[1:33]` y perdía la 1ª letra (`CAP_ARM`→`AP_ARM`), así que jamás logueó nada — corregido a `data[:32]` y ahora registra todo el tráfico (`KB -> ...`). Diagnóstico: `V`→`VER_CAPTURE_24262`; logs extra `CAP_TGL_1/0` (toggle manual+estado) y `CAP_S_SKIP` (`S` tardía sin armar).
-- Fix 2026-09-09 (enganche "muerto"): el clic se perdía porque el overlay aún no aceptaba input a los ~19ms de detectarse — el handler de `S` espera 150ms antes de enganchar. Validado: 5/5 holds por `CAP_EVT` a ~245ms totales (~220ms Windows + ~20ms ida/vuelta).
+Lo que corre en la placa y en el PC. Difiere del plan §3 en los puntos ★ (problemas encontrados al implementar):
+
+- **Firmware, hold (`TD_SINGLE_HOLD`):** `tap_code(MS_BTN1)` (desatasque) → `tap_code16(G(S(KC_S)))` (overlay directo) → `send_layer_status("CAP_ARM")` → `capture_armed=true` → poll-loop hasta 800ms en tramos de 20ms. ★ Sin bombear `raw_hid_task()` en el loop la `S` nunca entraba (`raw_hid_receive` solo corre en el loop principal, que está bloqueado); prototipo propio, QMK no lo expone. Si sigue armado a los 800ms, la red engancha igual (`CAP_NET`). Single tap (toggle), doble tap y doble hold intactos.
+- **Firmware, handler de `S` (`raw_hid_receive`, solo si `capture_armed`):** ★ espera 150ms antes de enganchar — sin esto el clic se presionaba a ~19ms de detectarse la ventana, cuando Snipping aún no aceptaba input, y se perdía ("muerto"). Luego enganche con flanco limpio (`unregister`+`register` `MS_BTN1`, `mouse_held=true`) → desarma → `CAP_EVT`. Una `S` sin armar (overlay manual) se ignora y se loguea `CAP_S_SKIP`.
+- **Firmware, diagnóstico:** `V`→`VER_CAPTURE_24262` (marcador para probar qué hay flasheado sin adivinar); toggle manual reporta `CAP_TGL_1/0` con el estado resultante (detecta desfases firmware↔Windows).
+- **Watcher (`evidence/capture-watcher.py`):** huella §5 por `EnumWindows` (fullscreen + clase + título), manda `S` por `raw_hid` (`0xFF60`) con edge-detection y reconexión. ★ El lector cortaba `data[1:33]` y perdía la 1ª letra (`CAP_ARM`→`AP_ARM`): jamás mostró un aviso; corregido a `data[:32]` y ahora registra todo el tráfico (`KB -> ...`) con reloj en consola y `capture-log.txt`. Flags `--once`/`--log`.
+- **Mouse-watch (`evidence/mouse-watch.py`):** inicio/arrastre/fin del cursor con el mismo reloj, para correlacionar enganche→selección.
+- **Uso validado:** mover pronto al aparecer el overlay. La cruz es consecuencia del arrastre, no señal previa — esperarla suma ~1.5s innecesarios y el cursor se desplaza del punto de inicio.
+- **Flasheo:** canónico `.build/crkbd_rev1_cornekeymap.hex` (la copia de la raíz se elimina; `Docs/guia_compilacion.md` §6).
+
+## 7. Validación y commit
+
+- Medido (watcher+mouse, 7+5+13 holds en varias apps, §6 final): **100% por `CAP_EVT`, 0 `CAP_NET`**. Tiempos del log (sin los ~450ms del tap dance): ARM→overlay ~220ms (Windows), S→EVT ~165ms (150 espera+15 proceso), total ARM→enganche ~365-415ms. Sentido: ~850ms. EVT→primer movimiento ~1.5s (reacción del usuario, no sistema).
+- **Commit `83f7e7c464`** (2026-09-09, rama `my-corne`, local): firmware + watcher + mouse-watch + probe + logs de validación + este contrato + plan. Ver con `git show 83f7e7c464`. Para reproducir: flashear el `.hex` canónico (ambas mitades), mandar `V` (responde `VER_CAPTURE_24262`), correr watcher+mouse-watch, hacer hold.
