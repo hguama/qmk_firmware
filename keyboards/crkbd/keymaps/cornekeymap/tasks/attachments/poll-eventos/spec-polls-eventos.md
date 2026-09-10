@@ -4,7 +4,7 @@
 
 | id | archivo | rol | estado |
 |---|---|---|---|
-| C1 | `spec-polls-eventos.md` | contrato | especificación · 2026-09-09 |
+| C1 | `spec-polls-eventos.md` | contrato | especificación · 2026-09-09 · auditoría 2026-09-10 con hallazgos (§5) |
 
 ## 1. Objetivo
 
@@ -43,3 +43,34 @@ Verificación: con scroll-lock activo, mover el mouse → scroll horizontal por 
 ## 4. Validación general
 
 Commitear punto de partida → convertir → `py_compile` → reiniciar script (arranque limpio, sin tracebacks) → 10 min en reposo (CPU ~0, hilos vivos) → §2 una por una → uso diario normal 1 día → si algo regresa, revert por git.
+
+## 5. Auditoría 2026-09-10 — hallazgos y veredicto
+
+Auditado contra el código real (`layer_status_script.py` ≈457 líneas, `utils/*`) y el log de uso diario (4001 saltos de wrap, 65 activaciones de scroll-lock, 0 `[HID ERROR]` en 1.7MB).
+
+**Veredicto: no aprobar como está.** Objetivo e inventario (§§1-2) correctos; la estrategia única es incorrecta para 4 de los 6; el riesgo es `high`, no `medium`; el punto de partida no está limpio.
+
+### 5.1 Estrategia por categoría (reemplaza el modelo único)
+
+| Categoría | Polls | Conversión correcta |
+|---|---|---|
+| Discretos | §2.1 HID, §2.2 clic-alt | evento real: lectura **bloqueante** (`set_nonblocking(False)` + `read(timeout_ms=500)`); `mouse.on_button` (verificado: existe en la librería ya importada) |
+| Muestreo continuo | §2.3 dot, §2.4 ocultar, §2.5 wrap, §2.6 scroll | sin evento puro: **un solo hilo de cursor** a 10ms que reparte a los 4 + trabajo solo si la posición cambió |
+
+### 5.2 Punto por punto
+
+- **§1:** conteo exacto (6). Pero `main` **no está limpio**: `M layer_status_script.py` + `?? utils/captura/` (migración Task 15 sin commitear, verificado 2026-09-10). El "commitear punto de partida" de §4 arrastraría trabajo ajeno.
+- **§2.1:** error conceptual — `captura.hilo_overlay` duerme en un `Event` que arma **este mismo lector**; el lector no puede usar ese modelo. La cura es lectura bloqueante. Además el hilo muere con `break` ante cualquier excepción (todos los indicadores dependen de él): falta reintento.
+- **§2.2:** el único convertible limpio. Borde sin acotar: con alt-tab visible, el `MS_BTN1` de un hold de captura sí dispara `R`.
+- **§2.3/§2.4:** consumen el mismo dato en dos hilos; candidatas a fusión. Ambas llaman Tk desde hilo secundario (bug latente: `mouse_win.geometry`, `withdraw`/`deiconify` fuera del hilo principal).
+- **§2.5:** el más riesgoso — dwell/anti-rebote calibrados a cadencia fija + `SetCursorPos` que realimenta eventos. Extra: `DOCs/wrap_around.md` documenta `FORCE_TIMEOUT` (350ms) que **no existe en el código**.
+- **§2.6:** el suavizado de eje (`recent_* × 0.82`, calibrado a 100Hz) cambia de comportamiento con eventos de frecuencia variable.
+- **§4:** `py_compile` no valida hilos; "CPU ~0" sin baseline medible; falta kill-switch por módulo; "revert por git" exige un commit previo que hoy no existe.
+
+### 5.3 Ajustes requeridos antes de implementar
+
+1. Riesgo `⬟ high` (puede romper utilidades de uso diario) — aplicado en el plan 2026-09-10.
+2. Commitear la migración de captura (punto de partida real limpio).
+3. Reescribir §2 por categoría + agregar Riesgos/Alcance como en `spec-migracion-captura.md`.
+4. Convertir por pieza (6 commits o banderas `HABILITADA`), no big-bang.
+5. Unificar la fuente de cursor; todo Tk por `root.after`; reintento en el lector HID.
