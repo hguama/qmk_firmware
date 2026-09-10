@@ -1,9 +1,19 @@
 ---
 cssclasses: no-title
-active:
+active: poll-eventos
 ---
 
 # 🚀 cornekeymap
+
+> [!focus] **poll-eventos**<span class="sep">│</span><span class="count">0/1 tasks</span><span class="sep">│</span><span class="tasknums"><span class="status-progress">▶</span> <span class="num num-progress">16</span></span><span class="sep">│</span><span class="annex">📎 [contrato](attachments/poll-eventos/spec-polls-eventos.md)</span>
+> > [!task]+ <span class="status-progress">▶</span>**Task 16** · Pasar los polls del script principal a eventos<span class="sep">│</span><span class="risk-med">◆ medium</span><span class="sep">│</span><span class="beat">▰▱<span class="beat-hero">▱</span></span><span class="sep">│</span><span class="since" data-since="2026-09-09">0d</span>
+> > Pasar los 6 polls permanentes del script principal a eventos, con el modelo de `utils/captura`.
+> > Mismo comportamiento, CPU en reposo; excluidos firmware (acotado), captura (ya es eventos) y delays de automatización.
+> > - [ ] Convertir los 6 polls (lector hid, clic-alt, 2× mouse-ui, wrap, scroll-lock) en repo ajeno
+> > - [ ] 👤 Contrastar en uso diario (comportamiento idéntico, sin regresiones)
+> >
+> > > [!desc]- completed (1)
+> > > - [x] Auditar polls del repo ajeno: 6 convertibles y 3 excluidos
 
 ```button
 name 👤
