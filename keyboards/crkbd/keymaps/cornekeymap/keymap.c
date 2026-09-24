@@ -284,6 +284,19 @@ static void send_inverted_question_mark(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 
+        case C(KC_F17):
+            // Capa _BOOK. En Linux abre el menú Go → Bookmarks de Kate (Alt+G, B);
+            // en Windows (CLion) o si no está seguro, pasa Ctrl+F17 sin cambios.
+            if (detected_host_os() == OS_LINUX) {
+                if (record->event.pressed) {
+                    tap_code16(A(KC_G));
+                    wait_ms(80); // tiempo para que el menú se despliegue
+                    tap_code(KC_B);
+                }
+                return false;
+            }
+            return true;
+
         case CS_F15_HOLD:
             if (record->event.pressed) {
                 cs_f15_held = !cs_f15_held; // Cambiamos el estado de la bandera
