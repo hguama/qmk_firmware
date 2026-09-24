@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 JKL
 */
+//BEGIN 01 Includes y declaraciones externas
 #include QMK_KEYBOARD_H
 //#include "rgblight.h"
 #include "raw_hid.h"
@@ -29,8 +30,10 @@ extern uint8_t mk_max_speed;
 extern uint8_t mk_time_to_max;
 extern uint8_t mk_interval;
 #endif
+//END
 
 
+//BEGIN 02 Capas
 //Layer names enum
 enum layer_names {
     _BASE    = 0,
@@ -47,8 +50,10 @@ enum layer_names {
     _RUN     = 11,
     _MOUSE_KEY = 12,
 };
+//END
 
 
+//BEGIN 03 Teclas personalizadas
 //Macro enum
 // ============================================================================
 // TECLAS PERSONALIZADAS (custom keycodes), organizadas por categoría.
@@ -100,8 +105,10 @@ enum custom_keycodes {
     MARKER_B,             // LT(_BOOK_2, MARKER_B): TAP = Ctrl+Shift+F21 | HOLD = capa _BOOK_2 — capa _BOOK
     MARKER_2,             // LT(_BOOK_2, MARKER_2): TAP = Ctrl+2 | HOLD = capa _BOOK_2 — capa _BOOK
 };
+//END
 
 
+//BEGIN 04 Tap Dance: enum y tipos
 //Tap Dance enum
 enum {
     TDQ_SEL,
@@ -130,7 +137,9 @@ typedef struct {//for quad
     bool is_press_action;
     td_state_t state;
 } td_tap_t;
+//END
 
+//BEGIN 05 Estado y variables globales
 //Vars
 
 // static uint16_t timer_key;
@@ -165,9 +174,11 @@ bool voice_mode = false;
 static bool mouse_held = false;
 static bool capture_armed = false; // Task 12.1: hold de captura espera el aviso 'S' del watcher
 bool cs_f15_held = false; // Nueva bandera para Ctrl + Shift + F15
+//END
 
 
 
+//BEGIN 06 Prototipos
 // Prototypes quad
 void send_layer_status(const char* msg);
 void send_layer_status_with_at(const char* msg, layer_state_t state);
@@ -183,8 +194,10 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data);
 void tdq_fast_finished(tap_dance_state_t *state, void *user_data);
+//END
 
 
+//BEGIN 07 Funciones generales
 // Alternate repeat key: Alt + Repeat invierte la acción
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 
@@ -253,6 +266,8 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
     snprintf(buffer, sizeof(buffer), "%s %s", at_msg, layer_name);
     send_layer_status(buffer);
 }
+//END
+//BEGIN 08 Funciones auxiliares de teclas
 // ============================================================================
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
@@ -280,7 +295,9 @@ static void send_inverted_question_mark(void) {
         SS_UP(X_LALT)
     );
 }
+//END
 
+//BEGIN 09 process_record_user
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 
@@ -926,8 +943,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 //Pr record END
+//END
 
 
+//BEGIN 10 matrix_scan_user
 //timer for  macro
 void matrix_scan_user(void) {
 
@@ -951,8 +970,10 @@ void matrix_scan_user(void) {
    }
 
  }
+//END
 
 
+//BEGIN 11 Tap Dance: tabla de acciones
 // ============================================================================
 // TAP DANCE ACTIONS
 // ============================================================================
@@ -965,7 +986,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_MOUSE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_hold_finished, x_reset),
     [TDQ_FAST] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_fast_finished, x_reset),
 };
+//END
 
+//BEGIN 12 Teclado (capas)
 // ============================================================================
 // KEYMAPS  LT(_AI,_MOVE)
 
@@ -1015,6 +1038,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //LT(_AI, MOVE_WIN_TG)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)
 
 
+//BEGIN Capa 0 _BASE
 // _BASE Ly 0
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
@@ -1027,7 +1051,9 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
                                  LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_Y),                                 MO(_BOOK_2), LT(_BOOK, KC_ENT), LT(_AI,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
+//END
 
+//BEGIN Capa 1 _MOVE
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
@@ -1040,8 +1066,10 @@ TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                        
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), CTL_T(KC_ENT), KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
     ),
+//END
 
 
+//BEGIN Capa 2 _ALFA
     // _ALFA Ly 2
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
@@ -1054,7 +1082,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                          LSFT_T(KC_ENT), LT(0,UNDO_WIN),  LT(0,UNDO_WIN),                     		           TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                         `--------------------------'
     ),
+//END
 
+//BEGIN Capa 3 _AI
     // _AI Ly 3  //
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1067,7 +1097,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                        XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                        // `---------------------'                               `--------------------------'
     ),
+//END
 
+//BEGIN Capa 4 _DEL
     // _DEL Ly 4
     [_DEL] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1080,7 +1112,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                      DEL_LINE, _______,  _______,                                 TO(_BASE),   XXXXXXX, XXXXXXX
                                     // `----------------------'                                  `--------------------------'
 ),
+//END
 
+//BEGIN Capa 5 _SYMB
     // _SYMB Ly 5
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------o-------------------.                ,-----------------------------------------------------.
@@ -1093,7 +1127,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                          XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                          // `----------------------'                                `--------------------------'
     ),
+//END
 
+//BEGIN Capa 6 _NUMB
     // _NUMB Ly 6
     [_NUMB] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1106,7 +1142,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                       KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), C(S(KC_F15))
                                      // `---------------------------------'                      `--------------------------'
     ),
+//END
 
+//BEGIN Capa 7 _BOOK
     // _BOOK Ly 7
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
@@ -1119,7 +1157,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
     ),
+//END
 
+//BEGIN Capa 8 _BOOK_2
     // _BOOK_2 Ly 8
     [_BOOK_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1132,7 +1172,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                      XXXXXXX, XXXXXXX,  _______,                               TO(_BASE),   XXXXXXX, XXXXXXX
                                      // `------------------------'                              `--------------------------'
     ),
+//END
 
+//BEGIN Capa 9 _FAST
     // _FAST Ly 9
     //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)  A(KC_UP),  A(KC_DOWN)
     [_FAST] = LAYOUT_split_3x6_3(
@@ -1146,7 +1188,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                        TO(_BASE), LT(0,UNDO_WIN), C(KC_Y),                     TO(_BASE), XXXXXXX, TO(_BASE)
                                        // `----------------------'                              `--------------------------'
     ),
+//END
 
+//BEGIN Capa 10 _MOVE_WIN
     // _MOVE_WIN Ly 10 C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1159,8 +1203,10 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                       XXXXXXX , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
     ),
+//END
 
 
+//BEGIN Capa 11 _RUN
     // _RUN Ly 11
     [_RUN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1173,7 +1219,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                         C(KC_F2), _______,  _______,                             TO(_BASE), XXXXXXX, XXXXXXX
                                         // `----------------------'                              `--------------------------'
     ),
+//END
 
+//BEGIN Capa 12 _MOUSE_KEY
     // _MOUSE_KEY Ly 12
     [_MOUSE_KEY] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1187,6 +1235,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
                                     // `----------------------'                             `--------------------------'
 
     ),
+//END
 
 
 
@@ -1198,7 +1247,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
 
 
 };
+//END
 
+//BEGIN 13 Comunicacion HID raw
 void raw_hid_receive(uint8_t *data, uint8_t length) {
     if (data[0] == 'R' || data[1] == 'R') {
         // 1. Esperamos 50ms para que el clic del mouse "entre" en Windows primero
@@ -1249,7 +1300,9 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
 #endif
     }
 }
+//END
 
+//BEGIN 14 Tap Dance: funciones
 //Tap dance imple
 
 // > >=  plantilla
@@ -1510,8 +1563,10 @@ void x_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 //Quad END
+//END
 
 
+//BEGIN 15 Tiempos (tapping term)
 //tapping term
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
@@ -1530,9 +1585,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
       return TAPPING_TERM;
   }
+//END
 
 
 
+//BEGIN 16 Iluminacion RGB
 /////RGB MATRIX
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 // 1. Apagamos absolutamente todos los LEDs primero
@@ -1625,7 +1682,9 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL                // 12 _MOUSE_KEY
 );
 */
+//END
 
+//BEGIN 17 Arranque y eventos de capa
 void keyboard_post_init_user(void) {
     //rgb_matrix_set_color(8, 255, 150, 0);
     // Enable the LED layers
@@ -1679,3 +1738,4 @@ uint8_t layer = get_highest_layer(state);
         }
     return state;
 }
+//END
