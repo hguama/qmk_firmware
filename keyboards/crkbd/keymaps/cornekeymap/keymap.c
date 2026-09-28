@@ -59,6 +59,7 @@ enum layer_names {
 // TECLAS PERSONALIZADAS (custom keycodes), organizadas por categoría.
 // El orden no afecta a QMK: cada nombre recibe un valor único automáticamente.
 // ============================================================================
+//custom_keycodes
 enum custom_keycodes {
     // ---- LETRAS ESPECIALES --------------------------------------------------
     P_ENIE = SAFE_RANGE,  // TAP: P | HOLD: ñ (Ñ con Shift) — capa _ALFA
@@ -266,6 +267,30 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
     snprintf(buffer, sizeof(buffer), "%s %s", at_msg, layer_name);
     send_layer_status(buffer);
 }
+
+// Si is_alt_tab_active dice "selector abierto" pero Alt ya no está pulsado de
+// verdad (algo lo soltó: un Alt+Tab corto, clear_mods, etc.), el estado quedó
+// pegado hasta el timeout de 20 s. Aquí se resincroniza con los modificadores reales.
+static void alt_tab_sync(void) {
+    if (is_alt_tab_active && !(get_mods() & MOD_BIT(KC_LALT))) {
+        is_alt_tab_active = false;
+        send_layer_status_with_at("AT_OFF", layer_state);
+    }
+}
+
+// Confirma la ventana elegida en el selector Alt+Tab. KWin (Plasma) elige al
+// soltar Alt; no acepta Espacio ni Enter. Devuelve true si había selector abierto.
+static bool alt_tab_confirm(void) {
+    alt_tab_sync();
+    if (!is_alt_tab_active) {
+        return false;
+    }
+    unregister_code(KC_TAB);
+    unregister_code(KC_LALT);
+    is_alt_tab_active = false;
+    send_layer_status_with_at("AT_OFF", layer_state);
+    return true;
+}
 //END
 //BEGIN 08 Funciones auxiliares de teclas
 // ============================================================================
@@ -299,6 +324,23 @@ static void send_inverted_question_mark(void) {
 
 //BEGIN 09 process_record_user
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Guarda general: si el selector de ventanas quedó "abierto" (Alt
+    // colgado, p.ej. se eligió la ventana con el mouse y KWin cerró el
+    // selector sin que el teclado se enterara) y llega cualquier OTRA tecla,
+    // la cerramos antes de procesarla. Así Alt no se filtra en esa pulsación
+    // (letras, atajos, etc.) y no hace falta una tecla extra para limpiarlo.
+    // Quedan afuera: ALT_TAB y LT(_BOOK,KC_SPACE), que ya manejan su propio
+    // cierre; y las teclas de clic (MS_BTN1/2, CTL_CLICK, TD(TDQ_MOUSE_HOLD)),
+    // porque con el selector abierto un clic debe poder elegir la ventana
+    // resaltada con Alt aún sostenido, igual que con un mouse físico normal
+    // (que ni pasa por el teclado y por eso nunca tuvo este problema).
+    if (record->event.pressed && is_alt_tab_active &&
+        keycode != ALT_TAB && keycode != LT(_BOOK, KC_SPACE) &&
+        keycode != MS_BTN1 && keycode != MS_BTN2 && keycode != CTL_CLICK &&
+        keycode != TD(TDQ_MOUSE_HOLD)) {
+        alt_tab_confirm();
+    }
+
     switch (keycode) {
 
         case C(KC_F17):
@@ -505,6 +547,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     	case ALT_TAB:
             if (record->event.pressed) {
+                alt_tab_sync(); // descarta un estado pegado antes de decidir tap/hold
                 alt_tab_pressed = true;
                 alt_tab_hold_done = false;
                 alt_tab_timer = timer_read();
@@ -634,10 +677,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LT(0,KC_MINS):
             if (record->event.pressed) {
                 if (!record->tap.count) {
-                    tap_code(KC_MINS);
+                    tap_code16(S(KC_MINS));
                     return false;
                 } else {
-                    tap_code16(S(KC_MINS));
+                    tap_code(KC_MINS);
+
                     return false;
                 }
             }
@@ -699,6 +743,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
+
+        case LT(_BOOK, KC_SPACE): {
+            // Con el selector abierto, confirma sin importar si QMK clasifica
+            // la pulsación como TAP u HOLD (con TAPPING_TERM=175 una pulsación
+            // algo lenta se lee como HOLD). Si solo mirábamos tap.count, un
+            // HOLD entraba a la capa _BOOK sin soltar Alt y dejaba el selector
+            // atascado hasta el timeout de 20s.
+            // Sin selector abierto: TAP = Espacio normal, HOLD = capa _BOOK.
+            static bool space_consumed = false;
+            if (record->event.pressed) {
+                space_consumed = alt_tab_confirm();
+            }
+            if (space_consumed) {
+                if (!record->event.pressed) space_consumed = false;
+                return false;
+            }
+            return true;
+        }
 
         case LT(_AI,KC_ENT):
             if (record->event.pressed) {
@@ -954,7 +1016,13 @@ void matrix_scan_user(void) {
 	//para alt_tab
     if (alt_tab_pressed && !alt_tab_hold_done) {
         if (timer_elapsed(alt_tab_timer) > 150) {
-            // HOLD: Alt+Tab corto inmediato
+            // HOLD: cambio rápido entre las dos últimas ventanas.
+            // Si quedaba un selector abierto o Alt colgado (p.ej. la ventana
+            // se eligió con el mouse y KWin cerró el selector sin que el
+            // teclado se enterara, así que nunca soltamos Alt) lo cerramos
+            // primero con alt_tab_confirm(), y de una vez hacemos el cambio,
+            // para no necesitar una segunda pulsación.
+            alt_tab_confirm();
             tap_code16(A(KC_TAB));
             alt_tab_hold_done = true;
         }
@@ -1029,7 +1097,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //
 //
 //
-//G(KC_D)
+//G(KC_
 //LT(_DEL,KC_LGUI)
 //TD(TDQ_SEL)
 
@@ -1039,16 +1107,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //BEGIN Capa 0 _BASE
-// _BASE Ly 0
+ // _BASE Ly 0
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                 QK_BOOT, XXXXXXX, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                        QK_BOOT, XXXXXXX, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), TG(_MOUSE_KEY), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             SLEEP, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                                            HIBERNATE, KC_ENT, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
+MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                            HIBERNATE, XXXXXXX, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_Y),                                 MO(_BOOK_2), LT(_BOOK, KC_ENT), LT(_AI,KC_SPACE)
+                                 LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_Y),                                 MO(_BOOK_2), KC_ENT, LT(_BOOK,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 //END
@@ -1057,11 +1125,11 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, CTL_CLICK,                 
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
+ LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 _______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, XXXXXXX, TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-TG_ALFA, LT(CUT,COPY), KC_F24, MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, XXXXXXX, XXXXXXX, KC_INS,
+XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, C(KC_SPACE), XXXXXXX, XXXXXXX,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), CTL_T(KC_ENT), KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
@@ -1148,9 +1216,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _BOOK Ly 7
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
-           XXXXXXX, C(KC_F17), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
+           XXXXXXX, TD(TDQ_BOOKMARK), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           C(KC_F13), C(KC_F14), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
+           C(KC_F13), C(KC_F17), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
           C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
@@ -1176,16 +1244,16 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
 
 //BEGIN Capa 9 _FAST
     // _FAST Ly 9
-    //para elimirar LT(0,PAGE_PARAGRAPH_UP) LT(0,PAGE_PARAGRAPH_DOWN)  A(KC_UP),  A(KC_DOWN)
+    //para elimirar A(KC_UP),  A(KC_DOWN) CS_F15_HOLD
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        C(KC_S), CS_F15_HOLD ,MS_WHLU, KC_BSPC, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, KC_BSPC, MS_WHLU, CS_F15_HOLD, XXXXXXX,
+        C(KC_S), DOWN_10 ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-          MS_WHLL, MS_WHLD, UP_10, DOWN_10, MS_WHLR, XXXXXXX,                                   XXXXXXX, MS_WHLR, DOWN_10, UP_10, MS_WHLD, MS_WHLL,
+          MS_WHLL, MS_WHLD, TO(_BASE), MS_WHLU, MS_WHLR, XXXXXXX,                                   XXXXXXX, MS_WHLR, MS_WHLU, TO(_BASE), MS_WHLD, MS_WHLL,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-         KC_HOME, KC_END, C(KC_SPACE), LT(SEL_ALL,KC_SPACE), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(SEL_ALL,KC_SPACE), KC_END, XXXXXXX, XXXXXXX,
+         LCTL(KC_END), LCTL(KC_HOME), C(KC_SPACE), LT(SEL_ALL,KC_SPACE), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(SEL_ALL,KC_SPACE), C(KC_SPACE), LCTL(KC_HOME), LCTL(KC_END),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       TO(_BASE), LT(0,UNDO_WIN), C(KC_Y),                     TO(_BASE), XXXXXXX, TO(_BASE)
+                                       XXXXXXX, LT(0,UNDO_WIN), C(KC_Y),                     TO(_BASE), XXXXXXX, XXXXXXX
                                        // `----------------------'                              `--------------------------'
     ),
 //END
