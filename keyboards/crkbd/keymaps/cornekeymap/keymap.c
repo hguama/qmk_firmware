@@ -182,24 +182,32 @@ static bool alt_tab_hold_done = false;
 // C(KC_SPACE) (sin dejar de mandarlo normal), imitando el modo
 // "hold_or_toggle" de Handy: sostenerlo más de HANDY_HOLD_THRESHOLD_MS es
 // push-to-talk (para solo al soltar); un toque más corto alterna
-// grabar/detener. Mientras la bandera esté encendida, Escape manda F14
-// (cancelar real) en vez de Escape normal.
+// grabar/detener. Mientras la bandera esté encendida, Escape manda Escape Y
+// F14 (cancela de verdad), en vez de solo Escape normal.
+//
+// Antes esto se decidía con detected_host_os() == OS_LINUX, para no mandar
+// F14 de más en Windows (ahí no tiene atajo, sería ruido inofensivo pero
+// innecesario). Se quitó esa condición: detected_host_os() es una
+// adivinanza de QMK basada en cómo el host negocia el USB al conectar, la
+// propia documentación de QMK dice que no debe usarse para algo crítico, y
+// falla justo en la condición de este teclado (conectado por un hub USB).
+// Tras un reinicio de Linux, detectó mal el sistema, la condición no se
+// cumplió, y Escape se mandó tal cual sin cancelar nada.
+// Mandar Escape+F14 siempre, sin depender de la detección, es más robusto:
+// en Linux, Escape no hace nada y F14 cancela; en Windows, Escape cancela
+// como siempre y F14 no molesta (no tiene atajo asociado ahí).
 #define HANDY_HOLD_THRESHOLD_MS 300   // debe igualar "hold_threshold_ms" en settings_store.json de Handy
 #define HANDY_STALE_TIMEOUT_MS 300000 // red de seguridad: 5 min sin novedad, se apaga sola (ver matrix_scan_user)
 static bool     handy_recording_active = false;
 static uint16_t handy_ctrl_space_timer = 0;
 static uint32_t handy_ctrl_space_timer32 = 0;
 
-// Envía Escape normal, salvo que Handy esté grabando: ahí manda F14 (cancela
-// de verdad, ver comentario arriba) y apaga la bandera.
+// Envía Escape normal, salvo que Handy esté grabando: ahí manda Escape+F14
+// (cancela de verdad, ver comentario arriba) y apaga la bandera.
 static void tap_escape_or_cancel_handy(void) {
-    // Solo en Linux: ahí es donde Handy tiene su propio cancelar deshabilitado
-    // (ver comentario arriba). En Windows (y cualquier otro SO) Handy sí
-    // registra su atajo de cancelar normalmente, así que Escape real ya
-    // cancela solo; mandar F14 ahí sería un paso atrás, F14 no tiene ningún
-    // atajo asociado fuera de esta máquina Linux.
-    if (handy_recording_active && detected_host_os() == OS_LINUX) {
+    if (handy_recording_active) {
         handy_recording_active = false;
+        tap_code(KC_ESC);
         tap_code(KC_F14);
         return;
     }
