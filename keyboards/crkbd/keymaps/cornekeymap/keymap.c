@@ -168,6 +168,39 @@ uint16_t alt_tab_timer = 0;
 static bool alt_tab_pressed = false;
 static bool alt_tab_hold_done = false;
 
+// --- Escape cancela de verdad el dictado de Handy (voz a texto), sin tocar
+// su código. Handy no acepta Escape como cancelar en Linux (atajo global
+// deshabilitado ahí), pero sí atiende "Handy.AppImage --cancel" mandado a la
+// instancia que ya corre; F14 es una tecla que no existe físicamente y en
+// KDE está ligada a ese comando (Configuración → Atajos → Atajo personalizado
+// → F14 → Handy.AppImage --cancel).
+// NOTA: F21-F24 NO sirven para esto: X11/XKB los remapea de fábrica a teclas
+// especiales de touchpad/micrófono (ver /usr/share/X11/xkb/symbols/inet),
+// pase lo que pase con el dispositivo que los mande. F13-F19 sí son teclas
+// F literales, libres de esa regla.
+// Seguimos el estado de grabación desde el teclado observando cada
+// C(KC_SPACE) (sin dejar de mandarlo normal), imitando el modo
+// "hold_or_toggle" de Handy: sostenerlo más de HANDY_HOLD_THRESHOLD_MS es
+// push-to-talk (para solo al soltar); un toque más corto alterna
+// grabar/detener. Mientras la bandera esté encendida, Escape manda F14
+// (cancelar real) en vez de Escape normal.
+#define HANDY_HOLD_THRESHOLD_MS 300   // debe igualar "hold_threshold_ms" en settings_store.json de Handy
+#define HANDY_STALE_TIMEOUT_MS 300000 // red de seguridad: 5 min sin novedad, se apaga sola (ver matrix_scan_user)
+static bool     handy_recording_active = false;
+static uint16_t handy_ctrl_space_timer = 0;
+static uint32_t handy_ctrl_space_timer32 = 0;
+
+// Envía Escape normal, salvo que Handy esté grabando: ahí manda F14 (cancela
+// de verdad, ver comentario arriba) y apaga la bandera.
+static void tap_escape_or_cancel_handy(void) {
+    if (handy_recording_active) {
+        handy_recording_active = false;
+        tap_code(KC_F14);
+        return;
+    }
+    tap_code(KC_ESC);
+}
+
 
 bool ms_acl0_active = false;
 
@@ -343,6 +376,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     switch (keycode) {
 
+        case C(KC_SPACE):
+            // Observa el atajo de Handy sin dejar de mandarlo (return true):
+            // solo lo usamos para saber si debería estar grabando (ver
+            // handy_recording_active arriba). Alterna en toque corto (modo
+            // toggle) y se apaga solo al soltar un sostenido (push-to-talk).
+            if (record->event.pressed) {
+                handy_ctrl_space_timer = timer_read();
+                handy_ctrl_space_timer32 = timer_read32();
+            } else {
+                if (timer_elapsed(handy_ctrl_space_timer) >= HANDY_HOLD_THRESHOLD_MS) {
+                    handy_recording_active = false; // push-to-talk: ya se detuvo solo
+                } else {
+                    handy_recording_active = !handy_recording_active; // toggle
+                }
+            }
+            return true;
+
         case C(KC_F17):
             // Capa _BOOK. En Linux abre el menú Go → Bookmarks de Kate (Alt+G, B);
             // en Windows (CLion) o si no está seguro, pasa Ctrl+F17 sin cambios.
@@ -415,7 +465,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (record->tap.count > 0) {
                     // TAP → ESC personalizado
                     clear_all();
-                    tap_code(KC_ESC);
+                    tap_escape_or_cancel_handy();
                     return false;  // detenemos aquí, no dejamos pasar al LT original
                 }
             }
@@ -850,7 +900,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_ESC:
             if (record->event.pressed) {
                 clear_all();
-                tap_code(KC_ESC);
+                tap_escape_or_cancel_handy();
             }
             break;
 
@@ -1036,6 +1086,14 @@ void matrix_scan_user(void) {
            send_layer_status_with_at("AT_OFF",layer_state);
 
    }
+
+	// Red de seguridad de handy_recording_active: si Handy dejó de grabar por
+	// su cuenta (auto-envío, error, VAD) sin que volviéramos a tocar
+	// Ctrl+Espacio, no la dejamos pegada para siempre; ver comentario junto
+	// a su declaración.
+	if (handy_recording_active && timer_elapsed32(handy_ctrl_space_timer32) > HANDY_STALE_TIMEOUT_MS) {
+		handy_recording_active = false;
+	}
 
  }
 //END
@@ -1488,7 +1546,7 @@ void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
                 unregister_code(MS_BTN1);
                 mouse_held = false;
             }
-            tap_code(KC_ESC);
+            tap_escape_or_cancel_handy();
             break;
 
         case TD_SINGLE_HOLD:
