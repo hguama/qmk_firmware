@@ -1647,7 +1647,8 @@ void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
             break;
 
         case TD_DOUBLE_TAP:
-            tap_code16(MS_BTN2);
+            tap_code16(MS_BTN3);
+
             break;
 
         case TD_DOUBLE_HOLD:
