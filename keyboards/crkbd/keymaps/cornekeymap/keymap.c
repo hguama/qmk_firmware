@@ -1244,7 +1244,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           DEL_LINE, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, DEL_WORD,  DEL_LINE,
+           DEL_LINE, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX,  KC_BSPC, KC_DEL, DEL_WORD,  DEL_LINE,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
