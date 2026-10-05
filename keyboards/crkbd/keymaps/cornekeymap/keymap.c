@@ -385,6 +385,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         keycode != MS_BTN1 && keycode != MS_BTN2 && keycode != CTL_CLICK &&
         keycode != TD(TDQ_MOUSE_HOLD)) {
         alt_tab_confirm();
+
+        // Enter con el selector abierto solo confirma la ventana (como en
+        // Fedora/KWin, donde elegir ya activa la ventana): se traga el Enter
+        // para que no se replique dentro de la app (Kate, etc.). Cubre KC_ENT
+        // y las teclas LT/MT con Enter en tap; en hold (capa/modificador) no.
+        bool is_enter = (keycode == KC_ENT);
+        if ((IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) &&
+            record->tap.count && (keycode & 0xFF) == KC_ENT) {
+            is_enter = true;
+        }
+        if (is_enter) {
+            return false;
+        }
     }
 
     switch (keycode) {
