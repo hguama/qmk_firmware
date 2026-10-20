@@ -2,14 +2,25 @@
 
 > ⚠️ Leer antes de trabajar en este proyecto.
 
-Las skills están en `~/.agents/skills/`. Si vas a gestionar el plan de
-trabajo, usa la skill `tareas` (`~/.agents/skills/task-manager/SKILL.md`) — si no
-se activa sola, leerla directamente desde ahí antes de continuar.
+## Tareas (formato simple)
+
+Al empezar una sesión, lee [`tasks/pending.md`](tasks/pending.md) y recuérdale
+al usuario lo que está sin marcar. Trabajen desde ahí.
+
+- **Checklist:** una línea por tarea en `tasks/pending.md`: `- [ ] N · título: descripción corta`.
+  La numeración continúa desde el último número usado (el próximo es el 19).
+- **Estudio o contrato:** si una tarea necesita análisis, va en
+  `tasks/attachments/<nombre>/spec-<nombre>.md` y se enlaza desde su línea.
+- **Al cerrar:** quita la línea de `pending.md` y añádela arriba en
+  `tasks/completed.md`, sección "Cerradas": `- [x] N · título — fecha — qué quedó → [estudio](...)`.
+  El estudio se queda en `attachments/`.
+- **Errores y lecciones:** se anotan en `tasks/fixes.md`.
+- No uses el formato de la skill `task-manager` (bloques, riesgos, callouts): aquí se mantiene simple.
 
 ## Compilar (obligatorio después de cada cambio)
 
-```powershell
-& "C:\QMK_MSYS\usr\bin\bash.exe" --login -c "export MSYSTEM=MINGW64 QMK_ALLOW_ANY_ENV=1; export PATH=/usr/local/bin:/opt/qmk/bin:/mingw64/bin:/usr/bin:/bin; cd /c/Users/Usuario/qmk_firmware && qmk compile -kb crkbd/rev1 -km cornekeymap"
+```bash
+qmk compile -kb crkbd/rev1 -km cornekeymap
 ```
 
 - Al terminar cualquier cambio: compilar de esta manera. Se entrega solamente código (el `.hex` y `.build/` no se commitean).

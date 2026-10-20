@@ -1,5 +1,11 @@
 # ☑️ Tareas completadas — Corne Keymap
 
+## Cerradas (más reciente arriba)
+
+<!-- formato: - [x] N · título — AAAA-MM-DD — qué quedó → [estudio](attachments/<nombre>/...) -->
+
+## Histórico anterior
+
 > [!index] Índice del histórico
 > | Fecha | Block | Qué dejó | Nº |
 > |---|---|---|---|
