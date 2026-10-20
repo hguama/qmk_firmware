@@ -1194,11 +1194,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // _BASE Ly 0
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), MS_BTN3, QK_BOOT,                        QK_BOOT, XXXXXXX, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), TG(_MOVE_WIN), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                            HIBERNATE, KC_TAB, MS_BTN2, C(KC_SPACE) ,LT(CUT,COPY), LT(_AI, MOVE_WIN_TG),
+XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                            CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                  LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                                 MO(_BOOK_2), LT(0,UNDO_WIN), LT(_BOOK,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
@@ -1209,11 +1209,11 @@ MS_BTN2, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                 
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
- LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                              QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
+ LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                                QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-_______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                               SLEEP, XXXXXXX, KC_LEFT, KC_RIGHT, MO(_DEL), TG(_MOVE),
+_______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                              XXXXXXX, XXXXXXX, KC_LEFT, KC_RIGHT, MO(_DEL), TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                                                            HIBERNATE, XXXXXXX, _______, C(KC_SPACE), XXXXXXX, XXXXXXX,
+XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                                                        XXXXXXX, XXXXXXX, _______, C(KC_SPACE), XXXXXXX, XXXXXXX,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
                                                        LT(_MOVE_WIN, KC_ENT), C(KC_Z), LT(0,UNDO_WIN),                TO(_BASE), CTL_T(KC_ENT), KC_SPACE
                                                          // `----------------------------------'                       `---------------------------------'
@@ -1225,13 +1225,13 @@ XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                   
     // _ALFA Ly 2
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
-  KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                        QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
+KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                          QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
 LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      TG(_NUMB), KC_Q , KC_O, LT(_SYMB,KC_S), TO(_BASE), KC_N,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
-  KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                                              HIBERNATE, KC_Y,  KC_U, KC_M, LT(0,P_ENIE), KC_J,
+KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                                                XXXXXXX, KC_Y,  KC_U, KC_M, LT(0,P_ENIE), KC_J,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------+--------|
-                         LSFT_T(KC_ENT), LT(0,UNDO_WIN),  LT(0,UNDO_WIN),                     		           TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
+                         LSFT_T(KC_ENT), LT(0,UNDO_WIN),  LT(0,UNDO_WIN),                              TO(_BASE), KC_CAPS,  RSFT_T(KC_SPACE)
                          // `--------------------------------'                                         `--------------------------'
     ),
 //END
@@ -1240,9 +1240,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _AI Ly 3  //
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-         XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
+         XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, C(S(KC_F12)), C(S(KC_TAB)), C(KC_TAB), XXXXXXX,                                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX, C(S(KC_F12)), C(S(KC_TAB)), C(KC_TAB), XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
         C(G(KC_D)), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, C(G(KC_D)),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -1257,11 +1257,11 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           DEL_LINE, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                              XXXXXXX, XXXXXXX,  KC_BSPC, KC_DEL, DEL_WORD,  DEL_LINE,
+           DEL_LINE, DEL_WORD, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX,  KC_BSPC, KC_DEL, DEL_WORD,  DEL_LINE,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, KC_BSPC, KC_DEL, XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, C(A(KC_O)), XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     DEL_LINE, _______,  _______,                                 TO(_BASE),   XXXXXXX, XXXXXXX
+                                     DEL_LINE, _______,  _______,                                TO(_BASE),   XXXXXXX, XXXXXXX
                                     // `----------------------'                                  `--------------------------'
 ),
 //END
@@ -1276,7 +1276,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // |--------+--------+--------+--------+--------+------------------------|                |--------+--------+--------+--------+--------+--------|
            PIPE_M, LT(0,LLAMBDA), LT(0,KC_LABK), LT(0,KC_RABK), XXXXXXX, QK_BOOT,                  QK_BOOT, XXXXXXX, KC_DLR, KC_SCLN, LT(0,NOT_EQUAL), KC_CIRC,
         // |--------+--------+--------+--------+--------+--------+---------------|                |--------+--------+--------+--------+--------+--------+--------|
-                                         XXXXXXX, XXXXXXX,  XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
+                                         XXXXXXX, XXXXXXX,  XXXXXXX,                                TO(_BASE), XXXXXXX, XXXXXXX
                                          // `----------------------'                                `--------------------------'
     ),
 //END
@@ -1287,11 +1287,11 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, KC_ENT, XXXXXXX,                        XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
+           XXXXXXX, LT(_DEL, KC_PERC), KC_EQL, KC_DOT, KC_ENT, XXXXXXX,                         XXXXXXX, C(KC_G), KC_0, KC_4, KC_5, KC_6,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, KC_COMM, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, KC_1, KC_2, LT(0,KC_3), C(KC_G),
         // |--------+--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-                                      KC_ENT, XXXXXXX, XXXXXXX,                                 TO(_BASE), TG(_NUMB), C(S(KC_F15))
+                                      KC_ENT, XXXXXXX, XXXXXXX,                                  TO(_BASE), TG(_NUMB), C(S(KC_F15))
                                      // `---------------------------------'                      `--------------------------'
     ),
 //END
@@ -1300,13 +1300,13 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _BOOK Ly 7
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
-           XXXXXXX, TD(TDQ_BOOKMARK), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
+XXXXXXX, TD(TDQ_BOOKMARK), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-           C(KC_F13), C(KC_F17), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                     XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
+C(KC_F13), C(KC_F17), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                                XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-          C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
-                                           MO(_BOOK_2), XXXXXXX,  XXXXXXX,                    TO(_BASE),   XXXXXXX, MO(_BOOK_2)
+                                           MO(_BOOK_2), XXXXXXX,  XXXXXXX,                     TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
     ),
 //END
@@ -1321,7 +1321,7 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
           A(KC_H), XXXXXXX, A(KC_I), A(KC_K), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(S(KC_8)), C(S(KC_9)), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                     XXXXXXX, XXXXXXX,  _______,                               TO(_BASE),   XXXXXXX, XXXXXXX
+                                     XXXXXXX, XXXXXXX,  _______,                                TO(_BASE),   XXXXXXX, XXXXXXX
                                      // `------------------------'                              `--------------------------'
     ),
 //END
@@ -1331,13 +1331,13 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     //para elimirar A(KC_UP),  A(KC_DOWN) CS_F15_HOLD
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        C(KC_S), DOWN_10 ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                               XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
+ C(KC_S), DOWN_10 ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                                          XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-          MS_WHLL, MS_WHLD, TO(_BASE), MS_WHLU, MS_WHLR, XXXXXXX,                                   XXXXXXX, MS_WHLR, MS_WHLU, TO(_BASE), MS_WHLD, MS_WHLL,
+ MS_WHLL, MS_WHLD, TO(_BASE), MS_WHLU, MS_WHLR, XXXXXXX,                                        XXXXXXX, MS_WHLR, MS_WHLU, TO(_BASE), MS_WHLD, MS_WHLL,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-         LCTL(KC_END), LCTL(KC_HOME), C(KC_SPACE), LT(SEL_ALL,KC_SPACE), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, LT(SEL_ALL,KC_SPACE), C(KC_SPACE), LCTL(KC_HOME), LCTL(KC_END),
+ LCTL(KC_END), LCTL(KC_HOME), C(KC_SPACE), LT(SEL_ALL,KC_SPACE), XXXXXXX, XXXXXXX,              XXXXXXX, XXXXXXX, LT(SEL_ALL,KC_SPACE), C(KC_SPACE), LCTL(KC_HOME), LCTL(KC_END),
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                       XXXXXXX, LT(0,UNDO_WIN), C(KC_Y),                     TO(_BASE), XXXXXXX, XXXXXXX
+                                       XXXXXXX, LT(0,UNDO_WIN), C(KC_Y),                        TO(_BASE), XXXXXXX, XXXXXXX
                                        // `----------------------'                              `--------------------------'
     ),
 //END
@@ -1346,13 +1346,13 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _MOVE_WIN Ly 10 C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
        // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        XXXXXXX, A(KC_LEFT), A(KC_RIGHT), XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, LGUI(KC_DOWN), A(KC_RIGHT), A(KC_LEFT), XXXXXXX,
+        XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LGUI(KC_DOWN), A(KC_LEFT), A(KC_RIGHT), XXXXXXX,
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        C(S(KC_F1)), TO(_BASE),  C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,                    XXXXXXX, XXXXXXX, C(KC_TAB), C(S(KC_TAB)), C(S(KC_F12)), TO(_BASE),
+        C(S(KC_F1)), TO(_BASE),  C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,               XXXXXXX, XXXXXXX, C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        LGUI(KC_UP), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                  XXXXXXX,  C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, TO(_BASE),
+        LGUI(KC_UP), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX,  C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, TO(_BASE),
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                      LGUI(KC_DOWN) , _______,  _______,                               TO(_BASE), XXXXXXX,XXXXXXX
+                                      LGUI(KC_DOWN) , _______,  _______,                         TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
     ),
 //END
@@ -1362,9 +1362,9 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _RUN Ly 11
     [_RUN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-           XXXXXXX,  A(S(KC_F10)), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+           XXXXXXX,  A(S(KC_F10)), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-           XXXXXXX, XXXXXXX, KC_F6, C(KC_F5), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
+           XXXXXXX, XXXXXXX, KC_F6, C(KC_F5), XXXXXXX, XXXXXXX,                                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
@@ -1377,11 +1377,11 @@ LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(S
     // _MOUSE_KEY Ly 12
     [_MOUSE_KEY] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-     XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+     XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-    TO(_BASE), MS_BTN2,MS_DOWN, MS_UP, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_LEFT, MS_RGHT, XXXXXXX, XXXXXXX,
+    TO(_BASE), MS_BTN2,MS_DOWN, MS_UP, XXXXXXX, XXXXXXX,                                    XXXXXXX, XXXXXXX, MS_LEFT, MS_RGHT, XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-     XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX, XXXXXXX,
+     XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, _______,  _______,                           TO(_BASE),   XXXXXXX, XXXXXXX
                                     // `----------------------'                             `--------------------------'
