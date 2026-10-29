@@ -105,6 +105,9 @@ enum custom_keycodes {
     // ---- MARCADORES / BOOKMARKS ---------------------------------------------------
     MARKER_B,             // LT(_BOOK_2, MARKER_B): TAP = Ctrl+Shift+F21 | HOLD = capa _BOOK_2 — capa _BOOK
     MARKER_2,             // LT(_BOOK_2, MARKER_2): TAP = Ctrl+2 | HOLD = capa _BOOK_2 — capa _BOOK
+
+    // ---- MOUSE (al final para no mover los valores de arriba) -----------------------
+    MOUSE_HOLD,           // AL PRESIONAR: alterna clic izquierdo sostenido | HOLD: captura de región — capas _BASE/_MOVE
 };
 //END
 
@@ -116,7 +119,6 @@ enum {
     TDQ_BOOKMARK,
     TDQ_ESC,
     TDQ_PASTE,
-    TDQ_MOUSE_HOLD,
     TDQ_FAST,
 };
 
@@ -244,7 +246,6 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
-void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data);
 void tdq_fast_finished(tap_dance_state_t *state, void *user_data);
 //END
 
@@ -348,7 +349,7 @@ static bool alt_tab_confirm(void) {
 // PROCESS RECORD USER FUNCTION
 // ============================================================================
 
-// Helper: alterna el clic izquierdo sostenido (usado por TD(TDQ_MOUSE_HOLD) y MS_BTN1)
+// Helper: alterna el clic izquierdo sostenido (usado por MOUSE_HOLD y MS_BTN1)
 static void toggle_mouse_hold(void) {
     mouse_held = !mouse_held;
     if (mouse_held) {
@@ -358,6 +359,41 @@ static void toggle_mouse_hold(void) {
         tap_code(MS_BTN1);
     }
     send_layer_status(mouse_held ? "CAP_TGL_1" : "CAP_TGL_0"); // log: toggle manual y estado resultante
+}
+
+// MOUSE_HOLD: el clic se alterna al presionar (sin la espera de 450 ms del tap
+// dance); si se sigue sosteniendo MOUSE_HOLD_CAPTURA_MS, matrix_scan_user lanza
+// la captura de región.
+#define MOUSE_HOLD_CAPTURA_MS 300
+static uint16_t mouse_hold_timer = 0;
+static bool     mouse_hold_presionada = false;
+
+// Captura de región (antes era el HOLD del tap dance TDQ_MOUSE_HOLD).
+// Termina con el clic izquierdo enganchado: mueve el mouse para seleccionar y
+// suéltalo con un toque de MOUSE_HOLD.
+static void captura_region(void) {
+    // Clic suelto antes que nada, por si el botón quedó pegado por fuera de este ciclo
+    tap_code(MS_BTN1);
+    // Overlay directo + arma el enganche: el watcher avisa con 'S' cuando el
+    // overlay está listo; la red de 800ms engancha igual si no llega.
+    tap_code16(G(S(KC_S)));
+    send_layer_status("CAP_ARM");
+    capture_armed = true;
+    uint16_t capture_t0 = timer_read();
+    while (capture_armed && timer_elapsed(capture_t0) < 800) {
+        raw_hid_task(); // bombear USB: sin esto raw_hid_receive no corre durante la espera
+        wait_ms(20);
+    }
+    if (capture_armed) {
+        // Red: sin aviso del watcher, engancha igual
+        unregister_code(MS_BTN1);
+        mouse_held = false;
+        wait_ms(50);
+        register_code(MS_BTN1);
+        mouse_held = true;
+        capture_armed = false;
+        send_layer_status("CAP_NET"); // log: enganchó por red de 800ms
+    }
 }
 
 // Helper: envía "¿" (Alt+0191)
@@ -381,14 +417,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // la cerramos antes de procesarla. Así Alt no se filtra en esa pulsación
     // (letras, atajos, etc.) y no hace falta una tecla extra para limpiarlo.
     // Quedan afuera: ALT_TAB y LT(_BOOK,KC_SPACE), que ya manejan su propio
-    // cierre; y las teclas de clic (MS_BTN1/2, CTL_CLICK, TD(TDQ_MOUSE_HOLD)),
+    // cierre; y las teclas de clic (MS_BTN1/2, CTL_CLICK, MOUSE_HOLD),
     // porque con el selector abierto un clic debe poder elegir la ventana
     // resaltada con Alt aún sostenido, igual que con un mouse físico normal
     // (que ni pasa por el teclado y por eso nunca tuvo este problema).
     if (record->event.pressed && is_alt_tab_active &&
         keycode != ALT_TAB && keycode != LT(_BOOK, KC_SPACE) &&
         keycode != MS_BTN1 && keycode != MS_BTN2 && keycode != CTL_CLICK &&
-        keycode != TD(TDQ_MOUSE_HOLD)) {
+        keycode != MOUSE_HOLD) {
         alt_tab_confirm();
 
         // Enter con el selector abierto solo confirma la ventana (como en
@@ -471,6 +507,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false; // Evita que QMK procese la tecla de forma predeterminada
+
+        case MOUSE_HOLD:
+            // Instantáneo: alterna el clic al presionar; el sostenido lo vigila matrix_scan_user
+            if (record->event.pressed) {
+                toggle_mouse_hold();
+                mouse_hold_presionada = true;
+                mouse_hold_timer = timer_read();
+            } else {
+                mouse_hold_presionada = false;
+            }
+            return false;
 
         case MS_BTN1:
             if (record->event.pressed) {
@@ -1108,6 +1155,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for  macro
 void matrix_scan_user(void) {
 
+	// MOUSE_HOLD sostenido: una sola captura de región por pulsación
+	if (mouse_hold_presionada && timer_elapsed(mouse_hold_timer) > MOUSE_HOLD_CAPTURA_MS) {
+		mouse_hold_presionada = false;
+		captura_region();
+	}
+
 
 	//para alt_tab
     if (alt_tab_pressed && !alt_tab_hold_done) {
@@ -1155,7 +1208,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
-    [TDQ_MOUSE_HOLD] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_mouse_hold_finished, x_reset),
     [TDQ_FAST] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_fast_finished, x_reset),
 };
 //END
@@ -1214,11 +1266,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // _BASE Ly 0
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, TD(TDQ_MOUSE_HOLD), ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), TG(_MOVE_WIN), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-A(KC_K), LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
+A(KC_K), LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, C(MS_BTN1),                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                  LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            KC_SPACE, LT(0,UNDO_WIN), LT(_BOOK,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
@@ -1229,7 +1281,7 @@ A(KC_K), LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                 
     // _MOVE Ly 1
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
- LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), XXXXXXX, QK_BOOT,                                QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
+ LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, MOUSE_HOLD, XXXXXXX, QK_BOOT,                                QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 _______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                              XXXXXXX, XXXXXXX, KC_LEFT, KC_RIGHT, MO(_DEL), TG(_MOVE),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
@@ -1639,59 +1691,6 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_HOLD:
             // Portapapeles (Win+V)
             tap_code16(G(KC_V));
-            break;
-
-        default:
-            break;
-    }
-}
-
-void tdq_mouse_hold_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:
-            // Alternar clic izquierdo sostenido
-            toggle_mouse_hold();
-            break;
-
-        case TD_SINGLE_HOLD:
-            // TEMPORAL: clic izquierdo suelto antes que nada, como el "desatasque" manual
-            // que ya te funciona (clic con el teclado), por si el botón quedó pegado por
-            // fuera de este ciclo.
-            tap_code(MS_BTN1);
-            // Overlay directo (determinista) + arma el enganche: el watcher avisa con 'S'
-            // cuando el overlay está listo; la red de 800ms engancha igual si no llega.
-            // El clic queda sostenido aunque sueltes la tecla (no se libera en x_reset):
-            // mueve el mouse para seleccionar la captura -> toca la tecla una vez
-            // (TD_SINGLE_TAP -> toggle_mouse_hold) para soltar el clic.
-            tap_code16(G(S(KC_S)));
-            send_layer_status("CAP_ARM");
-            capture_armed = true;
-            uint16_t capture_t0 = timer_read();
-            while (capture_armed && timer_elapsed(capture_t0) < 800) {
-                raw_hid_task(); // bombear USB: sin esto raw_hid_receive no corre durante la espera
-                wait_ms(20);
-            }
-            if (capture_armed) {
-                // Red: sin aviso del watcher, engancha igual (nunca peor que antes)
-                unregister_code(MS_BTN1);
-                mouse_held = false;
-                wait_ms(50);
-                register_code(MS_BTN1);
-                mouse_held = true;
-                capture_armed = false;
-                send_layer_status("CAP_NET"); // log: enganchó por red de 800ms
-            }
-            break;
-
-        case TD_DOUBLE_TAP:
-            tap_code16(MS_BTN3);
-
-            break;
-
-        case TD_DOUBLE_HOLD:
-            // Captura de ventana activa (Alt+Print Screen)
-            tap_code16(A(KC_PSCR));
             break;
 
         default:

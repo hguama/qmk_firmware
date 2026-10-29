@@ -8,7 +8,7 @@ Al empezar una sesión, lee [`tasks/pending.md`](tasks/pending.md) y recuérdale
 al usuario lo que está sin marcar. Trabajen desde ahí.
 
 - **Checklist:** una línea por tarea en `tasks/pending.md`: `- [ ] N · título: descripción corta`.
-  La numeración continúa desde el último número usado (el próximo es el 20).
+  La numeración continúa desde el último número usado (el próximo es el 21).
 - **Estudio o contrato:** si una tarea necesita análisis, va en
   `tasks/attachments/<nombre>/spec-<nombre>.md` y se enlaza desde su línea.
 - **Al cerrar:** quita la línea de `pending.md` y añádela arriba en

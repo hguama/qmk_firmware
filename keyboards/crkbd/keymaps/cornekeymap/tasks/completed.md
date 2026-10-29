@@ -4,6 +4,7 @@
 
 <!-- formato: - [x] N · título — AAAA-MM-DD — qué quedó → [estudio](attachments/<nombre>/...) -->
 
+- [x] 20 · Clic sostenido instantáneo — 2026-10-29 — tecla nueva `MOUSE_HOLD` (al presionar alterna el clic, sostener 300 ms = captura de región) en lugar de `TD(TDQ_MOUSE_HOLD)`; el tap dance se eliminó → [estudio](attachments/clic-instantaneo/spec-clic-instantaneo.md)
 - [x] 19 · Ctrl+Espacio → Alt+K cuando Konsole está activa — 2026-10-29 — en Konsole la tecla de Handy manda un toque de Alt+K (dictado de Claude Code en modo tap); status_script avisa la ventana activa por raw HID (`T1`/`T0`) → [estudio](attachments/dictado-terminal/spec-dictado-terminal.md)
 
 ## Histórico anterior
