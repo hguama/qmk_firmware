@@ -49,6 +49,7 @@ enum layer_names {
     _MOVE_WIN = 10,
     _RUN     = 11,
     _MOUSE_KEY = 12,
+    _MOUSE_FAST = 13,
 };
 //END
 
@@ -108,6 +109,10 @@ enum custom_keycodes {
 
     // ---- MOUSE (al final para no mover los valores de arriba) -----------------------
     MOUSE_HOLD,           // AL PRESIONAR: alterna clic izquierdo sostenido | HOLD: captura de región — capas _BASE/_MOVE
+    MS_SALTO_ARR,         // Salto del puntero hacia arriba (sostener repite) — capas _MOUSE_KEY/_MOUSE_FAST
+    MS_SALTO_ABA,         // Salto del puntero hacia abajo — capas _MOUSE_KEY/_MOUSE_FAST
+    MS_SALTO_IZQ,         // Salto del puntero a la izquierda — capas _MOUSE_KEY/_MOUSE_FAST
+    MS_SALTO_DER,         // Salto del puntero a la derecha — capas _MOUSE_KEY/_MOUSE_FAST
 };
 //END
 
@@ -313,6 +318,7 @@ void send_layer_status_with_at(const char* at_msg, layer_state_t state) {
         case _FAST: layer_name = "LAYER_FAST"; break;
         case _MOVE: layer_name = "LAYER_MOVE"; break;
         case _MOUSE_KEY: layer_name = "LAYER_MOUSE_KEY"; break;
+        case _MOUSE_FAST: layer_name = "LAYER_MOUSE_FAST"; break;
         default:       layer_name = "LAYER_BASE"; break;
     }
 
@@ -410,6 +416,36 @@ static void send_inverted_question_mark(void) {
 //END
 
 //BEGIN 09 process_record_user
+// ---- Ratón por saltos: un carácter en _MOUSE_KEY, saltos largos en _MOUSE_FAST ----
+#define MOUSE_PASO_X          8    // _MOUSE_KEY: ancho de un carácter (px)
+#define MOUSE_PASO_Y          16   // _MOUSE_KEY: alto de una línea (px)
+#define MOUSE_PASO_REPETIR    40   // _MOUSE_KEY: ms entre pasos al sostener
+#define MOUSE_SALTO_X         300  // _MOUSE_FAST: salto horizontal (px)
+#define MOUSE_SALTO_Y         180  // _MOUSE_FAST: salto vertical (px)
+#define MOUSE_SALTO_REPETIR   120  // _MOUSE_FAST: ms entre saltos al sostener
+#define MOUSE_SALTO_ESPERA    300  // ms sostenido antes de empezar a repetir (ambas capas)
+static uint16_t salto_tecla = KC_NO;   // tecla de salto sostenida (KC_NO = ninguna)
+static int8_t   salto_x = 0, salto_y = 0;
+static bool     salto_repitiendo = false;
+static uint16_t salto_timer = 0;
+
+// Mueve el puntero un salto: corto en _MOUSE_KEY, largo en _MOUSE_FAST. El
+// reporte solo admite ±127 por eje, así que va en tramos de 100. Copia el
+// reporte de mousekey para no soltar un clic enganchado (MOUSE_HOLD).
+static void mouse_salto(int8_t dx, int8_t dy) {
+    bool    rapido = layer_state_is(_MOUSE_FAST);
+    int16_t total  = dx ? (rapido ? MOUSE_SALTO_X : MOUSE_PASO_X) : (rapido ? MOUSE_SALTO_Y : MOUSE_PASO_Y);
+    report_mouse_t r = mousekey_get_report();
+    r.v = 0;
+    r.h = 0;
+    for (int16_t falta = total; falta > 0; falta -= 100) {
+        int8_t tramo = falta > 100 ? 100 : falta;
+        r.x = dx * tramo;
+        r.y = dy * tramo;
+        host_mouse_send(&r);
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // Guarda general: si el selector de ventanas quedó "abierto" (Alt
     // colgado, p.ej. se eligió la ventana con el mouse y KWin cerró el
@@ -507,6 +543,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false; // Evita que QMK procese la tecla de forma predeterminada
+
+        case MS_SALTO_ARR:
+        case MS_SALTO_ABA:
+        case MS_SALTO_IZQ:
+        case MS_SALTO_DER:
+            // Un salto al presionar; si se sostiene, matrix_scan_user lo repite
+            if (record->event.pressed) {
+                salto_x = keycode == MS_SALTO_IZQ ? -1 : (keycode == MS_SALTO_DER ? 1 : 0);
+                salto_y = keycode == MS_SALTO_ARR ? -1 : (keycode == MS_SALTO_ABA ? 1 : 0);
+                mouse_salto(salto_x, salto_y);
+                salto_tecla      = keycode;
+                salto_repitiendo = false;
+                salto_timer      = timer_read();
+            } else if (keycode == salto_tecla) {
+                salto_tecla = KC_NO;
+            }
+            return false;
 
         case MOUSE_HOLD:
             // Instantáneo: alterna el clic al presionar; el sostenido lo vigila matrix_scan_user
@@ -1160,6 +1213,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 //timer for  macro
 void matrix_scan_user(void) {
 
+	// Salto del puntero sostenido (_MOUSE_KEY / _MOUSE_FAST): repite tras una espera
+	uint16_t salto_cada = layer_state_is(_MOUSE_FAST) ? MOUSE_SALTO_REPETIR : MOUSE_PASO_REPETIR;
+	if (salto_tecla != KC_NO && timer_elapsed(salto_timer) > (salto_repitiendo ? salto_cada : MOUSE_SALTO_ESPERA)) {
+		salto_repitiendo = true;
+		salto_timer      = timer_read();
+		mouse_salto(salto_x, salto_y);
+	}
+
 	// MOUSE_HOLD sostenido: una sola captura de región por pulsación
 	if (mouse_hold_presionada && timer_elapsed(mouse_hold_timer) > MOUSE_HOLD_CAPTURA_MS) {
 		mouse_hold_presionada = false;
@@ -1404,7 +1465,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 9 _FAST
-    // _FAST //§
+    // _FAST
     //para elimirar A(KC_UP),  A(KC_DOWN) CS_F15_HOLD
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1451,16 +1512,34 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 12 _MOUSE_KEY
-    // _MOUSE_KEY
+    // _MOUSE_KEY //§
     [_MOUSE_KEY] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
      XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-    TO(_BASE), MS_BTN2,MS_DOWN, MS_UP, XXXXXXX, XXXXXXX,                                    XXXXXXX, XXXXXXX, MS_LEFT, MS_RGHT, XXXXXXX, XXXXXXX,
+    TO(_BASE), MS_BTN1, MS_SALTO_ABA, MS_SALTO_ARR, TG(_MOUSE_FAST), XXXXXXX,               XXXXXXX, XXXXXXX, MS_SALTO_IZQ, MS_SALTO_DER, MS_BTN1, TG(_MOUSE_FAST),
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
      XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, MS_BTN1, XXXXXXX, XXXXXXX, XXXXXXX,
     // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                      XXXXXXX, _______,  _______,                           TO(_BASE),   XXXXXXX, XXXXXXX
+                                    // `----------------------'                             `--------------------------'
+
+    ),
+//END
+
+//BEGIN Capa 13 _MOUSE_FAST
+    // _MOUSE_FAST
+    // Mismas posiciones que _MOUSE_KEY, pero cada toque salta MOUSE_SALTO_X / MOUSE_SALTO_Y.
+    // Lo que no es salto deja pasar _MOUSE_KEY (clics, TO(_BASE)).
+    [_MOUSE_FAST] = LAYOUT_split_3x6_3(
+    // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+     _______, _______, _______, _______, _______, _______,                                  _______, _______, _______, _______, _______, _______,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+    _______, _______, MS_SALTO_ABA, MS_SALTO_ARR, _______, _______,                         _______, _______, MS_SALTO_IZQ, MS_SALTO_DER, TG(_MOUSE_FAST), _______,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+     _______, _______, _______, _______, _______, _______,                                  _______, _______, _______, _______, _______, _______,
+    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                     _______, _______,  _______,                           TO(_BASE),   _______, _______
                                     // `----------------------'                             `--------------------------'
 
     ),
@@ -1783,6 +1862,10 @@ uint8_t layer = get_highest_layer(layer_state);
              rgb_matrix_set_color(8, RGB_BLUE);  // R, G, B
              break;
 
+         case _MOUSE_FAST:
+             rgb_matrix_set_color(8, RGB_ORANGE);
+             break;
+
      case _AI:
          rgb_matrix_set_color(8, RGB_TURQUOISE);
          break;
@@ -1861,7 +1944,8 @@ const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
     NULL,               // 9 _FAST
     NULL,               // 10 _MOVE_WIN
     NULL,               // 11 _RUN
-    NULL                // 12 _MOUSE_KEY
+    NULL,               // 12 _MOUSE_KEY
+    NULL                // 13 _MOUSE_FAST
 );
 */
 //END
@@ -1882,6 +1966,11 @@ void keyboard_post_init_user(void) {
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 uint8_t layer = get_highest_layer(state);
+
+    // Al salir de las capas de ratón se corta un salto que quedara sostenido
+    if (!layer_state_cmp(state, _MOUSE_KEY) && !layer_state_cmp(state, _MOUSE_FAST)) {
+        salto_tecla = KC_NO;
+    }
 
         switch (layer) {
             case _ALFA:
