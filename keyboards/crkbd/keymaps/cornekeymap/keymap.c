@@ -202,6 +202,11 @@ static bool     handy_recording_active = false;
 static uint16_t handy_ctrl_space_timer = 0;
 static uint32_t handy_ctrl_space_timer32 = 0;
 
+// La enciende status_script por raw HID ('T','1' / 'T','0') cuando Konsole
+// gana o pierde el foco. Apagada por defecto: sin script, Ctrl+Espacio normal.
+static bool terminal_activa = false;
+static bool dictado_terminal_presionado = false; // el último press de C(KC_SPACE) fue Alt+K
+
 // Envía Escape normal, salvo que Handy esté grabando: ahí manda Escape+F14
 // (cancela de verdad, ver comentario arriba) y apaga la bandera.
 static void tap_escape_or_cancel_handy(void) {
@@ -403,6 +408,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 
         case C(KC_SPACE):
+            // Con Konsole activa (aviso de status_script, ver terminal_activa),
+            // la tecla de Handy se vuelve un toque de Alt+K: el dictado nativo
+            // de Claude Code en modo tap (toque = empieza, otro toque = envía).
+            // Lo decidido al presionar se recuerda para el soltar, por si el
+            // foco cambia en medio; ahí no se toca handy_recording_active.
+            if (record->event.pressed) {
+                dictado_terminal_presionado = terminal_activa;
+                if (terminal_activa) {
+                    tap_code16(A(KC_K));
+                    return false;
+                }
+            } else if (dictado_terminal_presionado) {
+                dictado_terminal_presionado = false;
+                return false;
+            }
             // Observa el atajo de Handy sin dejar de mandarlo (return true):
             // solo lo usamos para saber si debería estar grabando (ver
             // handy_recording_active arriba). Alterna en toque corto (modo
@@ -1198,9 +1218,9 @@ LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, TD(TDQ_MOUSE_HOLD), MS_BTN3, QK_BOO
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), TG(_MOVE_WIN), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                            CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
+A(KC_K), LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_AI, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                                 MO(_BOOK_2), LT(0,UNDO_WIN), LT(_BOOK,KC_SPACE)
+                                 LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            KC_SPACE, LT(0,UNDO_WIN), LT(_BOOK,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 //END
@@ -1331,7 +1351,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
     //para elimirar A(KC_UP),  A(KC_DOWN) CS_F15_HOLD
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
- C(KC_S), DOWN_10 ,MS_WHLU, XXXXXXX, XXXXXXX, XXXXXXX,                                          XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
+ C(KC_S), DOWN_10 ,UP_10, XXXXXXX, XXXXXXX, XXXXXXX,                                          XXXXXXX, XXXXXXX, XXXXXXX, UP_10, DOWN_10, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
  MS_WHLL, MS_WHLD, TO(_BASE), MS_WHLU, MS_WHLR, XXXXXXX,                                        XXXXXXX, MS_WHLR, MS_WHLU, TO(_BASE), MS_WHLD, MS_WHLL,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
@@ -1350,7 +1370,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
         C(S(KC_F1)), TO(_BASE),  C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,               XXXXXXX, XXXXXXX, C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        LGUI(KC_UP), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX,  C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, TO(_BASE),
+        LGUI(KC_UP), LGUI(KC_DOWN), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX,  C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, TO(_BASE),
        // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       LGUI(KC_DOWN) , _______,  _______,                         TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                               `--------------------------'
@@ -1439,6 +1459,11 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
     else if (data[0] == 'S' || data[1] == 'S') {
         // S recibida pero NO armada (tardía, duplicada o sin hold) — solo log, no engancha
         send_layer_status("CAP_S_SKIP");
+    }
+
+        // === VENTANA ACTIVA: Konsole sí/no (utils/dictado_terminal de status_script) ===
+    else if (data[0] == 'T') {
+        terminal_activa = (data[1] == '1');
     }
 
         // === NUEVA LÓGICA PARA CALIBRAR EL MOUSE ===

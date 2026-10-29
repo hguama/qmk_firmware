@@ -4,6 +4,8 @@
 
 <!-- formato: - [x] N · título — AAAA-MM-DD — qué quedó → [estudio](attachments/<nombre>/...) -->
 
+- [x] 19 · Ctrl+Espacio → Alt+K cuando Konsole está activa — 2026-10-29 — en Konsole la tecla de Handy manda un toque de Alt+K (dictado de Claude Code en modo tap); status_script avisa la ventana activa por raw HID (`T1`/`T0`) → [estudio](attachments/dictado-terminal/spec-dictado-terminal.md)
+
 ## Histórico anterior
 
 > [!index] Índice del histórico
