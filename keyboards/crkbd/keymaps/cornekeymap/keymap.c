@@ -178,9 +178,12 @@ static bool alt_tab_hold_done = false;
 // --- Escape cancela de verdad el dictado de Handy (voz a texto), sin tocar
 // su código. Handy no acepta Escape como cancelar en Linux (atajo global
 // deshabilitado ahí), pero sí atiende "Handy.AppImage --cancel" mandado a la
-// instancia que ya corre; F14 es una tecla que no existe físicamente y en
-// KDE está ligada a ese comando (Configuración → Atajos → Atajo personalizado
-// → F14 → Handy.AppImage --cancel).
+// instancia que ya corre; Ctrl+F18 es una combinación que nada más usa y en
+// KDE está ligada a ese comando (Configuración → Atajos → handy-cancel →
+// Ctrl+Launch (9), que es como KDE llama a Ctrl+F18).
+// Antes era F14 a secas, pero F14 pasó a ser una tecla de las anclas de Kate
+// y se perdió la cancelación: las F sueltas se reservan a las apps, y lo
+// global va con modificador.
 // NOTA: F21-F24 NO sirven para esto: X11/XKB los remapea de fábrica a teclas
 // especiales de touchpad/micrófono (ver /usr/share/X11/xkb/symbols/inet),
 // pase lo que pase con el dispositivo que los mande. F13-F19 sí son teclas
@@ -190,19 +193,19 @@ static bool alt_tab_hold_done = false;
 // "hold_or_toggle" de Handy: sostenerlo más de HANDY_HOLD_THRESHOLD_MS es
 // push-to-talk (para solo al soltar); un toque más corto alterna
 // grabar/detener. Mientras la bandera esté encendida, Escape manda Escape Y
-// F14 (cancela de verdad), en vez de solo Escape normal.
+// Ctrl+F18 (cancela de verdad), en vez de solo Escape normal.
 //
 // Antes esto se decidía con detected_host_os() == OS_LINUX, para no mandar
-// F14 de más en Windows (ahí no tiene atajo, sería ruido inofensivo pero
+// la tecla de más en Windows (ahí no tiene atajo, sería ruido inofensivo pero
 // innecesario). Se quitó esa condición: detected_host_os() es una
 // adivinanza de QMK basada en cómo el host negocia el USB al conectar, la
 // propia documentación de QMK dice que no debe usarse para algo crítico, y
 // falla justo en la condición de este teclado (conectado por un hub USB).
 // Tras un reinicio de Linux, detectó mal el sistema, la condición no se
 // cumplió, y Escape se mandó tal cual sin cancelar nada.
-// Mandar Escape+F14 siempre, sin depender de la detección, es más robusto:
-// en Linux, Escape no hace nada y F14 cancela; en Windows, Escape cancela
-// como siempre y F14 no molesta (no tiene atajo asociado ahí).
+// Mandar Escape+Ctrl+F18 siempre, sin depender de la detección, es más robusto:
+// en Linux, Escape no hace nada y Ctrl+F18 cancela; en Windows, Escape cancela
+// como siempre y Ctrl+F18 no molesta (no tiene atajo asociado ahí).
 #define HANDY_HOLD_THRESHOLD_MS 300   // debe igualar "hold_threshold_ms" en settings_store.json de Handy
 #define HANDY_STALE_TIMEOUT_MS 300000 // red de seguridad: 5 min sin novedad, se apaga sola (ver matrix_scan_user)
 static bool     handy_recording_active = false;
@@ -214,13 +217,13 @@ static uint32_t handy_ctrl_space_timer32 = 0;
 static bool terminal_activa = false;
 static bool dictado_terminal_presionado = false; // el último press de C(KC_SPACE) fue Alt+K
 
-// Envía Escape normal, salvo que Handy esté grabando: ahí manda Escape+F14
+// Envía Escape normal, salvo que Handy esté grabando: ahí manda Escape+Ctrl+F18
 // (cancela de verdad, ver comentario arriba) y apaga la bandera.
 static void tap_escape_or_cancel_handy(void) {
     if (handy_recording_active) {
         handy_recording_active = false;
         tap_code(KC_ESC);
-        tap_code(KC_F14);
+        tap_code16(C(KC_F18));
         return;
     }
     tap_code(KC_ESC);
