@@ -34,7 +34,7 @@ extern uint8_t mk_interval;
 
 
 //BEGIN 02 Capas
-//Layer names enum
+//Layer names enum //§
 enum layer_names {
     _BASE    = 0,
     _MOVE    = 1,
@@ -1265,17 +1265,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //LT(_AI, MOVE_WIN_TG)TDQ_ESC  TDQ_ESC LT(0,CTL_GUI)  C(KC_Y)
-
+//TG(_MOVE_WIN)
 
 //BEGIN Capa 0 _BASE
- // _BASE Ly 0  TG(_MOVE_WIN)
+ // _BASE //§
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), KC_ENT,
+KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), LT(_BOOK,KC_ENT),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
                                  LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            MO(_BOOK), LT(0,UNDO_WIN), LT(_MOVE_WIN,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
@@ -1283,7 +1283,7 @@ KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                
 //END
 
 //BEGIN Capa 1 _MOVE
-    // _MOVE Ly 1
+    // _MOVE
     [_MOVE] = LAYOUT_split_3x6_3(
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
  LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, MOUSE_HOLD, XXXXXXX, QK_BOOT,                                QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
@@ -1299,7 +1299,7 @@ XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                   
 
 
 //BEGIN Capa 2 _ALFA
-    // _ALFA Ly 2
+    // _ALFA
     [_ALFA] = LAYOUT_split_3x6_3(
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
 KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                          QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
@@ -1314,7 +1314,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 3 _AI
-    // _AI Ly 3  //
+    // _AI  //
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
          XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
@@ -1329,7 +1329,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 4 _DEL
-    // _DEL Ly 4
+    // _DEL
     [_DEL] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                XXXXXXX, XXXXXXX, C(A(KC_L)), C(S(KC_J)), C(A(KC_I)), XXXXXXX,
@@ -1344,7 +1344,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 5 _SYMB
-    // _SYMB Ly 5
+    // _SYMB
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------o-------------------.                ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,             XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
@@ -1359,7 +1359,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 6 _NUMB
-    // _NUMB Ly 6
+    // _NUMB
     [_NUMB] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0,KC_MINS), LT(0,KC_SLSH), XXXXXXX, XXXXXXX,         XXXXXXX, KC_BSPC, KC_7, KC_8, KC_9, KC_ESC,
@@ -1374,14 +1374,14 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 7 _BOOK
-    // _BOOK Ly 7
+    // _BOOK //§
     [_BOOK] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------------.                     ,-----------------------------------------------------.
-XXXXXXX, TD(TDQ_BOOKMARK), C(KC_F18), C(KC_F19), XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
+         XXXXXXX, KC_F19, KC_F15, KC_F19, XXXXXXX, XXXXXXX,                            XXXXXXX, XXXXXXX, C(KC_5), C(KC_6), C(KC_7), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-C(KC_F13), C(KC_F17), C(KC_F15), C(KC_F16), XXXXXXX , XXXXXXX,                                XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
+        C(KC_F13), KC_F17, KC_F13, KC_F14, XXXXXXX , XXXXXXX,                                XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+        C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                     TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
@@ -1389,7 +1389,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 //END
 
 //BEGIN Capa 8 _BOOK_2
-    // _BOOK_2 Ly 8
+    // _BOOK_2
     [_BOOK_2] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX, A(KC_E), A(KC_F), A(KC_G), XXXXXXX , XXXXXXX,                               XXXXXXX, XXXXXXX, C(S(KC_5)), C(S(KC_6)), C(S(KC_7)), XXXXXXX,
@@ -1404,7 +1404,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 //END
 
 //BEGIN Capa 9 _FAST
-    // _FAST Ly 9
+    // _FAST //§
     //para elimirar A(KC_UP),  A(KC_DOWN) CS_F15_HOLD
     [_FAST] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
@@ -1420,7 +1420,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 //END
 
 //BEGIN Capa 10 _MOVE_WIN
-   // _MOVE_WIN Ly 10 C(KC_L),
+   // _MOVE_WIN C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
    // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
    XXXXXXX, C(S(KC_F12)), C(S(KC_F1)), XXXXXXX , XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F1)), C(S(KC_F12)), XXXXXXX,
@@ -1436,7 +1436,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 
 
 //BEGIN Capa 11 _RUN
-    // _RUN Ly 11
+    // _RUN
     [_RUN] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
            XXXXXXX,  A(S(KC_F10)), C(S(KC_F10)), S(KC_F10), XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -1451,7 +1451,7 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 //END
 
 //BEGIN Capa 12 _MOUSE_KEY
-    // _MOUSE_KEY Ly 12
+    // _MOUSE_KEY
     [_MOUSE_KEY] = LAYOUT_split_3x6_3(
     // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
      XXXXXXX, XXXXXXX, MS_BTN3, XXXXXXX, XXXXXXX, XXXXXXX,                                  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
