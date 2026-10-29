@@ -1277,7 +1277,7 @@ LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), KC_ENT,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            KC_ENT, LT(0,UNDO_WIN), LT(_MOVE_WIN,KC_SPACE)
+                                 LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            MO(_BOOK), LT(0,UNDO_WIN), LT(_MOVE_WIN,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 //END
