@@ -532,11 +532,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true; // Si no estaba engan
 
         case CTL_CLICK:
+            // En Linux el Ctrl (interfaz de teclado) y el clic (interfaz de mouse)
+            // llegan por dispositivos distintos: con márgenes de 10 ms y un clic de
+            // 0 ms, el navegador veía el clic sin Ctrl. Márgenes de clic humano.
             if (record->event.pressed) {
                 register_code(KC_LCTL);
-                wait_ms(10);
-                tap_code(MS_BTN1);
-                wait_ms(10);
+                wait_ms(30);
+                register_code(MS_BTN1);
+                wait_ms(30);
+                unregister_code(MS_BTN1);
+                wait_ms(30);
                 unregister_code(KC_LCTL);
             }
             return false;
@@ -1263,16 +1268,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 //BEGIN Capa 0 _BASE
- // _BASE Ly 0
+ // _BASE Ly 0  TG(_MOVE_WIN)
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, MOVE_WIN_TG), TG(_MOVE_WIN), TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
+LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-A(KC_K), LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, C(MS_BTN1),                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), TG(_MOVE_WIN),
+KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), KC_ENT,
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
-                                 LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            KC_SPACE, LT(0,UNDO_WIN), LT(_BOOK,KC_SPACE)
+                                 LT(_MOVE_WIN, KC_ENT), LT(0,UNDO_WIN), C(KC_S),                            KC_ENT, LT(0,UNDO_WIN), LT(_MOVE_WIN,KC_SPACE)
                                 // `---------------------'                                                  `--------------------------'
 ),
 //END
@@ -1415,17 +1420,17 @@ C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX, 
 //END
 
 //BEGIN Capa 10 _MOVE_WIN
-    // _MOVE_WIN Ly 10 C(KC_L),
+   // _MOVE_WIN Ly 10 C(KC_L),
     [_MOVE_WIN] = LAYOUT_split_3x6_3(
-       // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-        XXXXXXX, A(KC_LEFT), A(KC_RIGHT), LGUI(KC_DOWN), XXXXXXX, XXXXXXX,                           XXXXXXX, XXXXXXX, LGUI(KC_DOWN), A(KC_LEFT), A(KC_RIGHT), XXXXXXX,
-       // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        C(S(KC_F1)), TO(_BASE),  C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,               XXXXXXX, XXXXXXX, C(S(KC_TAB)), C(KC_TAB), C(S(KC_F12)), XXXXXXX,
-       // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        LGUI(KC_UP), LGUI(KC_DOWN), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX,  C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, TO(_BASE),
-       // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
-                                      LGUI(KC_DOWN) , _______,  _______,                         TO(_BASE), XXXXXXX,XXXXXXX
-                                     // `------------------------'                               `--------------------------'
+   // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
+   XXXXXXX, C(S(KC_F12)), C(S(KC_F1)), XXXXXXX , XXXXXXX, XXXXXXX,                        XXXXXXX, XXXXXXX, XXXXXXX, C(S(KC_F1)), C(S(KC_F12)), XXXXXXX,
+   // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+   LGUI(KC_DOWN), A(KC_LEFT), C(S(KC_TAB)), C(KC_TAB), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(S(KC_TAB)), C(KC_TAB), A(KC_LEFT), LGUI(KC_DOWN),
+   // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
+   LGUI(KC_UP), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX, C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,
+   // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
+                                      XXXXXXX , _______,  _______,                         TO(_BASE), XXXXXXX,XXXXXXX
+                                     // `------------------------'                         `--------------------------'
     ),
 //END
 

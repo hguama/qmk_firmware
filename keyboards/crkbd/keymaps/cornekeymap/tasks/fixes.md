@@ -4,6 +4,7 @@
 > | Fix | Síntoma | Ver |
 > |---|---|---|
 > | 1 | `LT()` no activa la capa al mantener, pero el tap sí funciona | [Fix 1 · LT() no activa la capa correcta](#^fix-1) |
+> | 2 | Ctrl+clic desde el teclado abre el enlace en la misma pestaña (Linux) | [Fix 2 · Ctrl+clic sin Ctrl en Linux](#^fix-2) |
 
 ---
 
@@ -75,3 +76,16 @@
 > > | `LM()`  | **4**     | **0-15**  |
 > >
 > > **Relacionado:** [Tarea 1 · Revisar capas obsoletas](completed.md#^capas-jetbrains)
+
+---
+
+> [!fix] **Fix 2 · Ctrl+clic sin Ctrl en Linux** ^fix-2
+> En Linux, `Ctrl` y el clic salen del Corne por dos dispositivos distintos (teclado y mouse): sin márgenes, el navegador recibe el clic sin `Ctrl`.
+>
+> > [!desc]- Ver detalle técnico
+> > **Síntoma:** `CTL_CLICK` (y también `C(MS_BTN1)`) abre el enlace en la misma pestaña en vez de una nueva. En Windows funcionaba.
+> >
+> > **Causa:** el Corne se ve como `/dev/input/event8` (teclado) y `event9` (mouse), y KWin los lee por separado. `C(MS_BTN1)` manda `Ctrl` y el botón en el mismo instante; el `CTL_CLICK` viejo dejaba 10 ms y un clic de 0 ms (`tap_code(MS_BTN1)`). En los dos casos el clic llegaba antes de que se aplicara `Ctrl`.
+> >
+> > **Solución (2026-10-29):** márgenes de clic humano en `CTL_CLICK`: `Ctrl` abajo, 30 ms, botón abajo, 30 ms, botón arriba, 30 ms, `Ctrl` arriba. Vale para cualquier combinación de modificador + botón de mouse: no usar `C(MS_BTN1)` ni `tap_code(MS_BTN*)` con modificadores.
+
