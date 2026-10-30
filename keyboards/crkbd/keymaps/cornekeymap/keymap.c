@@ -422,7 +422,9 @@ static void send_inverted_question_mark(void) {
 // ---- Ratón por saltos: un carácter en _MOUSE_KEY, saltos largos en _MOUSE_FAST ----
 #define MOUSE_PASO_X          8    // _MOUSE_KEY: ancho de un carácter (px)
 #define MOUSE_PASO_Y          16   // _MOUSE_KEY: alto de una línea (px)
-#define MOUSE_PASO_REPETIR    40   // _MOUSE_KEY: ms entre pasos al sostener
+#define MOUSE_PASO_SOST_X     56   // _MOUSE_KEY sostenida: 7 caracteres por paso (px)
+#define MOUSE_PASO_SOST_Y     48   // _MOUSE_KEY sostenida: 3 líneas por paso (px)
+#define MOUSE_PASO_REPETIR    120  // _MOUSE_KEY: ms entre pasos al sostener
 #define MOUSE_SALTO_X         300  // _MOUSE_FAST: salto horizontal (px)
 #define MOUSE_SALTO_Y         180  // _MOUSE_FAST: salto vertical (px)
 #define MOUSE_SALTO_REPETIR   120  // _MOUSE_FAST: ms entre saltos al sostener
@@ -432,12 +434,19 @@ static int8_t   salto_x = 0, salto_y = 0;
 static bool     salto_repitiendo = false;
 static uint16_t salto_timer = 0;
 
-// Mueve el puntero un salto: corto en _MOUSE_KEY, largo en _MOUSE_FAST. El
-// reporte solo admite ±127 por eje, así que va en tramos de 100. Copia el
-// reporte de mousekey para no soltar un clic enganchado (MOUSE_HOLD).
+// Mueve el puntero un salto: en _MOUSE_KEY un carácter al tocar y varios al
+// sostener; en _MOUSE_FAST, largo. El reporte solo admite ±127 por eje, así
+// que va en tramos de 100. Copia el reporte de mousekey para no soltar un
+// clic enganchado (MOUSE_HOLD).
 static void mouse_salto(int8_t dx, int8_t dy) {
-    bool    rapido = layer_state_is(_MOUSE_FAST);
-    int16_t total  = dx ? (rapido ? MOUSE_SALTO_X : MOUSE_PASO_X) : (rapido ? MOUSE_SALTO_Y : MOUSE_PASO_Y);
+    int16_t total;
+    if (layer_state_is(_MOUSE_FAST)) {
+        total = dx ? MOUSE_SALTO_X : MOUSE_SALTO_Y;
+    } else if (salto_repitiendo) {
+        total = dx ? MOUSE_PASO_SOST_X : MOUSE_PASO_SOST_Y;
+    } else {
+        total = dx ? MOUSE_PASO_X : MOUSE_PASO_Y;
+    }
     report_mouse_t r = mousekey_get_report();
     r.v = 0;
     r.h = 0;
@@ -555,9 +564,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 salto_x = keycode == MS_SALTO_IZQ ? -1 : (keycode == MS_SALTO_DER ? 1 : 0);
                 salto_y = keycode == MS_SALTO_ARR ? -1 : (keycode == MS_SALTO_ABA ? 1 : 0);
+                salto_repitiendo = false;
                 mouse_salto(salto_x, salto_y);
                 salto_tecla      = keycode;
-                salto_repitiendo = false;
                 salto_timer      = timer_read();
             } else if (keycode == salto_tecla) {
                 salto_tecla = KC_NO;

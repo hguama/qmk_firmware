@@ -64,14 +64,14 @@ Se ajusta fácil: 30 ms ≈ 33 px/s, 20 ms = 50 px/s.
 
 Las dos capas se mueven **por saltos**: un toque es un salto, y al sostener espera 300 ms y repite. El modo constante con `MS_ACL0` se probó y se descartó, porque se sentía muy lento incluso a 100 px/s.
 
-| Capa                    | Horizontal         | Vertical                      | Repetición al sostener |
-| ----------------------- | ------------------ | ----------------------------- | ---------------------- |
-| `_MOUSE_KEY` (capa 12)  | 8 px (un carácter) | 16 px (una línea)             | cada 40 ms             |
-| `_MOUSE_FAST` (capa 13) | 300 px             | 180 px (proporción 1920×1200) | cada 120 ms            |
+| Capa                    | Horizontal                                         | Vertical                                      | Repetición al sostener |
+| ----------------------- | -------------------------------------------------- | --------------------------------------------- | ---------------------- |
+| `_MOUSE_KEY` (capa 12)  | 8 px (un carácter); sostenida 56 px (7 caracteres) | 16 px (una línea); sostenida 48 px (3 líneas) | cada 120 ms            |
+| `_MOUSE_FAST` (capa 13) | 300 px                                             | 180 px (proporción 1920×1200)                 | cada 120 ms            |
 
 - Teclas `MS_SALTO_ARR/ABA/IZQ/DER` en las mismas posiciones de las dos capas. `TG(_MOUSE_FAST)` entra y sale.
 - En `_MOUSE_FAST` todo lo demás es transparente: los clics y `TO(_BASE)` funcionan igual.
 - Los saltos copian el reporte de mousekey: no sueltan el clic enganchado de `MOUSE_HOLD`.
 - LED 8: azul en `_MOUSE_KEY` y naranja en `_MOUSE_FAST`.
-- Ajustes en keymap.c: `MOUSE_PASO_X/Y`, `MOUSE_PASO_REPETIR`, `MOUSE_SALTO_X/Y`, `MOUSE_SALTO_REPETIR`, `MOUSE_SALTO_ESPERA`.
+- Ajustes en keymap.c: `MOUSE_PASO_X/Y`, `MOUSE_PASO_SOST_X/Y`, `MOUSE_PASO_REPETIR`, `MOUSE_SALTO_X/Y`, `MOUSE_SALTO_REPETIR`, `MOUSE_SALTO_ESPERA`.
 - Ojo: la aceleración del puntero de KDE escala los saltos. Para medidas exactas, usar el perfil "plano" en el ratón del Corne.
