@@ -4,6 +4,7 @@
 
 <!-- formato: - [x] N · título — AAAA-MM-DD — qué quedó → [estudio](attachments/<nombre>/...) -->
 
+- [x] 23 · Turbo de los trackballs al sostener la tecla de `_AI` — 2026-11-06 — sostener el meñique izquierdo o el derecho (`LT(_AI, MOVE_TG)`, que con un toque sigue alternando `_MOVE`) multiplica el movimiento del M575 y del Kensington (horizontal ×6,4, vertical ×8); lo hace status_script (`utils/turbo_trackball`), con la velocidad normal en 1,0 para los dos → [estudio](attachments/turbo-trackball/spec-turbo-trackball.md)
 - [x] 20 · Clic sostenido instantáneo — 2026-10-29 — tecla nueva `MOUSE_HOLD` (al presionar alterna el clic, sostener 300 ms = captura de región) en lugar de `TD(TDQ_MOUSE_HOLD)`; el tap dance se eliminó → [estudio](attachments/clic-instantaneo/spec-clic-instantaneo.md)
 - [x] 19 · Ctrl+Espacio → Alt+K cuando Konsole está activa — 2026-10-29 — en Konsole la tecla de Handy manda un toque de Alt+K (dictado de Claude Code en modo tap); status_script avisa la ventana activa por raw HID (`T1`/`T0`) → [estudio](attachments/dictado-terminal/spec-dictado-terminal.md)
 

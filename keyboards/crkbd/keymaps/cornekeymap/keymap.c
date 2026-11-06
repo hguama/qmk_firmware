@@ -113,6 +113,7 @@ enum custom_keycodes {
     MS_SALTO_ABA,         // Salto del puntero hacia abajo — capas _MOUSE_KEY/_MOUSE_FAST
     MS_SALTO_IZQ,         // Salto del puntero a la izquierda — capas _MOUSE_KEY/_MOUSE_FAST
     MS_SALTO_DER,         // Salto del puntero a la derecha — capas _MOUSE_KEY/_MOUSE_FAST
+    MOVE_TG,              // LT(_AI, MOVE_TG): TAP = toggle _MOVE | HOLD = capa _AI (turbo del trackball izquierdo) — capas _BASE/_MOVE
 };
 //END
 
@@ -1021,6 +1022,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
 
+         case LT(_AI, MOVE_TG):
+             // Espejo de LT(_AI, MOVE_WIN_TG) para el meñique derecho.
+             if (record->event.pressed) {
+                if (record->tap.count == 0) {
+                    // HOLD: guardar la capa actual y mover a _AI
+                    save_current_layer();
+                    layer_move(_AI);
+                    return false;
+                }
+                if (record->tap.count == 1) {
+                    // TAP: alternar la capa _MOVE (lo que hacía TG(_MOVE))
+                    layer_invert(_MOVE);
+                    return false;
+                }
+            } else {
+                // RELEASE: restaurar la capa guardada
+                restore_saved_layer();
+            }
+            return true;
+
         case TG_ALFA:
             if (record->event.pressed) {
                 if (IS_LAYER_ON(_MOVE)) {
@@ -1346,7 +1367,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
 LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), TG(_MOVE),
+LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), LT(_AI, MOVE_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), LT(_BOOK,KC_ENT),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
@@ -1361,7 +1382,7 @@ KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                
 // ,-------------------------------------------------------------------------------------.                          ,-----------------------------------------------------.
  LT(KC_F4, CLOSE_WIN), LSFT_T(KC_ESC), ALT_TAB, MOUSE_HOLD, XXXXXXX, QK_BOOT,                                QK_BOOT, XXXXXXX, XXXXXXX, KC_HOME, LSFT_T(KC_END), XXXXXXX,
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
-_______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                              XXXXXXX, XXXXXXX, KC_LEFT, KC_RIGHT, MO(_DEL), TG(_MOVE),
+_______, MO(_DEL), KC_DOWN, KC_UP, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                                              XXXXXXX, XXXXXXX, KC_LEFT, KC_RIGHT, MO(_DEL), LT(_AI, MOVE_TG),
 // |--------+--------+--------+--------+--------+----------------------------------------|                          |--------+--------+--------+--------+--------+--------|
 XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                                                        XXXXXXX, XXXXXXX, _______, C(KC_SPACE), XXXXXXX, XXXXXXX,
  //|--------+--------+--------+--------+--------+--------+-------------------------------|                          |--------+--------+--------+--------+--------+--------+--------|
