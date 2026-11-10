@@ -122,7 +122,6 @@ enum custom_keycodes {
 //Tap Dance enum
 enum {
     TDQ_SEL,
-    TDQ_BOOKMARK,
     TDQ_ESC,
     TDQ_PASTE,
 };
@@ -251,7 +250,6 @@ void x_finished(tap_dance_state_t *state, void *user_data);
 void x_reset(tap_dance_state_t *state, void *user_data);
 
 void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
-void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
 //END
@@ -1319,7 +1317,6 @@ void matrix_scan_user(void) {
 
 tap_dance_action_t tap_dance_actions[] = {
     [TDQ_SEL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_sel_finished, x_reset),
-    [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
 };
@@ -1489,7 +1486,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
         C(KC_F13), KC_F17, KC_F13, KC_F14, XXXXXXX , XXXXXXX,                                XXXXXXX, XXXXXXX, C(KC_1), LT(_BOOK_2,MARKER_2), C(KC_3), C(KC_4),
         // |--------+--------+--------+--------+--------+--------------|                     |--------+--------+--------+--------+--------+--------|
-        C(KC_F20), TD(TDQ_BOOKMARK), LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,               XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), TD(TDQ_BOOKMARK), XXXXXXX,
+        C(KC_F20), XXXXXXX, LT(_BOOK_2,MARKER_B), C(KC_F22), XXXXXXX, XXXXXXX,                         XXXXXXX, XXXXXXX, C(KC_8), C(KC_9), XXXXXXX, XXXXXXX,
         // |--------+--------+--------+--------+--------+--------+-----|                     |--------+--------+--------+--------+--------+--------+--------|
                                            MO(_BOOK_2), XXXXXXX,  XXXXXXX,                     TO(_BASE),   XXXXXXX, MO(_BOOK_2)
                                            // `--------------------------'                     `--------------------------'
@@ -1746,29 +1743,6 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-
-void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP: //show list markers floating window
-                            tap_code16(S(KC_F11)); // Shift + F11
-                            break;
-
-        case TD_SINGLE_HOLD:
-                            tap_code16(A(KC_2));
-                            break; // show list markers
-
-        case TD_DOUBLE_TAP://create marker
-                            tap_code(KC_F11);
-                            break;
-
-        case TD_DOUBLE_HOLD: //go to nmotecnic
-                            tap_code16(C(S(KC_F11))); // Ctrl + Shift + F11
-                            break;
-
-        default: break;
-    }
-}
 
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data) {
     xtap_state.state = cur_dance(state);

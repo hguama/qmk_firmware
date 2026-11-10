@@ -2,9 +2,9 @@
 
 ## 0. Manifiesto
 
-| id  | archivo                 | rol     | estado                                           |
-| --- | ----------------------- | ------- | ------------------------------------------------ |
-| C1  | `spec-duplicados-td.md` | estudio | auditoría · 2026-09-10 · pendiente decisión Hero |
+| id  | archivo                 | rol     | estado                                                             |
+| --- | ----------------------- | ------- | ------------------------------------------------------------------ |
+| C1  | `spec-duplicados-td.md` | estudio | cerrado · 2026-11-10 · `TDQ_FAST` y `TDQ_BOOKMARK` eliminados (§6) |
 
 ## 1. Inventario (6 TDQs definidos, 4 en uso)
 
@@ -38,4 +38,6 @@ Quitar enum + action + función (+ excepción de tapping-term de `TDQ_SEL`, keym
 ## 6. Avance
 
 - **2026-11-10 · `TDQ_FAST` eliminado.** Hero lo re-validó ("eliminémosla"). Se quitaron los 4 sitios de `keymap.c` (enum, prototipo, entrada de `tap_dance_actions` y `tdq_fast_finished`). Era la última entrada del enum, así que las otras no cambiaron de número. Firmware: 26.574 → 26.520 bytes (**54 bytes liberados**, 2.152 libres de 28.672). El código viejo sigue en el commit `6165496ae7`.
-- Queda: el solape `F11` (§2). `TDQ_SEL` se conserva por decisión de Hero.
+- **2026-11-10 · `TDQ_BOOKMARK` eliminado.** Hero confirmó que sus gestos eran de JetBrains (marcadores: `F11` alterna, `Shift+F11` lista, `Alt+2` abre la ventana Bookmarks, `Ctrl+Shift+F11` marcadores con mnemónico) y que ya no los usa. En Kate no invocaban marcadores: `Alt+2` cambia a la pestaña 2 y `F11` pone pantalla completa (`katemainwindow.cpp`); `Shift+F11` solo lo usa el plugin GDB (no activo) y `Ctrl+Shift+F11` nada. Sus marcadores son las anclas `//§`, en otras teclas de `_BOOK`. Se quitaron los 4 sitios de `keymap.c` (enum, prototipo, acción y `tdq_bookmark_finished`) y las 2 posiciones de `_BOOK` (fila de abajo, segunda tecla desde el borde exterior de cada mitad) quedaron en `XXXXXXX`. Firmware: 26.520 → 26.452 bytes (**68 bytes liberados**, 2.220 libres de 28.672). El código viejo sigue en el historial de git.
+- **Solape `F11` resuelto** al quitar `TDQ_BOOKMARK`: `F11` solo sale ya del doble toque de `TDQ_PASTE`.
+- **Resultado de la auditoría:** quedan 4 tap dances, todos en uso salvo `TDQ_SEL` (reserva de Hero): `TDQ_SEL`, `TDQ_ESC`, `TDQ_PASTE` y `TDQ_MOUSE_HOLD`. Total liberado en esta tarea: 122 bytes (54 + 68).
