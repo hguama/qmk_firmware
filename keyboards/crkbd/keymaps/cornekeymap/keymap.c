@@ -1376,7 +1376,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // _BASE //§
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, MS_BTN3, QK_BOOT,                        QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, C(S(KC_V)), QK_BOOT,                     QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), LT(_AI, MOVE_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
@@ -1409,7 +1409,7 @@ XXXXXXX, LT(CUT,COPY), C(KC_SPACE), MS_BTN1, KC_TAB, G(KC_D),                   
 // ,--------------------------------------------------------.                                         ,-----------------------------------------------------.
 KC_W, TD(TDQ_ESC), KC_T, KC_F, KC_Z, QK_BOOT,                                                          QK_BOOT, KC_X, KC_H, KC_D, KC_L, KC_K,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
-LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      TG(_NUMB), KC_Q , KC_O, LT(_SYMB,KC_S), TO(_BASE), KC_N,
+LT(_AI,KC_A), LT(_DEL,KC_R), LT(_SYMB,KC_E), LT(_NUMB,KC_I), TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),      TG(_NUMB), KC_Q , KC_O, LT(_SYMB,KC_S), TO(_BASE), LT(_AI,KC_N),
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------|
 KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                                                XXXXXXX, KC_Y,  KC_U, KC_M, LT(0,P_ENIE), KC_J,
 // |--------+--------+--------+--------+--------+-----------|                                         |--------+--------+--------+--------+--------+--------+--------|
@@ -1419,14 +1419,14 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 3 _AI
-    // _AI  //
+    // _AI  // //§ .././
     [_AI] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                             ,-----------------------------------------------------.
-         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, KC_HASH, LT(0,KC_SLSH), KC_AT, XXXXXXX,
+         KC_HASH, KC_DLR, KC_SCLN, KC_EQL, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, XXXXXXX, KC_EXLM, KC_DOT, KC_COMM,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,XXXXXXX, XXXXXXX,
+        LT(0,QUESTION), KC_LPRN, KC_RPRN, XXXXXXX , XXXXXXX, XXXXXXX,                                   XXXXXXX,  KC_AT, LT(0,KC_SLSH), KC_MINS, KC_UNDS, KC_TILD,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_ASTR, KC_LT, KC_GT, XXXXXXX, XXXXXXX, XXXXXXX,                                   XXXXXXX, XXXXXXX, LT(0,KC_DQT), AMP_DOUBLE, KC_PIPE, KC_COLN,
         // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                        XXXXXXX, XXXXXXX, XXXXXXX,                               TO(_BASE), XXXXXXX, XXXXXXX
                                        // `---------------------'                               `--------------------------'
@@ -1449,7 +1449,8 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
 //END
 
 //BEGIN Capa 5 _SYMB
-    // _SYMB
+    // _SYMB //§
+//.=(-_~-_&&@/////-.==())
     [_SYMB] = LAYOUT_split_3x6_3(
         // ,--------------------------------------------------o-------------------.                ,-----------------------------------------------------.
            XXXXXXX, LT(0,ASTRISK_PLUS), LT(0, KC_MINS), KC_EXLM, S(KC_GRAVE), XXXXXXX,             XXXXXXX, KC_GRAVE, KC_PERC , LT(0,DOUBLE_COLON), LT(0,LBRC2), XXXXXXX,
