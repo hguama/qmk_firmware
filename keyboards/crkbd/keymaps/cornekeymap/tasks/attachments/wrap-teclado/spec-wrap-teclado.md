@@ -2,9 +2,9 @@
 
 ## 0. Manifiesto
 
-| id  | archivo                | rol      | estado                                                                      |
-| --- | ---------------------- | -------- | --------------------------------------------------------------------------- |
-| W1  | `spec-wrap-teclado.md` | contrato | decidido · 2026-10-30 · opción (a) con 2 toques; falta confirmación de Hero |
+| id  | archivo                | rol      | estado                                                                                              |
+| --- | ---------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| W1  | `spec-wrap-teclado.md` | contrato | cerrado · 2026-11-10 · opción (a) con 2 toques (§8); funciona bien según Hero, sigue en observación |
 
 ## 1. Objetivo
 

@@ -89,8 +89,8 @@ enum custom_keycodes {
     // ---- MOUSE Y SCROLL ------------------------------------------------------
     CTL_CLICK,            // Ctrl + clic izquierdo (abrir enlace en pestaña nueva) — capa _BASE
     MS_ACL0_TOGGLE,       // Toggle de aceleración del mouse (MS_ACL0) — pruebas — TODO: Esta tecla la necesito para unas pruebas.
-    DOWN_10,              // Rueda hacia abajo (8 ticks) — capa _FAST
-    UP_10,                // Rueda hacia arriba (8 ticks) — capa _FAST
+    DOWN_10,              // Rueda hacia abajo (ráfaga de 8 ticks; sostener repite con pausa) — capa _FAST
+    UP_10,                // Rueda hacia arriba (ráfaga de 8 ticks; sostener repite con pausa) — capa _FAST
 
     // ---- VENTANAS Y SISTEMA ---------------------------------------------------
     ALT_TAB,              // Alt+Tab (cambiar de ventana) — capas _BASE/_MOVE
@@ -125,7 +125,6 @@ enum {
     TDQ_BOOKMARK,
     TDQ_ESC,
     TDQ_PASTE,
-    TDQ_FAST,
 };
 
 
@@ -255,7 +254,6 @@ void tdq_sel_finished(tap_dance_state_t *state, void *user_data);
 void tdq_bookmark_finished(tap_dance_state_t *state, void *user_data);
 void tdq_esc_finished(tap_dance_state_t *state, void *user_data);
 void tdq_paste_finished(tap_dance_state_t *state, void *user_data);
-void tdq_fast_finished(tap_dance_state_t *state, void *user_data);
 //END
 
 
@@ -456,6 +454,21 @@ static void mouse_salto(int8_t dx, int8_t dy) {
         r.x = dx * tramo;
         r.y = dy * tramo;
         host_mouse_send(&r);
+    }
+}
+
+// ---- Scroll por ráfagas en _FAST (UP_10 / DOWN_10) ----
+#define SCROLL_RAFAGA   8    // ticks de rueda por ráfaga
+#define SCROLL_ESPERA   300  // ms sostenido antes de empezar a repetir
+#define SCROLL_REPETIR  400  // ms de pausa entre ráfagas al sostener
+static uint16_t scroll_tecla = KC_NO;  // UP_10 o DOWN_10 sostenida (KC_NO = ninguna)
+static bool     scroll_repitiendo = false;
+static uint16_t scroll_timer = 0;
+
+// Manda una ráfaga de SCROLL_RAFAGA ticks de rueda, hacia arriba o hacia abajo.
+static void scroll_rafaga(bool arriba) {
+    for (int i = 0; i < SCROLL_RAFAGA; i++) {
+        tap_code16(arriba ? MS_WHLU : MS_WHLD);
     }
 }
 
@@ -718,20 +731,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
         case DOWN_10:
-            if (record->event.pressed) {
-                // KC_DOWN 10 veces
-                for (int i = 0; i < 8; i++) {
-                    tap_code16(MS_WHLD);
-                }
-            }
-            return false;
-
         case UP_10:
+            // Una ráfaga al presionar; si se sostiene, matrix_scan_user la repite con pausa
             if (record->event.pressed) {
-                // KC_UP 10 veces
-                for (int i = 0; i < 8; i++) {
-                    tap_code16(MS_WHLU);
-                }
+                scroll_tecla     = keycode;
+                scroll_repitiendo = false;
+                scroll_rafaga(keycode == UP_10);
+                scroll_timer     = timer_read();
+            } else if (keycode == scroll_tecla) {
+                scroll_tecla = KC_NO;
             }
             return false;
 
@@ -1254,6 +1262,13 @@ void matrix_scan_user(void) {
 		mouse_salto(salto_x, salto_y);
 	}
 
+	// Scroll sostenido (UP_10 / DOWN_10 en _FAST): repite la ráfaga con una pausa entre cada una
+	if (scroll_tecla != KC_NO && timer_elapsed(scroll_timer) > (scroll_repitiendo ? SCROLL_REPETIR : SCROLL_ESPERA)) {
+		scroll_repitiendo = true;
+		scroll_rafaga(scroll_tecla == UP_10);
+		scroll_timer      = timer_read();
+	}
+
 	// MOUSE_HOLD sostenido: una sola captura de región por pulsación
 	if (mouse_hold_presionada && timer_elapsed(mouse_hold_timer) > MOUSE_HOLD_CAPTURA_MS) {
 		mouse_hold_presionada = false;
@@ -1307,7 +1322,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [TDQ_BOOKMARK] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_bookmark_finished, x_reset),
     [TDQ_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_esc_finished, x_reset),
     [TDQ_PASTE] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_paste_finished, x_reset),
-    [TDQ_FAST] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tdq_fast_finished, x_reset),
 };
 //END
 
@@ -1521,7 +1535,7 @@ KC_B, KC_G, KC_C, KC_V,KC_TAB, G(KC_D),                                         
    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
    LGUI(KC_DOWN), A(KC_LEFT), C(S(KC_TAB)), C(KC_TAB), XXXXXXX, XXXXXXX,                  XXXXXXX, XXXXXXX, C(S(KC_TAB)), C(KC_TAB), A(KC_LEFT), LGUI(KC_DOWN),
    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------|
-   LGUI(KC_UP), XXXXXXX, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX, C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,
+   LGUI(KC_UP), KC_SPACE, G(C(KC_LEFT)), G(C(KC_RIGHT)), XXXXXXX, XXXXXXX,                 XXXXXXX, C(G(KC_D)), G(C(KC_LEFT)), G(C(KC_RIGHT)), KC_ENT, XXXXXXX,
    // |--------+--------+--------+--------+--------+--------|                             |--------+--------+--------+--------+--------+--------+--------|
                                       XXXXXXX , _______,  _______,                         TO(_BASE), XXXXXXX,XXXXXXX
                                      // `------------------------'                         `--------------------------'
@@ -1814,31 +1828,6 @@ void tdq_paste_finished(tap_dance_state_t *state, void *user_data) {
             break;
     }
 }
-
-void tdq_fast_finished(tap_dance_state_t *state, void *user_data) {
-    xtap_state.state = cur_dance(state);
-    switch (xtap_state.state) {
-        case TD_SINGLE_TAP:
-            // Alterna la capa _FAST (igual que TG(_FAST))
-            layer_invert(_FAST);
-            break;
-
-        case TD_SINGLE_HOLD:
-            // Clic derecho (menú contextual) al mantener
-            tap_code16(MS_BTN2);
-            break;
-
-        case TD_DOUBLE_TAP:
-            // Clic derecho (menú contextual) con doble tap
-            tap_code16(MS_BTN2);
-            break;
-
-        default:
-            break;
-    }
-}
-
-
 
 void x_reset(tap_dance_state_t *state, void *user_data) {
 //  if (xtap_state.state == TD_DOUBLE_SINGLE_TAP)

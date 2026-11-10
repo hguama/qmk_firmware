@@ -2,20 +2,20 @@
 
 ## 0. Manifiesto
 
-| id | archivo | rol | estado |
-|---|---|---|---|
-| C1 | `spec-duplicados-td.md` | estudio | auditoría · 2026-09-10 · pendiente decisión Hero |
+| id  | archivo                 | rol     | estado                                           |
+| --- | ----------------------- | ------- | ------------------------------------------------ |
+| C1  | `spec-duplicados-td.md` | estudio | auditoría · 2026-09-10 · pendiente decisión Hero |
 
 ## 1. Inventario (6 TDQs definidos, 4 en uso)
 
-| TD | Gestos | Usado en layouts | Duplicado en otro lado | Veredicto |
-|---|---|---|---|---|
-| `TDQ_SEL` | tap `C-A`, hold selecciona línea, doble-tap `Espacio` | ❌ en ninguno (sin asignar) | ✅ cubierto hoy vía `LT(SEL_ALL,KC_SPACE)` (en uso) | ✅ Se queda — reserva Hero para selección futura (§5) |
-| `TDQ_BOOKMARK` | `S-F11` / `A-2` / `F11` / `C-S-F11` | ✅ capa BOOK ×2 | ❓ `F11` también sale del doble-tap de `TDQ_PASTE` | ✅ Se queda; decidir el solape `F11` (§2) |
-| `TDQ_ESC` | `Esc` (+suelta hold) / `Win+D` (+suelta) / `C-F` | ✅ `_BASE`×2, `_MOVE`, `_ALFA` | ⚠️ `Esc` también vía `LSFT_T(KC_ESC)` (otra posición, sin lógica de soltar) | ✅ Se queda (posición + soltar hold) |
-| `TDQ_PASTE` | `C-V` / `F5` / `F11` / `Win+V` | ✅ `_BASE`×2, `_MOVE`, `_ALFA` | ❓ `F11` también sale del doble-tap de `TDQ_BOOKMARK` | ✅ Se queda; decidir el solape `F11` (§2) |
-| `TDQ_MOUSE_HOLD` | toggle / captura / `MS_BTN2` / `A-PrtScn` | ✅ `_BASE`×2, `_MOVE` | ✅ `MS_BTN1/2` directos en layouts (complemento por posición, no reemplazo) | ✅ Se queda |
-| `TDQ_FAST` | toggle `_FAST` / `MS_BTN2` | ❌ en ninguno (revertido a `TG`) | ✅ toggle vía `TG(_FAST)` (en uso, tu decisión); clic derecho vía `MS_BTN2` directos | ❌ Eliminar — Hero confirma (§5) |
+| TD               | Gestos                                                | Usado en layouts                 | Duplicado en otro lado                                                               | Veredicto                                             |
+| ---------------- | ----------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| `TDQ_SEL`        | tap `C-A`, hold selecciona línea, doble-tap `Espacio` | ❌ en ninguno (sin asignar)      | ✅ cubierto hoy vía `LT(SEL_ALL,KC_SPACE)` (en uso)                                  | ✅ Se queda — reserva Hero para selección futura (§5) |
+| `TDQ_BOOKMARK`   | `S-F11` / `A-2` / `F11` / `C-S-F11`                   | ✅ capa BOOK ×2                  | ❓ `F11` también sale del doble-tap de `TDQ_PASTE`                                   | ✅ Se queda; decidir el solape `F11` (§2)             |
+| `TDQ_ESC`        | `Esc` (+suelta hold) / `Win+D` (+suelta) / `C-F`      | ✅ `_BASE`×2, `_MOVE`, `_ALFA`   | ⚠️ `Esc` también vía `LSFT_T(KC_ESC)` (otra posición, sin lógica de soltar)           | ✅ Se queda (posición + soltar hold)                  |
+| `TDQ_PASTE`      | `C-V` / `F5` / `F11` / `Win+V`                        | ✅ `_BASE`×2, `_MOVE`, `_ALFA`   | ❓ `F11` también sale del doble-tap de `TDQ_BOOKMARK`                                | ✅ Se queda; decidir el solape `F11` (§2)             |
+| `TDQ_MOUSE_HOLD` | toggle / captura / `MS_BTN2` / `A-PrtScn`             | ✅ `_BASE`×2, `_MOVE`            | ✅ `MS_BTN1/2` directos en layouts (complemento por posición, no reemplazo)          | ✅ Se queda                                           |
+| `TDQ_FAST`       | toggle `_FAST` / `MS_BTN2`                            | ❌ en ninguno (revertido a `TG`) | ✅ toggle vía `TG(_FAST)` (en uso, tu decisión); clic derecho vía `MS_BTN2` directos | ❌ Eliminar — Hero confirma (§5)                      |
 
 ## 2. Solape `F11` (único duplicado real entre vivos)
 
@@ -34,3 +34,8 @@ Quitar enum + action + función (+ excepción de tapping-term de `TDQ_SEL`, keym
 - `TDQ_SEL`: se queda. "Me parece útil, la puedo utilizar después para seleccionar diferentes elementos, asignarle una tecla."
 - `TDQ_FAST`: se elimina. "Estoy de acuerdo con eliminarla, la probé en un momento y pasar de capas de esa manera es muy lento."
 - Pendiente: veredicto del solape `F11` (§2) y re-validación de ambas al llevar a cabo la tarea.
+
+## 6. Avance
+
+- **2026-11-10 · `TDQ_FAST` eliminado.** Hero lo re-validó ("eliminémosla"). Se quitaron los 4 sitios de `keymap.c` (enum, prototipo, entrada de `tap_dance_actions` y `tdq_fast_finished`). Era la última entrada del enum, así que las otras no cambiaron de número. Firmware: 26.574 → 26.520 bytes (**54 bytes liberados**, 2.152 libres de 28.672). El código viejo sigue en el commit `6165496ae7`.
+- Queda: el solape `F11` (§2). `TDQ_SEL` se conserva por decisión de Hero.

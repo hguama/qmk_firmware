@@ -2,9 +2,9 @@
 
 ## 0. Manifiesto
 
-| id  | archivo                   | rol      | estado                                                                                          |
-| --- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
-| V1  | `spec-mouse-velocidad.md` | contrato | decidido · 2026-10-29 · saltos en `_MOUSE_KEY` y `_MOUSE_FAST` (§7); falta confirmación de Hero |
+| id  | archivo                   | rol      | estado                                                                                                             |
+| --- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| V1  | `spec-mouse-velocidad.md` | contrato | cerrado · 2026-11-10 · saltos en `_MOUSE_KEY` y `_MOUSE_FAST` (§7); funciona bien según Hero, sigue en observación |
 
 ## 1. Objetivo
 
