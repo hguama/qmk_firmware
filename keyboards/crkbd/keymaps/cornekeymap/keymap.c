@@ -496,7 +496,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             record->tap.count && (keycode & 0xFF) == KC_ENT) {
             is_enter = true;
         }
-        if (is_enter) {
+        // Lo mismo con Espacio: elegir la ventana no debe dejar un espacio
+        // en la terminal (rompe el atajo de dictado de Claude Code). Cubre
+        // KC_SPACE y las LT/MT con Espacio en tap.
+        bool is_space = (keycode == KC_SPACE);
+        if ((IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) &&
+            record->tap.count && (keycode & 0xFF) == KC_SPACE) {
+            is_space = true;
+        }
+        if (is_enter || is_space) {
             return false;
         }
     }
@@ -1376,9 +1384,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  // _BASE //§
 [_BASE] = LAYOUT_split_3x6_3(
         // ,-----------------------------------------------------.                                        ,-----------------------------------------------------.
-LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, C(S(KC_V)), QK_BOOT,                     QK_BOOT, MS_BTN3, MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
+LT(KC_F4, CLOSE_WIN),  TD(TDQ_ESC), ALT_TAB, MOUSE_HOLD, C(S(KC_V)), QK_BOOT,                              QK_BOOT, C(S(KC_V)), MOUSE_HOLD, ALT_TAB,  TD(TDQ_ESC), LT(KC_F4, CLOSE_WIN),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
-LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),             KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), LT(_AI, MOVE_TG),
+LT(_AI, MOVE_WIN_TG), XXXXXXX, TG(_FAST), MS_BTN1, TD(TDQ_PASTE), LT(SEL_ALL,KC_SPACE),                    KC_ENT, TD(TDQ_PASTE), MS_BTN1, TG(_FAST), TG(_ALFA), LT(_AI, MOVE_TG),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------|
 KC_SPACE, LT(CUT,COPY), C(KC_SPACE), MS_BTN2, KC_TAB, CTL_CLICK,                                          CTL_CLICK, KC_TAB, MS_BTN2, C(KC_SPACE), LT(CUT,COPY), LT(_BOOK,KC_ENT),
 // |--------+--------+--------+--------+--------+--------|                                                |--------+--------+--------+--------+--------+--------+--------|
